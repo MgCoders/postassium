@@ -3,13 +3,13 @@ version: '3.1'
 services:
 
     wildfly:
-      image: sulfur-backend
+      image: potassium-backend
       build: .
       environment:
         DB_HOST: db
-        DB_NAME: sulfur
-        DB_USER: sulfur_user
-        DB_PASS: sulfur_pass
+        DB_NAME: potassium
+        DB_USER: potassium_user
+        DB_PASS: potassium_pass
         LOGSTASH_HOST: logstash
         ZOHO_MAIL_FROM: ${ZOHO_MAIL_FROM}
         ZOHO_MAIL_PASS: ${ZOHO_MAIL_PASS}
@@ -25,9 +25,9 @@ services:
     db:
         image: postgres
         environment:
-            POSTGRES_USER: sulfur_user
-            POSTGRES_PASSWORD: sulfur_pass
-            POSTGRES_DB: sulfur
+            POSTGRES_USER: potassium_user
+            POSTGRES_PASSWORD: potassium_pass
+            POSTGRES_DB: potassium
 
     adminer:
         image: adminer

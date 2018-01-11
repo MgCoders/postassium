@@ -3,7 +3,7 @@ os: linux
 
 files:
  - source: /
-   destination: /home/ubuntu/sulfur-backend-deploy
+   destination: /home/ubuntu/potassium-backend-deploy
 
 permissions:
  - object: /

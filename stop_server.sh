@@ -2,5 +2,5 @@
 #/bin/bash
 set -x
 
-cd /home/ubuntu/sulfur-backend-deploy
+cd /home/ubuntu/potassium-backend-deploy
 docker-compose -f docker-compose.production.yml kill
