@@ -1,0 +1,37 @@
+version: '3.1'
+
+services:
+
+    wildfly:
+      image: sulfur-backend
+      build: .
+      environment:
+        DB_HOST: db
+        DB_NAME: sulfur
+        DB_USER: sulfur_user
+        DB_PASS: sulfur_pass
+        LOGSTASH_HOST: logstash
+        ZOHO_MAIL_FROM: ${ZOHO_MAIL_FROM}
+        ZOHO_MAIL_PASS: ${ZOHO_MAIL_PASS}
+        ROOT_PASSWORD: ${ROOT_PASSWORD}
+      ports:
+        - 127.0.0.1:8080:8080
+        - 127.0.0.1:9990:9990
+      links:
+        - db
+      volumes:
+        - ./resources/deployments:/opt/jboss/wildfly/standalone/deployments
+
+    db:
+        image: postgres
+        environment:
+            POSTGRES_USER: sulfur_user
+            POSTGRES_PASSWORD: sulfur_pass
+            POSTGRES_DB: sulfur
+
+    adminer:
+        image: adminer
+        links:
+                - db
+        ports:
+            - 8081:8080

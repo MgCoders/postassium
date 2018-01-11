@@ -1,0 +1,33 @@
+# Mark the commands below to be run as a batch
+batch
+
+
+/subsystem=logging/custom-handler=GelfLogger/:add(module=biz.paluch.logging,class=biz.paluch.logging.gelf.wildfly.WildFlyGelfLogHandler,properties={ \
+       host="udp:${env.LOGSTASH_HOST:none}", \
+       port="5000", \
+       version="1.0", \
+       facility="java-test", \
+       extractStackTrace=true, \
+       filterStackTrace=true, \
+       includeLogMessageParameters=true, \
+       mdcProfiling=true, \
+       timestampPattern="yyyy-MM-dd HH:mm:ss,SSSS", \
+       maximumMessageSize=8192, \
+       additionalFields="serverName=${jboss.server.name:none},subCluster=${mycluster.modcluster.lbgroup:none}", \
+       additionalFieldTypes="serverName=String,subCluster=String", \
+       mdcFields="mdcField1,mdcField2" \
+       dynamicMdcFields="mdc.*,(mdc|MDC)fields" \
+       includeFullMdc=true \
+})
+/subsystem=logging/root-logger=ROOT/:write-attribute(name=handlers,value=["FILE","CONSOLE","GelfLogger"])
+
+
+module add --name=org.postgresql --resources=postgresql-42.1.4.jar --dependencies=javax.api,javax.transaction.api
+/subsystem=datasources/jdbc-driver=postgresql:add(driver-name=postgresql,driver-module-name=org.postgresql,driver-xa-datasource-class-name=org.postgresql.xa.PGXADataSource)
+data-source add --jndi-name=java:jboss/sulfur --name=sulfur --connection-url=jdbc:postgresql://${env.DB_HOST:none}:5432/${env.DB_NAME:none} --driver-name=postgresql --user-name=${env.DB_USER:none} --password=${env.DB_PASS:none}
+
+/socket-binding-group=standard-sockets/remote-destination-outbound-socket-binding=zoho-mail-smtp/:add(host=smtp.zoho.com, port=465)
+/subsystem=mail/mail-session=zoho/:add(jndi-name=java:/zohoMail, from=${env.ZOHO_MAIL_FROM:none})
+/subsystem=mail/mail-session=zoho/server=smtp:add(outbound-socket-binding-ref=zoho-mail-smtp, ssl=true, username=${env.ZOHO_MAIL_FROM:none}, password=${env.ZOHO_MAIL_PASS:none})
+# Execute the batch
+run-batch
