@@ -40,7 +40,7 @@ public class TareaServiceTest {
                         Logged.class.getPackage(),
                         HorasProyectoXCargo.class.getPackage())
                 .addClass(JAXRSConfiguration.class)
-                .addClass(TareaService.class)
+                .addClass(TipoTareaService.class)
                 .addAsResource("META-INF/persistence.xml")
                 .addAsResource("endpoints.properties")
                 .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml");

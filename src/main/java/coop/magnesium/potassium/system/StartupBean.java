@@ -1,8 +1,7 @@
 package coop.magnesium.potassium.system;
 
-import coop.magnesium.potassium.db.dao.CargoDao;
-import coop.magnesium.potassium.db.dao.ColaboradorDao;
-import coop.magnesium.potassium.db.entities.Colaborador;
+import coop.magnesium.potassium.db.dao.UsuarioDao;
+import coop.magnesium.potassium.db.entities.Usuario;
 import coop.magnesium.potassium.utils.DataRecuperacionPassword;
 import coop.magnesium.potassium.utils.PasswordUtils;
 import coop.magnesium.potassium.utils.ex.MagnesiumBdMultipleResultsException;
@@ -26,9 +25,7 @@ import java.util.logging.Logger;
 public class StartupBean {
 
     @EJB
-    CargoDao cargoDao;
-    @EJB
-    ColaboradorDao colaboradorDao;
+    UsuarioDao usuarioDao;
     @Inject
     Logger logger;
     @Resource
@@ -40,8 +37,8 @@ public class StartupBean {
     public void init() {
         this.recuperacionPassword = new ConcurrentHashMap();
         try {
-            if (colaboradorDao.findByEmail("root@magnesium.coop") == null) {
-                colaboradorDao.save(new Colaborador("root@magnesium.coop", "root", null, PasswordUtils.digestPassword(System.getenv("ROOT_PASSWORD") != null ? System.getenv("ROOT_PASSWORD") : "bu"), "ADMIN"));
+            if (usuarioDao.findByEmail("root@magnesium.coop") == null) {
+                usuarioDao.save(new Usuario("root@magnesium.coop", "root", PasswordUtils.digestPassword(System.getenv("ROOT_PASSWORD") != null ? System.getenv("ROOT_PASSWORD") : "bu"), "ADMIN"));
             }
         } catch (MagnesiumBdMultipleResultsException e) {
             logger.warning(e.getMessage());

@@ -46,7 +46,7 @@ public class ReportesService {
     @EJB
     private CargoDao cargoDao;
     @EJB
-    private ColaboradorDao colaboradorDao;
+    private UsuarioDao colaboradorDao;
 
 
     @GET
@@ -62,7 +62,7 @@ public class ReportesService {
     @Path("horas/proyecto/{proyecto_id}/tarea/{tarea_id}/cargo/{cargo_id}")
     @JWTTokenNeeded
     @RoleNeeded({Role.ADMIN})
-    @ApiOperation(value = "Horas de Proyecto, TipoTarea y Cargo agrupadas por Colaborador", response = HorasProyectoTipoTareaCargoXColaborador.class, responseContainer = "List")
+    @ApiOperation(value = "Horas de Proyecto, TipoTarea y Cargo agrupadas por Usuario", response = HorasProyectoTipoTareaCargoXColaborador.class, responseContainer = "List")
     public Response findHorasProyectoTipoTareaCargoXColaborador(@PathParam("proyecto_id") Long proyecto_id, @PathParam("tarea_id") Long tarea_id, @PathParam("cargo_id")Long cargo_id) {
         try {
             Proyecto proyecto = proyectoDao.findById(proyecto_id);

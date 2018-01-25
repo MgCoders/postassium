@@ -41,7 +41,7 @@ public class JAXRSConfiguration extends Application {
     }
 
     private String getDescription() {
-        return "El login exitoso de UserService devuelve un Colaborador con un campo \"token\".\n" +
+        return "El login exitoso de AuthService devuelve un Usuario con un campo \"token\".\n" +
                 "Dicho token se debe incluir como header de las llamadas del resto de las operaciones de cada servicio.";
     }
 

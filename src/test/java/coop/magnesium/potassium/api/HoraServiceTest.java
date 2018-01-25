@@ -56,15 +56,15 @@ public class HoraServiceTest {
     final Proyecto proyecto = new Proyecto("PP", "PP");
     final TipoTarea tipoTarea = new TipoTarea("TT", "TT");
     final Cargo cargo = new Cargo("CC", "CC", new BigDecimal(32.2));
-    final Colaborador colaborador_admin = new Colaborador("em", "nom", cargo, "pwd", "ADMIN");
-    final Colaborador colaborador_user = new Colaborador("em1", "nom", cargo, "pwd", "USER");
+    final Usuario colaborador_admin = new Usuario("em", "nom", cargo, "pwd", "ADMIN");
+    final Usuario colaborador_user = new Usuario("em1", "nom", cargo, "pwd", "USER");
 
     @Inject
     CargoDao cargoDao;
     @Inject
     ProyectoDao proyectoDao;
     @Inject
-    ColaboradorDao colaboradorDao;
+    UsuarioDao colaboradorDao;
     @Inject
     TipoTareaDao tipoTareaDao;
     @Inject

@@ -1,5 +1,8 @@
 package coop.magnesium.potassium.db.entities;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import io.swagger.annotations.ApiModel;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -10,8 +13,9 @@ import javax.xml.bind.annotation.XmlRootElement;
  * Created by rsperoni on 16/11/17.
  */
 @Entity
-@XmlRootElement
-@XmlAccessorType(XmlAccessType.FIELD)
+@JsonAutoDetect
+@ApiModel
+@Table(name = "tipo_tarea")
 public class TipoTarea {
 
     @Id

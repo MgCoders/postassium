@@ -11,7 +11,7 @@ import java.time.Duration;
 
 /**
  * Created by rsperoni on 19/12/17.
- * Para extraer horas por proyecto y tipoTarea agrupadas por Cargo del Colaborador.
+ * Para extraer horas por proyecto y tipoTarea agrupadas por Cargo del Usuario.
  */
 @JsonAutoDetect
 @ApiModel

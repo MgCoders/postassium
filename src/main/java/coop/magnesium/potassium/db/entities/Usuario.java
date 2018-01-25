@@ -7,13 +7,15 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import javax.persistence.*;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by rsperoni on 16/11/17.
  */
 @Entity
 @JsonAutoDetect
-public class Colaborador {
+public class Usuario {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,9 +25,6 @@ public class Colaborador {
     private String email;
     @NotNull
     private String nombre;
-    @Valid
-    @ManyToOne
-    private Cargo cargo;
     @NotNull
     private String password;
     @NotNull
@@ -33,13 +32,15 @@ public class Colaborador {
     @Transient
     private String token;
 
-    public Colaborador() {
+    @OneToMany(mappedBy = "usuario", fetch = FetchType.EAGER)
+    private Set<UsuarioRubro> usuarioRubros = new HashSet<>();
+
+    public Usuario() {
     }
 
-    public Colaborador(String email, String nombre, Cargo cargo, String password, String role) {
+    public Usuario(String email, String nombre, String password, String role) {
         this.email = email;
         this.nombre = nombre;
-        this.cargo = cargo;
         this.password = password;
         this.role = role;
     }
@@ -76,14 +77,6 @@ public class Colaborador {
         this.nombre = nombre;
     }
 
-    public Cargo getCargo() {
-        return cargo;
-    }
-
-    public void setCargo(Cargo cargo) {
-        this.cargo = cargo;
-    }
-
     @JsonIgnore
     public String getPassword() {
         return password;
@@ -102,13 +95,20 @@ public class Colaborador {
         this.role = role;
     }
 
+    public Set<UsuarioRubro> getUsuarioRubros() {
+        return usuarioRubros;
+    }
+
+    public void setUsuarioRubros(Set<UsuarioRubro> usuarioRubros) {
+        this.usuarioRubros = usuarioRubros;
+    }
+
     @Override
     public String toString() {
-        return "Colaborador{" +
+        return "Usuario{" +
                 "id=" + id +
                 ", email='" + email + '\'' +
                 ", nombre='" + nombre + '\'' +
-                ", cargo=" + cargo +
                 ", role='" + role + '\'' +
                 '}';
     }

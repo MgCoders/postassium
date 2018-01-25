@@ -44,12 +44,12 @@ public class HoraDao extends AbstractDao<Hora, Long> {
      * @param fin
      * @return
      */
-    public List<Hora> findAllByColaborador(Colaborador colaborador, LocalDate ini, LocalDate fin) {
+    public List<Hora> findAllByColaborador(Usuario colaborador, LocalDate ini, LocalDate fin) {
         CriteriaBuilder criteriaBuilder = this.getEntityManager().getCriteriaBuilder();
         CriteriaQuery criteriaQuery = criteriaBuilder.createQuery();
         Root entity = criteriaQuery.from(Hora.class);
         criteriaQuery.select(entity);
-        Predicate colaboradorIsOk = criteriaBuilder.equal(entity.get("colaborador"), criteriaBuilder.parameter(Colaborador.class, "c"));
+        Predicate colaboradorIsOk = criteriaBuilder.equal(entity.get("colaborador"), criteriaBuilder.parameter(Usuario.class, "c"));
         Predicate diaEntreFechas = criteriaBuilder.between(entity.get("dia"), criteriaBuilder.parameter(LocalDate.class, "ini"), criteriaBuilder.parameter(LocalDate.class, "fin"));
         criteriaQuery.where(criteriaBuilder.and(colaboradorIsOk, diaEntreFechas));
         criteriaQuery.orderBy(criteriaBuilder.asc(entity.get("dia")));
@@ -60,12 +60,12 @@ public class HoraDao extends AbstractDao<Hora, Long> {
         return (List<Hora>) query.getResultList();
     }
 
-    public Hora findByColaboradorFecha(Colaborador colaborador, LocalDate dia) throws MagnesiumBdMultipleResultsException {
+    public Hora findByColaboradorFecha(Usuario colaborador, LocalDate dia) throws MagnesiumBdMultipleResultsException {
         CriteriaBuilder criteriaBuilder = this.getEntityManager().getCriteriaBuilder();
         CriteriaQuery criteriaQuery = criteriaBuilder.createQuery();
         Root entity = criteriaQuery.from(Hora.class);
         criteriaQuery.select(entity);
-        Predicate colaboradorIsOk = criteriaBuilder.equal(entity.get("colaborador"), criteriaBuilder.parameter(Colaborador.class, "c"));
+        Predicate colaboradorIsOk = criteriaBuilder.equal(entity.get("colaborador"), criteriaBuilder.parameter(Usuario.class, "c"));
         Predicate fechaIsOk = criteriaBuilder.equal(entity.get("dia"), criteriaBuilder.parameter(LocalDate.class, "dia"));
         criteriaQuery.where(criteriaBuilder.and(colaboradorIsOk, fechaIsOk));
         Query query = this.getEntityManager().createQuery(criteriaQuery);
@@ -78,12 +78,12 @@ public class HoraDao extends AbstractDao<Hora, Long> {
         return result.get(0);
     }
 
-    public boolean existsByColaboradorIncompleta(Colaborador colaborador) {
+    public boolean existsByColaboradorIncompleta(Usuario colaborador) {
         CriteriaBuilder criteriaBuilder = this.getEntityManager().getCriteriaBuilder();
         CriteriaQuery criteriaQuery = criteriaBuilder.createQuery();
         Root entity = criteriaQuery.from(Hora.class);
         criteriaQuery.select(entity);
-        Predicate colaboradorIsOk = criteriaBuilder.equal(entity.get("colaborador"), criteriaBuilder.parameter(Colaborador.class, "c"));
+        Predicate colaboradorIsOk = criteriaBuilder.equal(entity.get("colaborador"), criteriaBuilder.parameter(Usuario.class, "c"));
         Predicate completaOk = criteriaBuilder.equal(entity.get("completa"), false);
         criteriaQuery.where(criteriaBuilder.and(colaboradorIsOk, completaOk));
         Query query = this.getEntityManager().createQuery(criteriaQuery);

@@ -4,8 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import coop.magnesium.potassium.api.dto.HorasProyectoXCargo;
-import coop.magnesium.potassium.db.dao.ColaboradorDao;
-import coop.magnesium.potassium.db.entities.Colaborador;
+import coop.magnesium.potassium.db.dao.UsuarioDao;
+import coop.magnesium.potassium.db.entities.Usuario;
 import coop.magnesium.potassium.system.MailEvent;
 import coop.magnesium.potassium.system.StartupBean;
 import coop.magnesium.potassium.utils.Logged;
@@ -48,7 +48,7 @@ public class LoginServiceTest {
     final ObjectMapper objectMapper = new ObjectMapper();
 
     @Inject
-    ColaboradorDao colaboradorDao;
+    UsuarioDao colaboradorDao;
     @Inject
     Logger logger;
 
@@ -58,13 +58,13 @@ public class LoginServiceTest {
                 .loadPomFromFile("pom.xml").resolve("com.fasterxml.jackson.datatype:jackson-datatype-jsr310", "io.jsonwebtoken:jjwt").withTransitivity().asFile();
         return ShrinkWrap.create(WebArchive.class)
                 .addPackages(true, Filters.exclude(".*Test.*"),
-                        Colaborador.class.getPackage(),
+                        Usuario.class.getPackage(),
                         Logged.class.getPackage(),
                         MagnesiumSecurityException.class.getPackage(),
-                        ColaboradorDao.class.getPackage(),
+                        UsuarioDao.class.getPackage(),
                         HorasProyectoXCargo.class.getPackage())
                 .addClass(JAXRSConfiguration.class)
-                .addClass(UserService.class)
+                .addClass(AuthService.class)
                 .addClass(MailEvent.class)
                 .addClass(StartupBean.class)
                 .addAsResource("META-INF/persistence.xml")
@@ -82,7 +82,7 @@ public class LoginServiceTest {
     @Test
     @InSequence(1)
     public void inicializarBd() {
-        logger.info(colaboradorDao.save(new Colaborador("bu", "bu", null, PasswordUtils.digestPassword("bu"), "ADMIN")).toString());
+        logger.info(colaboradorDao.save(new Usuario("bu", "bu", PasswordUtils.digestPassword("bu"), "ADMIN")).toString());
     }
 
 
@@ -98,7 +98,7 @@ public class LoginServiceTest {
                 .request(MediaType.APPLICATION_JSON)
                 .post(Entity.form(form));
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
-        Colaborador returned = response.readEntity(Colaborador.class);
+        Usuario returned = response.readEntity(Usuario.class);
         assertEquals(null, returned.getPassword());
     }
 

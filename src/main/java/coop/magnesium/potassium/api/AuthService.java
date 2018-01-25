@@ -1,8 +1,8 @@
 package coop.magnesium.potassium.api;
 
 
-import coop.magnesium.potassium.db.dao.ColaboradorDao;
-import coop.magnesium.potassium.db.entities.Colaborador;
+import coop.magnesium.potassium.db.dao.UsuarioDao;
+import coop.magnesium.potassium.db.entities.Usuario;
 import coop.magnesium.potassium.system.MailEvent;
 import coop.magnesium.potassium.system.MailService;
 import coop.magnesium.potassium.system.StartupBean;
@@ -28,6 +28,7 @@ import java.security.Key;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_FORM_URLENCODED;
@@ -37,12 +38,12 @@ import static javax.ws.rs.core.Response.Status.UNAUTHORIZED;
 /**
  * Created by rsperoni on 05/05/17.
  */
-@Path("/users")
+@Path("/auth")
 @Produces(APPLICATION_JSON)
 @Consumes(APPLICATION_JSON)
 @Transactional
 @Api(description = "Aplication auth service", tags = "auth")
-public class UserService {
+public class AuthService {
 
     @Inject
     Event<MailEvent> mailEvent;
@@ -56,21 +57,20 @@ public class UserService {
     @Inject
     private Logger logger;
     @EJB
-    private ColaboradorDao colaboradorDao;
+    private UsuarioDao usuarioDao;
     @EJB
     private StartupBean startupBean;
 
     @POST
     @Path("/login")
     @Consumes(APPLICATION_FORM_URLENCODED)
-    @ApiOperation(value = "Authenticate user", response = Colaborador.class)
+    @ApiOperation(value = "Authenticate user", response = Usuario.class)
     @Logged
     public Response authenticateUser(@FormParam("email") String email,
                                      @FormParam("password") String password) {
         try {
             // Authenticate the sulfurUser using the credentials provided
-            Colaborador sulfurUser = authenticate(email, password);
-            if (sulfurUser == null) throw new MagnesiumBdNotFoundException("Usuario no existe");
+            Usuario sulfurUser = authenticate(email, password);
             //Info que quiero guardar en token
             Map<String, Object> map = new HashMap<>();
             map.put("role", sulfurUser.getRole());
@@ -100,10 +100,18 @@ public class UserService {
     @Logged
     public Response recuperarPassword(@PathParam("email") String email) {
         try {
-            if (colaboradorDao.findByEmail(email) == null) throw new ObjectNotFoundException("no existe colaborador");
-            DataRecuperacionPassword dataRecuperacionPassword = new DataRecuperacionPassword(email, UUID.randomUUID().toString(), LocalDateTime.now().plusHours(1));
+            if (usuarioDao.findByEmail(email) == null) throw new ObjectNotFoundException("no existe el usuario");
+
+            DataRecuperacionPassword dataRecuperacionPassword = new DataRecuperacionPassword(email,
+                    UUID.randomUUID().toString(), LocalDateTime.now().plusHours(1));
+
             startupBean.putRecuperacionPassword(dataRecuperacionPassword);
-            mailEvent.fire(new MailEvent(Arrays.asList(email), MailService.generarEmailRecuperacionClave(dataRecuperacionPassword.getToken(), endpointsProperties.getProperty("frontend.host"), endpointsProperties.getProperty("frontend.path")), "MARQ: Recuperación de Contraseña"));
+
+            mailEvent.fire(new MailEvent(Arrays.asList(email),
+                    MailService.generarEmailRecuperacionClave(dataRecuperacionPassword.getToken(),
+                            endpointsProperties.getProperty("frontend.host"),
+                            endpointsProperties.getProperty("frontend.path")), "SIGPO: Recuperación de Contraseña"));
+
             logger.info(dataRecuperacionPassword.getToken());
             return Response.ok().build();
         } catch (ObjectNotFoundException e) {
@@ -142,15 +150,15 @@ public class UserService {
     @PUT
     @Path("/recuperar")
     @Consumes(APPLICATION_FORM_URLENCODED)
-    @ApiOperation(value = "Cambiar password", response = Colaborador.class)
+    @ApiOperation(value = "Cambiar password", response = Usuario.class)
     @Logged
     public Response cambiarPassword(@FormParam("token") String token,
                                     @FormParam("password") String password) {
         try {
             DataRecuperacionPassword dataRecuperacionPassword = startupBean.getRecuperacionInfo(token);
             if (dataRecuperacionPassword == null) throw new MagnesiumBdNotFoundException("no existe recuperación");
-            Colaborador colaborador = colaboradorDao.findByEmail(dataRecuperacionPassword.getEmail());
-            if (colaborador == null) throw new MagnesiumBdNotFoundException("no existe colaborador");
+            Usuario colaborador = usuarioDao.findByEmail(dataRecuperacionPassword.getEmail());
+            if (colaborador == null) throw new MagnesiumBdNotFoundException("no existe usuario");
             colaborador.setPassword(PasswordUtils.digestPassword(password));
             return Response.ok().build();
         } catch (MagnesiumBdNotFoundException e) {
@@ -163,9 +171,11 @@ public class UserService {
     }
 
 
-    private Colaborador authenticate(String email, String password) throws MagnesiumBdNotFoundException, MagnesiumBdMultipleResultsException, MagnesiumSecurityException {
-        Colaborador sulfurUser = colaboradorDao.findByEmail(email);
-        if (!PasswordUtils.digestPassword(password).equals(sulfurUser.getPassword()))
+    private Usuario authenticate(String email, String password)
+            throws MagnesiumBdNotFoundException, MagnesiumBdMultipleResultsException, MagnesiumSecurityException {
+
+        Usuario sulfurUser = usuarioDao.findByEmail(email);
+        if (sulfurUser == null || !PasswordUtils.digestPassword(password).equals(sulfurUser.getPassword()))
             throw new MagnesiumSecurityException("Invalid sulfurUser/password");
         return sulfurUser;
     }

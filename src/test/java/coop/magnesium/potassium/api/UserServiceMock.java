@@ -1,8 +1,8 @@
 package coop.magnesium.potassium.api;
 
 
-import coop.magnesium.potassium.db.dao.ColaboradorDao;
-import coop.magnesium.potassium.db.entities.Colaborador;
+import coop.magnesium.potassium.db.dao.UsuarioDao;
+import coop.magnesium.potassium.db.entities.Usuario;
 import coop.magnesium.potassium.utils.KeyGenerator;
 import coop.magnesium.potassium.utils.Logged;
 import coop.magnesium.potassium.utils.PasswordUtils;
@@ -47,18 +47,18 @@ public class UserServiceMock {
     @Inject
     private Logger logger;
     @EJB
-    private ColaboradorDao colaboradorDao;
+    private UsuarioDao colaboradorDao;
 
     @POST
     @Path("/login")
     @Consumes(APPLICATION_FORM_URLENCODED)
-    @ApiOperation(value = "Authenticate user", response = Colaborador.class)
+    @ApiOperation(value = "Authenticate user", response = Usuario.class)
     @Logged
     public Response authenticateUser(@FormParam("email") String email,
                                      @FormParam("password") String password) {
         try {
             // Authenticate the sulfurUser using the credentials provided
-            Colaborador sulfurUser = authenticate(email, password);
+            Usuario sulfurUser = authenticate(email, password);
             if (sulfurUser == null) throw new MagnesiumBdNotFoundException("Usuario no existe");
             //Info que quiero guardar en token
             Map<String, Object> map = new HashMap<>();
@@ -78,8 +78,8 @@ public class UserServiceMock {
     }
 
 
-    private Colaborador authenticate(String email, String password) throws MagnesiumBdNotFoundException, MagnesiumBdMultipleResultsException, MagnesiumSecurityException {
-        Colaborador sulfurUser = colaboradorDao.findByEmail(email);
+    private Usuario authenticate(String email, String password) throws MagnesiumBdNotFoundException, MagnesiumBdMultipleResultsException, MagnesiumSecurityException {
+        Usuario sulfurUser = colaboradorDao.findByEmail(email);
         if (!PasswordUtils.digestPassword(password).equals(sulfurUser.getPassword()))
             throw new MagnesiumSecurityException("Invalid sulfurUser/password");
         return sulfurUser;

@@ -59,15 +59,15 @@ public class ReporteServiceTest {
     final TipoTarea tipoTarea2 = new TipoTarea("T2", "T2");
     final Cargo cargo1 = new Cargo("C1", "C1", new BigDecimal(32.2));
     final Cargo cargo2 = new Cargo("C2", "C2", new BigDecimal(33.2));
-    final Colaborador colaborador_admin = new Colaborador("em", "nom", cargo1, "pwd", "ADMIN");
-    final Colaborador colaborador_user = new Colaborador("em1", "nom", cargo2, "pwd", "USER");
+    final Usuario colaborador_admin = new Usuario("em", "nom", cargo1, "pwd", "ADMIN");
+    final Usuario colaborador_user = new Usuario("em1", "nom", cargo2, "pwd", "USER");
 
     @Inject
     CargoDao cargoDao;
     @Inject
     ProyectoDao proyectoDao;
     @Inject
-    ColaboradorDao colaboradorDao;
+    UsuarioDao colaboradorDao;
     @Inject
     TipoTareaDao tipoTareaDao;
     @Inject
@@ -121,8 +121,8 @@ public class ReporteServiceTest {
         Cargo cargo2 = cargoDao.save(this.cargo2);
         this.colaborador_admin.setCargo(cargo1);
         this.colaborador_user.setCargo(cargo2);
-        Colaborador colaborador1 = colaboradorDao.save(this.colaborador_admin);
-        Colaborador colaborador2 = colaboradorDao.save(this.colaborador_user);
+        Usuario colaborador1 = colaboradorDao.save(this.colaborador_admin);
+        Usuario colaborador2 = colaboradorDao.save(this.colaborador_user);
 
         Estimacion estimacion = new Estimacion(proyecto1, null, LocalDate.now());
         estimacion.getEstimacionDetalleList().add(new EstimacionDetalle(tipoTarea1, cargo1, Duration.ofHours(3), new BigDecimal(150.5)));

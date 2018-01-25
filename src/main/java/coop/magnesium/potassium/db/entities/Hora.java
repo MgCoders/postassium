@@ -56,7 +56,7 @@ public class Hora {
     private Duration subtotal;
     @NotNull
     @ManyToOne
-    private Colaborador colaborador;
+    private Usuario colaborador;
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(
             name = "horadetalle",
@@ -69,7 +69,7 @@ public class Hora {
     public Hora() {
     }
 
-    public Hora(LocalDate dia, LocalTime horaIn, LocalTime horaOut, Colaborador colaborador) {
+    public Hora(LocalDate dia, LocalTime horaIn, LocalTime horaOut, Usuario colaborador) {
         this.dia = dia;
         this.horaIn = horaIn;
         this.horaOut = horaOut;
@@ -104,11 +104,11 @@ public class Hora {
         return horaDetalleList;
     }
 
-    public Colaborador getColaborador() {
+    public Usuario getColaborador() {
         return colaborador;
     }
 
-    public void setColaborador(Colaborador colaborador) {
+    public void setColaborador(Usuario colaborador) {
         this.colaborador = colaborador;
     }
 

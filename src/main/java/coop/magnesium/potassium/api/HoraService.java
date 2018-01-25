@@ -3,11 +3,11 @@ package coop.magnesium.potassium.api;
 
 import coop.magnesium.potassium.api.utils.JWTTokenNeeded;
 import coop.magnesium.potassium.api.utils.RoleNeeded;
-import coop.magnesium.potassium.db.dao.ColaboradorDao;
+import coop.magnesium.potassium.db.dao.UsuarioDao;
 import coop.magnesium.potassium.db.dao.HoraDao;
 import coop.magnesium.potassium.db.dao.ProyectoDao;
 import coop.magnesium.potassium.db.dao.TipoTareaDao;
-import coop.magnesium.potassium.db.entities.Colaborador;
+import coop.magnesium.potassium.db.entities.Usuario;
 import coop.magnesium.potassium.db.entities.Hora;
 import coop.magnesium.potassium.db.entities.Role;
 import coop.magnesium.potassium.db.entities.SulfurUser;
@@ -53,7 +53,7 @@ public class HoraService {
     @EJB
     private ProyectoDao proyectoDao;
     @EJB
-    private ColaboradorDao colaboradorDao;
+    private UsuarioDao colaboradorDao;
     @EJB
     private TipoTareaDao tipoTareaDao;
 
@@ -69,14 +69,14 @@ public class HoraService {
             @ApiResponse(code = 401, message = "No Autorizado")})
     public Response create(@Valid Hora hora, @Context SecurityContext securityContext) {
         try {
-            Colaborador colaborador = colaboradorDao.findById(hora.getColaborador().getId());
+            Usuario colaborador = colaboradorDao.findById(hora.getColaborador().getId());
             if (colaborador == null)
-                throw new MagnesiumNotFoundException("Colaborador no encontrado");
+                throw new MagnesiumNotFoundException("Usuario no encontrado");
 
             hora.setColaborador(colaborador);
 
             if (!((SulfurUser) securityContext.getUserPrincipal()).getColaboradorId().equals(colaborador.getId()))
-                throw new MagnesiumSecurityException("Colaborador no coincide");
+                throw new MagnesiumSecurityException("Usuario no coincide");
 
 
 
@@ -130,11 +130,11 @@ public class HoraService {
                                          @PathParam("fecha_ini") String fechaIniString,
                                          @PathParam("fecha_fin") String fechaFinString) {
         try {
-            Colaborador colaborador = colaboradorDao.findById(id);
-            if (colaborador == null) throw new MagnesiumNotFoundException("Colaborador no encontrado");
+            Usuario colaborador = colaboradorDao.findById(id);
+            if (colaborador == null) throw new MagnesiumNotFoundException("Usuario no encontrado");
 
             if (!((SulfurUser) securityContext.getUserPrincipal()).getColaboradorId().equals(colaborador.getId())) {
-                throw new MagnesiumSecurityException("Colaborador no coincide");
+                throw new MagnesiumSecurityException("Usuario no coincide");
             }
 
             LocalDate fechaIni = LocalDate.parse(fechaIniString, formatter);
