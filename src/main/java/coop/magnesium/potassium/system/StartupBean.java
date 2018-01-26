@@ -1,6 +1,8 @@
 package coop.magnesium.potassium.system;
 
+import coop.magnesium.potassium.db.dao.TareaDao;
 import coop.magnesium.potassium.db.dao.UsuarioDao;
+import coop.magnesium.potassium.db.entities.Tarea;
 import coop.magnesium.potassium.db.entities.Usuario;
 import coop.magnesium.potassium.utils.DataRecuperacionPassword;
 import coop.magnesium.potassium.utils.PasswordUtils;
@@ -31,6 +33,9 @@ public class StartupBean {
     @Resource
     TimerService timerService;
 
+    @EJB
+    TareaDao tareaDao;
+
     private ConcurrentHashMap recuperacionPassword = null;
 
     @PostConstruct
@@ -40,6 +45,8 @@ public class StartupBean {
             if (usuarioDao.findByEmail("root@magnesium.coop") == null) {
                 usuarioDao.save(new Usuario("root@magnesium.coop", "root", PasswordUtils.digestPassword(System.getenv("ROOT_PASSWORD") != null ? System.getenv("ROOT_PASSWORD") : "bu"), "ADMIN"));
             }
+            tareaDao.save(new Tarea("T1","D1", 120, 1));
+
         } catch (MagnesiumBdMultipleResultsException e) {
             logger.warning(e.getMessage());
         }

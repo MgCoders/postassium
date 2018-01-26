@@ -1,9 +1,6 @@
 package coop.magnesium.potassium.db.entities;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
@@ -44,7 +41,6 @@ public class Registro {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "tarea_id", referencedColumnName = "id", nullable = false)
-    @JsonIgnore
     private Tarea tarea;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -56,6 +52,11 @@ public class Registro {
     public Registro() {
     }
 
+    public Registro(Integer minutos, Tarea tarea, LocalDate localDate) {
+        this.minutos = minutos;
+        this.tarea = tarea;
+        this.fecha = localDate;
+    }
 
     public Long getId() {
         return id;
@@ -89,10 +90,12 @@ public class Registro {
         this.usuario = usuario;
     }
 
+    @JsonIgnore
     public Tarea getTarea() {
         return tarea;
     }
 
+    @JsonProperty
     public void setTarea(Tarea tarea) {
         this.tarea = tarea;
     }

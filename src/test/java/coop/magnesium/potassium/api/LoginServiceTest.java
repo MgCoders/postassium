@@ -48,7 +48,7 @@ public class LoginServiceTest {
     final ObjectMapper objectMapper = new ObjectMapper();
 
     @Inject
-    UsuarioDao colaboradorDao;
+    UsuarioDao usuarioDao;
     @Inject
     Logger logger;
 
@@ -82,7 +82,7 @@ public class LoginServiceTest {
     @Test
     @InSequence(1)
     public void inicializarBd() {
-        logger.info(colaboradorDao.save(new Usuario("bu", "bu", PasswordUtils.digestPassword("bu"), "ADMIN")).toString());
+        logger.info(usuarioDao.save(new Usuario("bu", "bu", PasswordUtils.digestPassword("bu"), "ADMIN")).toString());
     }
 
 
@@ -94,7 +94,7 @@ public class LoginServiceTest {
         form.param("email", "bu");
         form.param("password", "bu");
         final Response response = webTarget
-                .path("/users/login")
+                .path("/auth/login")
                 .request(MediaType.APPLICATION_JSON)
                 .post(Entity.form(form));
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());

@@ -2,6 +2,8 @@ package coop.magnesium.potassium.db.entities;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import io.swagger.annotations.ApiModel;
 
 import javax.persistence.*;
@@ -36,6 +38,13 @@ public class Tarea {
 
 
     public Tarea() {
+    }
+
+    public Tarea(String nombre, String descripcion, Integer minutosEstimados, Integer borrada) {
+        this.nombre = nombre;
+        this.descripcion = descripcion;
+        this.minutosEstimados = minutosEstimados;
+        this.borrada = borrada;
     }
 
     public Long getId() {
