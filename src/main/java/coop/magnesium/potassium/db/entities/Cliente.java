@@ -30,6 +30,9 @@ public class Cliente {
 
     private String direccion;
 
+    public Cliente() {
+    }
+
     public Cliente(String nombreEmpresa, String rut, String telefono, String personaContacto, String telefonoContacto, String emailEmpresa, String direccion) {
         this.nombreEmpresa = nombreEmpresa;
         this.rut = rut;

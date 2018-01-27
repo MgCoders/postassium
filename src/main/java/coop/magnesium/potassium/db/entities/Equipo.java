@@ -30,6 +30,9 @@ public class Equipo {
     @ManyToOne
     private TipoEquipo tipoEquipo;
 
+    public Equipo() {
+    }
+
     public Equipo(Cliente cliente, String marca, String modelo, String matricula, String color, TipoEquipo tipoEquipo) {
         this.cliente = cliente;
         this.marca = marca;

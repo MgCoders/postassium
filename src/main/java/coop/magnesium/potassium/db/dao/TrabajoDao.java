@@ -37,6 +37,7 @@ public class TrabajoDao extends AbstractDao<Trabajo, Long>{
         if (result.size() == 0) return null;
 
         return result;
+
     }
 
     public List<Trabajo> findAllByCliente(Cliente cliente){

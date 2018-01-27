@@ -16,6 +16,14 @@ public class TrabajoFoto {
 
     private String foto; //array bytes de la foto
 
+    public TrabajoFoto() {
+    }
+
+    public TrabajoFoto(Trabajo trabajo, String foto) {
+        this.trabajo = trabajo;
+        this.foto = foto;
+    }
+
     public Long getIdFoto() {
         return idFoto;
     }
