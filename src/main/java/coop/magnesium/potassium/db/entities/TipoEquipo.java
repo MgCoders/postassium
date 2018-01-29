@@ -23,6 +23,9 @@ public class TipoEquipo {
     @NotNull
     private String dibujo; //Array de bytes del dibujo
 
+    public TipoEquipo() {
+    }
+
     public TipoEquipo(String descripcion, String dibujo) {
         this.descripcion = descripcion;
         this.dibujo = dibujo;
