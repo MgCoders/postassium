@@ -30,12 +30,6 @@ public class Tarea {
 
     private Integer borrada;
 
-    @OneToMany(mappedBy = "tarea", fetch = FetchType.EAGER)
-    private Set<Registro> registros = new HashSet<>();
-
-    @OneToMany(mappedBy = "tarea", fetch = FetchType.EAGER)
-    private Set<TareaMaterial> tareaMateriales = new HashSet<>();
-
 
     public Tarea() {
     }
@@ -87,19 +81,4 @@ public class Tarea {
         this.borrada = borrada;
     }
 
-    public Set<Registro> getRegistros() {
-        return registros;
-    }
-
-    public void setRegistros(Set<Registro> registros) {
-        this.registros = registros;
-    }
-
-    public Set<TareaMaterial> getTareaMateriales() {
-        return tareaMateriales;
-    }
-
-    public void setTareaMateriales(Set<TareaMaterial> tareaMateriales) {
-        this.tareaMateriales = tareaMateriales;
-    }
 }

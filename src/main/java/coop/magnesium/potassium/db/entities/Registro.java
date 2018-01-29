@@ -36,7 +36,6 @@ public class Registro {
 
     @ManyToOne
     @JoinColumn(name = "usuario_id", referencedColumnName = "id")
-    @JsonIgnore
     private Usuario usuario;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -45,7 +44,6 @@ public class Registro {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "rubro_id", referencedColumnName = "id")
-    @JsonIgnore
     private Rubro rubro;
 
 
@@ -90,12 +88,10 @@ public class Registro {
         this.usuario = usuario;
     }
 
-    @JsonIgnore
     public Tarea getTarea() {
         return tarea;
     }
 
-    @JsonProperty
     public void setTarea(Tarea tarea) {
         this.tarea = tarea;
     }
