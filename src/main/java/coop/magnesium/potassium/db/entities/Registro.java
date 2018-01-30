@@ -34,9 +34,10 @@ public class Registro {
     @JsonSerialize(using = LocalDateSerializer.class)
     private LocalDate fecha;
 
+    private Integer borrado = 0;
+
     @ManyToOne
     @JoinColumn(name = "usuario_id", referencedColumnName = "id")
-    @JsonIgnore
     private Usuario usuario;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -45,9 +46,7 @@ public class Registro {
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "rubro_id", referencedColumnName = "id")
-    @JsonIgnore
     private Rubro rubro;
-
 
     public Registro() {
     }
@@ -90,12 +89,10 @@ public class Registro {
         this.usuario = usuario;
     }
 
-    @JsonIgnore
     public Tarea getTarea() {
         return tarea;
     }
 
-    @JsonProperty
     public void setTarea(Tarea tarea) {
         this.tarea = tarea;
     }
@@ -106,5 +103,13 @@ public class Registro {
 
     public void setRubro(Rubro rubro) {
         this.rubro = rubro;
+    }
+
+    public Integer getBorrado() {
+        return borrado;
+    }
+
+    public void setBorrado(Integer borrado) {
+        this.borrado = borrado;
     }
 }

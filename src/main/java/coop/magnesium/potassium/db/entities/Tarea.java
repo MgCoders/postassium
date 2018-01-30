@@ -28,13 +28,7 @@ public class Tarea {
     @Column(name = "minutos_estimados")
     private Integer minutosEstimados;
 
-    private Integer borrada;
-
-    @OneToMany(mappedBy = "tarea", fetch = FetchType.EAGER)
-    private Set<Registro> registros = new HashSet<>();
-
-    @OneToMany(mappedBy = "tarea", fetch = FetchType.EAGER)
-    private Set<TareaMaterial> tareaMateriales = new HashSet<>();
+    private Integer borrado = 0;
 
 
     public Tarea() {
@@ -44,7 +38,7 @@ public class Tarea {
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.minutosEstimados = minutosEstimados;
-        this.borrada = borrada;
+        this.borrado = borrada;
     }
 
     public Long getId() {
@@ -79,27 +73,11 @@ public class Tarea {
         this.minutosEstimados = minutosEstimados;
     }
 
-    public Integer getBorrada() {
-        return borrada;
+    public Integer getBorrado() {
+        return borrado;
     }
 
-    public void setBorrada(Integer borrada) {
-        this.borrada = borrada;
-    }
-
-    public Set<Registro> getRegistros() {
-        return registros;
-    }
-
-    public void setRegistros(Set<Registro> registros) {
-        this.registros = registros;
-    }
-
-    public Set<TareaMaterial> getTareaMateriales() {
-        return tareaMateriales;
-    }
-
-    public void setTareaMateriales(Set<TareaMaterial> tareaMateriales) {
-        this.tareaMateriales = tareaMateriales;
+    public void setBorrado(Integer borrado) {
+        this.borrado = borrado;
     }
 }

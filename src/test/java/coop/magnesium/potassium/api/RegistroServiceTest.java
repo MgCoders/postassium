@@ -85,16 +85,30 @@ public class RegistroServiceTest {
     }
 
 
-//    @Test
-//    @InSequence(2)
-//    @RunAsClient
-//    public void createRegistro(@ArquillianResteasyResource final WebTarget webTarget) {
-//        this.tarea1.setId(1L);
-//        final Response response = webTarget
-//                .path("/registros")
-//                .request(MediaType.APPLICATION_JSON)
-//                .post(Entity.json(new Registro(120, this.tarea1, LocalDate.now())));
-//        assertEquals(Response.Status.CREATED.getStatusCode(), response.getStatus());
-//    }
+    @Test
+    @InSequence(2)
+    @RunAsClient
+    public void createRegistro(@ArquillianResteasyResource final WebTarget webTarget) {
+        this.tarea1.setId(1L);
+        final Response response = webTarget
+                .path("/registros")
+                .request(MediaType.APPLICATION_JSON)
+                .post(Entity.json(new Registro(120, this.tarea1, LocalDate.now())));
+        assertEquals(Response.Status.CREATED.getStatusCode(), response.getStatus());
+    }
+
+    @Test
+    @InSequence(3)
+    @RunAsClient
+    public void createRegistroSinTarea(@ArquillianResteasyResource final WebTarget webTarget) {
+        Registro registro = new Registro();
+        registro.setMinutos(120);
+        registro.setFecha(LocalDate.now());
+        final Response response = webTarget
+                .path("/registros")
+                .request(MediaType.APPLICATION_JSON)
+                .post(Entity.json(registro));
+        assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), response.getStatus());
+    }
 
 }

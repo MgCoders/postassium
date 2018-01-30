@@ -59,6 +59,8 @@ public class RegistroService {
     @ApiOperation(value = "Create Registro", response = Registro.class)
     public Response create(@Valid Registro registro) {
         try {
+            if (registro.getId() != null) throw new MagnesiumException("Ya existe el registro");
+
             if (registro.getTarea() == null) throw new MagnesiumNotFoundException("El registro debe tener una tarea");
 
             Tarea tarea = tareaDao.findById(registro.getTarea().getId());
@@ -79,6 +81,7 @@ public class RegistroService {
     }
 
     @GET
+    @Logged
 //    @JWTTokenNeeded
 //    @RoleNeeded({Role.USER, Role.ADMIN})
     @ApiOperation(value = "Get registros", response = Registro.class, responseContainer = "List")
@@ -88,6 +91,29 @@ public class RegistroService {
     }
 
     @GET
+    @Logged
+    @Path("tarea/{id}")
+    //    @JWTTokenNeeded
+//    @RoleNeeded({Role.USER, Role.ADMIN})
+    @ApiOperation(value = "Get registros", response = Registro.class, responseContainer = "List")
+    public Response findAllByTarea(@PathParam("id") Long id) {
+        try {
+            Tarea tarea = tareaDao.findById(id);
+            if (tarea == null) throw new MagnesiumNotFoundException("Tarea no encontrada");
+
+            List<Registro> registros = registroDao.findAllByTarea(tarea);
+            return Response.ok(registros).build();
+        } catch (MagnesiumNotFoundException e) {
+            logger.warning(e.getMessage());
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+        } catch (Exception e) {
+            logger.severe(e.getMessage());
+            return Response.serverError().entity(e.getMessage()).build();
+        }
+    }
+
+    @GET
+    @Logged
     @Path("{id}")
 //    @JWTTokenNeeded
 //    @RoleNeeded({Role.USER, Role.ADMIN})
@@ -102,6 +128,7 @@ public class RegistroService {
 
 
     @PUT
+    @Logged
     @Path("{id}")
 //    @JWTTokenNeeded
 //    @RoleNeeded({Role.USER, Role.ADMIN})
@@ -124,6 +151,7 @@ public class RegistroService {
 
             validate(registro);
 
+            registro.setId(id);
             registro = registroDao.save(registro);
             return Response.ok(registro).build();
         } catch (MagnesiumNotFoundException e) {
