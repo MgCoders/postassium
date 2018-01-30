@@ -3,21 +3,24 @@ package coop.magnesium.potassium.api;
 import coop.magnesium.potassium.api.utils.JWTTokenNeeded;
 import coop.magnesium.potassium.api.utils.RoleNeeded;
 import coop.magnesium.potassium.db.dao.RubroDao;
+import coop.magnesium.potassium.db.entities.Registro;
 import coop.magnesium.potassium.db.entities.Role;
 import coop.magnesium.potassium.db.entities.Rubro;
 import coop.magnesium.potassium.utils.Logged;
+import coop.magnesium.potassium.utils.ex.MagnesiumException;
+import coop.magnesium.potassium.utils.ex.MagnesiumNotFoundException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 
 import javax.ejb.EJB;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
+import java.util.List;
 import java.util.logging.Logger;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
@@ -44,8 +47,77 @@ public class RubroService {
     @RoleNeeded({Role.USER, Role.ADMIN})
     @ApiOperation(value = "Create Rubro", response = Rubro.class)
     public Response create(@Valid Rubro rubro) {
+        try {
+            if (rubro.getId() != null) throw new MagnesiumException("Ya existe el registro");
 
-        return Response.status(Response.Status.CREATED).entity(rubro).build();
+            //TODO controlar el unique nombre
+
+            rubro = rubroDao.save(rubro);
+            return Response.status(Response.Status.CREATED).entity(rubro).build();
+        } catch (MagnesiumException e) {
+            logger.warning(e.getMessage());
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+        } catch (Exception e) {
+            logger.severe(e.getMessage());
+            return Response.serverError().entity(e.getMessage()).build();
+        }
     }
 
+
+    @GET
+    @Logged
+    @JWTTokenNeeded
+    @RoleNeeded({Role.USER, Role.ADMIN})
+    @ApiOperation(value = "Get rubros", response = Rubro.class, responseContainer = "List")
+    public Response findAll() {
+        return Response.ok(rubroDao.findAll()).build();
+    }
+
+    @GET
+    @Logged
+    @Path("{id}")
+    @JWTTokenNeeded
+    @RoleNeeded({Role.USER, Role.ADMIN})
+    @ApiOperation(value = "Get Rubro", response = Rubro.class)
+    public Response find(@PathParam("id") Long id) {
+        try {
+            Rubro rubro = rubroDao.findById(id);
+            if (rubro == null) throw new MagnesiumNotFoundException("No existe el rubro");
+
+            return Response.ok(rubro).build();
+        } catch (MagnesiumNotFoundException e) {
+            logger.warning(e.getMessage());
+            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
+        } catch (Exception e) {
+            logger.severe(e.getMessage());
+            return Response.serverError().entity(e.getMessage()).build();
+        }
+    }
+
+    @PUT
+    @Logged
+    @Path("{id}")
+    @JWTTokenNeeded
+    @RoleNeeded({Role.USER, Role.ADMIN})
+    @ApiOperation(value = "Edit Rubro", response = Rubro.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 304, message = "Error: objeto no modificado")})
+    public Response edit(@PathParam("id") Long id, @Valid Rubro rubro) {
+        try {
+            Rubro rubroViejo = rubroDao.findById(id);
+            if (rubroViejo == null) throw new MagnesiumNotFoundException("No existe el rubro");
+
+            //TODO controlar el unique nombre
+
+            rubro.setId(id);
+            rubro = rubroDao.save(rubro);
+            return Response.ok(rubro).build();
+        } catch (MagnesiumNotFoundException e) {
+            logger.warning(e.getMessage());
+            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
+        } catch (Exception e) {
+            logger.severe(e.getMessage());
+            return Response.serverError().entity(e.getMessage()).build();
+        }
+    }
 }

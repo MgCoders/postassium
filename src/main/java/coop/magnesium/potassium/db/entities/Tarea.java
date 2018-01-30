@@ -28,7 +28,7 @@ public class Tarea {
     @Column(name = "minutos_estimados")
     private Integer minutosEstimados;
 
-    private Integer borrada;
+    private Integer borrado = 0;
 
 
     public Tarea() {
@@ -38,7 +38,7 @@ public class Tarea {
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.minutosEstimados = minutosEstimados;
-        this.borrada = borrada;
+        this.borrado = borrada;
     }
 
     public Long getId() {
@@ -73,12 +73,11 @@ public class Tarea {
         this.minutosEstimados = minutosEstimados;
     }
 
-    public Integer getBorrada() {
-        return borrada;
+    public Integer getBorrado() {
+        return borrado;
     }
 
-    public void setBorrada(Integer borrada) {
-        this.borrada = borrada;
+    public void setBorrado(Integer borrado) {
+        this.borrado = borrado;
     }
-
 }
