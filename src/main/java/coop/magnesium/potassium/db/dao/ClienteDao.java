@@ -34,6 +34,14 @@ public class ClienteDao extends AbstractDao<Cliente, Long>{
 
     }
 
+    public Cliente findByRUT(String rut){
+        List<Cliente> result = findByField("rut", rut);
+        if (result.size() == 0) return null;
+
+        return result.get(0);
+
+    }
+
 
 
 }
