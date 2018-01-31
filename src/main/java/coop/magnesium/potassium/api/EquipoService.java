@@ -3,7 +3,9 @@ package coop.magnesium.potassium.api;
 import coop.magnesium.potassium.api.utils.JWTTokenNeeded;
 import coop.magnesium.potassium.api.utils.RoleNeeded;
 import coop.magnesium.potassium.db.dao.ClienteDao;
+import coop.magnesium.potassium.db.dao.EquipoDao;
 import coop.magnesium.potassium.db.entities.Cliente;
+import coop.magnesium.potassium.db.entities.Equipo;
 import coop.magnesium.potassium.db.entities.Role;
 import coop.magnesium.potassium.utils.Logged;
 import coop.magnesium.potassium.utils.ex.MagnesiumBdAlredyExistsException;
@@ -26,17 +28,19 @@ import java.util.logging.Logger;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
 /**
- * Created by msteglich on 1/27/18.
+ * Created by msteglich on 1/28/18.
  */
-@Path("/clientes")
+@Path("/equipos")
 @Produces(APPLICATION_JSON)
 @Consumes(APPLICATION_JSON)
 @Transactional
-@Api(description = "Clientes service", tags = "clientes")
-public class ClienteService {
+@Api(description = "Equipos service", tags = "equipos")
+public class EquipoService {
+
     @Inject
     private Logger logger;
-
+    @EJB
+    private EquipoDao equipoDao;
     @EJB
     private ClienteDao clienteDao;
 
@@ -44,19 +48,19 @@ public class ClienteService {
     @Logged
     @JWTTokenNeeded
     @RoleNeeded({Role.USER, Role.ADMIN})
-    @ApiOperation(value = "Create Cliente", response = Cliente.class)
+    @ApiOperation(value = "Create Equipo", response = Equipo.class)
     @ApiResponses(value = {
             @ApiResponse(code = 409, message = "Código o Id ya existe"),
             @ApiResponse(code = 500, message = "Error interno")})
-    public Response create(@Valid Cliente cliente) {
+    public Response create(@Valid Equipo equipo) {
         try {
-            Cliente clienteExists = cliente.getIdCliente() != null ? clienteDao.findById(cliente.getIdCliente()) : null;
-            if (clienteExists != null) throw new MagnesiumBdAlredyExistsException("Id ya existe");
+            Equipo equipoExists = equipo.getIdEquipo() != null ? equipoDao.findById(equipo.getIdEquipo()) : null;
+            if (equipoExists != null) throw new MagnesiumBdAlredyExistsException("Id ya existe");
 
 
 
-            cliente = clienteDao.save(cliente);
-            return Response.status(Response.Status.CREATED).entity(cliente).build();
+            equipo = equipoDao.save(equipo);
+            return Response.status(Response.Status.CREATED).entity(equipo).build();
         } catch (MagnesiumBdAlredyExistsException exists) {
             logger.warning(exists.getMessage());
             return Response.status(Response.Status.CONFLICT).entity(exists.getMessage()).build();
@@ -69,64 +73,66 @@ public class ClienteService {
     @GET
     @JWTTokenNeeded
     @RoleNeeded({Role.USER, Role.ADMIN})
-    @ApiOperation(value = "Get clientes", response = Cliente.class, responseContainer = "List")
+    @ApiOperation(value = "Get equipos", response = Equipo.class, responseContainer = "List")
     public Response findAll() {
-        List<Cliente> clienteList = clienteDao.findAll();
-        return Response.ok(clienteList).build();
+        List<Equipo> equipoList = equipoDao.findAll();
+        return Response.ok(equipoList).build();
     }
 
     @GET
     @Path("{id}")
     @JWTTokenNeeded
     @RoleNeeded({Role.USER, Role.ADMIN})
-    @ApiOperation(value = "Get cliente", response = Cliente.class)
+    @ApiOperation(value = "Get Equipo", response = Equipo.class)
     @ApiResponses(value = {
             @ApiResponse(code = 404, message = "Id no encontrado")})
     public Response find(@PathParam("id") Long id) {
-        Cliente cliente = clienteDao.findById(id);
-        if (cliente == null) return Response.status(Response.Status.NOT_FOUND).build();
-        return Response.ok(cliente).build();
+        Equipo equipo = equipoDao.findById(id);
+        if (equipo == null) return Response.status(Response.Status.NOT_FOUND).build();
+        return Response.ok(equipo).build();
     }
 
     @GET
-    @Path("nombreEmpresa/{name}")
+    @Path("matricula/{matricula}")
     @JWTTokenNeeded
     @RoleNeeded({Role.USER, Role.ADMIN})
-    @ApiOperation(value = "Get cliente", response = Cliente.class)
+    @ApiOperation(value = "Get Equipo", response = Equipo.class)
     @ApiResponses(value = {
-            @ApiResponse(code = 404, message = "Nombre no encontrado")})
-    public Response findByNombreEmpresa(@PathParam("name") String nombreEmpresa) {
-        Cliente cliente = clienteDao.findByNombreEmpresa(nombreEmpresa);
-        if (cliente == null) return Response.status(Response.Status.NOT_FOUND).build();
-        return Response.ok(cliente).build();
+            @ApiResponse(code = 404, message = "Id no encontrado")})
+    public Response find(@PathParam("matricula") String matricula) {
+        Equipo equipo = equipoDao.findByMatricula(matricula);
+        if (equipo == null) return Response.status(Response.Status.NOT_FOUND).build();
+        return Response.ok(equipo).build();
     }
 
     @GET
-    @Path("rut/{rut}")
+    @Path("cliente/{cliente}")
     @JWTTokenNeeded
     @RoleNeeded({Role.USER, Role.ADMIN})
-    @ApiOperation(value = "Get cliente", response = Cliente.class)
+    @ApiOperation(value = "Get Equipos", response = Equipo.class, responseContainer = "List")
     @ApiResponses(value = {
-            @ApiResponse(code = 404, message = "Nombre no encontrado")})
-    public Response find(@PathParam("rut") String rut) {
-        Cliente cliente = clienteDao.findByRUT(rut);
+            @ApiResponse(code = 404, message = "Cliente no encontrado")})
+    public Response findByCliente(@PathParam("cliente") Long idCliente) {
+        Cliente cliente = clienteDao.findById(idCliente);
         if (cliente == null) return Response.status(Response.Status.NOT_FOUND).build();
-        return Response.ok(cliente).build();
+
+        List<Equipo> equipoList = equipoDao.findAllByCliente(cliente);
+        return Response.ok(equipoList).build();
     }
 
     @PUT
     @Path("{id}")
     @JWTTokenNeeded
     @RoleNeeded({Role.USER, Role.ADMIN})
-    @ApiOperation(value = "Edit cliente", response = Cliente.class)
+    @ApiOperation(value = "Edit equipo", response = Equipo.class)
     @ApiResponses(value = {
             @ApiResponse(code = 304, message = "Error: objeto no modificado")})
-    public Response edit(@PathParam("id") Long id, @Valid Cliente cliente) {
+    public Response edit(@PathParam("id") Long id, @Valid Equipo equipo) {
         try {
-            if (clienteDao.findById(id) == null) throw new MagnesiumNotFoundException("Cliente no encontrado");
-            cliente.setIdCliente(id);
-            cliente = clienteDao.save(cliente);
-            return Response.ok(cliente).build();
+            if (equipoDao.findById(id) == null) throw new MagnesiumNotFoundException("Equipo no encontrado");
+            equipo.setIdEquipo(id);
+            equipo = equipoDao.save(equipo);
+            return Response.ok(equipo).build();
         } catch (Exception e) {
             return Response.notModified().entity(e.getMessage()).build();
         }

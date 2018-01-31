@@ -2,9 +2,11 @@ package coop.magnesium.potassium.api;
 
 import coop.magnesium.potassium.api.utils.JWTTokenNeeded;
 import coop.magnesium.potassium.api.utils.RoleNeeded;
+import coop.magnesium.potassium.db.dao.ClienteDao;
+import coop.magnesium.potassium.db.dao.EquipoDao;
+import coop.magnesium.potassium.db.dao.PuntoControlDao;
 import coop.magnesium.potassium.db.dao.TrabajoDao;
-import coop.magnesium.potassium.db.entities.Role;
-import coop.magnesium.potassium.db.entities.Trabajo;
+import coop.magnesium.potassium.db.entities.*;
 import coop.magnesium.potassium.utils.Logged;
 import coop.magnesium.potassium.utils.ex.MagnesiumBdAlredyExistsException;
 import coop.magnesium.potassium.utils.ex.MagnesiumNotFoundException;
@@ -39,6 +41,12 @@ public class TrabajoService {
     private Logger logger;
     @EJB
     private TrabajoDao trabajoDao;
+    @EJB
+    private EquipoDao equipoDao;
+    @EJB
+    private ClienteDao clienteDao;
+    @EJB
+    private PuntoControlDao puntoControlDao;
 
     @POST
     @Logged
@@ -56,6 +64,8 @@ public class TrabajoService {
 
 
             trabajo = trabajoDao.save(trabajo);
+            PuntoControl puntoControl  = new PuntoControl("Final", trabajo, 0);
+            puntoControl = puntoControlDao.save(puntoControl);
             return Response.status(Response.Status.CREATED).entity(trabajo).build();
         } catch (MagnesiumBdAlredyExistsException exists) {
             logger.warning(exists.getMessage());
@@ -100,6 +110,38 @@ public class TrabajoService {
         List<Trabajo> trabajoList = trabajoDao.findByEstado(status);
         return Response.ok(trabajoList).build();
     }
+
+    @GET
+    @Path("cliente/{id}")
+    @JWTTokenNeeded
+    @RoleNeeded({Role.USER, Role.ADMIN})
+    @ApiOperation(value = "Get Trabajos", response = Trabajo.class, responseContainer = "List")
+    @ApiResponses(value = {
+            @ApiResponse(code = 404, message = "Cliente no encontrado")})
+    public Response findByCliente(@PathParam("id") Long idCliente) {
+        Cliente cliente = clienteDao.findById(idCliente);
+        if (cliente == null) return Response.status(Response.Status.NOT_FOUND).build();
+
+        List<Trabajo> trabajoList = trabajoDao.findAllByCliente(cliente);
+        return Response.ok(trabajoList).build();
+    }
+
+    @GET
+    @Path("equipo/{id}")
+    @JWTTokenNeeded
+    @RoleNeeded({Role.USER, Role.ADMIN})
+    @ApiOperation(value = "Get Trabajos", response = Trabajo.class, responseContainer = "List")
+    @ApiResponses(value = {
+            @ApiResponse(code = 404, message = "Equipo no encontrado")})
+    public Response findByEquipo(@PathParam("id") Long idEquipo) {
+        Equipo equipo = equipoDao.findById(idEquipo);
+        if (equipo == null) return Response.status(Response.Status.NOT_FOUND).build();
+
+        List<Trabajo> trabajoList = trabajoDao.findAllByEquipo(equipo);
+        return Response.ok(trabajoList).build();
+    }
+
+
 
     @PUT
     @Path("{id}")
