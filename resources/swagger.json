@@ -1,40 +1,148 @@
 {
   "swagger" : "2.0",
   "info" : {
-    "description" : "El login exitoso de UserService devuelve un Colaborador con un campo \"token\".\nDicho token se debe incluir como header de las llamadas del resto de las operaciones de cada servicio.",
+    "description" : "El login exitoso de AuthService devuelve un Usuario con un campo \"token\".\nDicho token se debe incluir como header de las llamadas del resto de las operaciones de cada servicio.",
     "version" : "1.0-SNAPSHOT",
     "title" : "Sulfur backend",
     "contact" : {
       "name" : "rsperoni@magnesium.coop"
     }
   },
-  "host" : "sulfur.mgcoders.com",
+  "host" : "localhost:8080",
   "basePath" : "/api",
   "tags" : [ {
-    "name" : "status"
+    "name" : "trabajos"
   }, {
-    "name": "estimacion"
-  },
-    {
-      "name": "reportes"
-  }, {
-    "name" : "tareas"
-  }, {
-      "name": "horas"
-    },
-    {
     "name" : "proyectos"
   }, {
-    "name" : "colaboradores"
-    },
-    {
-      "name": "auth"
-    },
-    {
-      "name": "cargos"
+    "name" : "status"
+  }, {
+    "name" : "clientes"
+  }, {
+    "name" : "estimacion"
+  }, {
+    "name" : "materiales"
+  }, {
+    "name" : "cargos"
+  }, {
+    "name" : "tipotareas"
+  }, {
+    "name" : "reportes"
+  }, {
+    "name" : "registros"
+  }, {
+    "name" : "horas"
+  }, {
+    "name" : "usuarios"
+  }, {
+    "name" : "rubros"
+  }, {
+    "name" : "auth"
+  }, {
+    "name" : "tareas"
   } ],
   "schemes" : [ "https" ],
   "paths" : {
+    "/auth/login" : {
+      "post" : {
+        "tags" : [ "auth" ],
+        "summary" : "Authenticate user",
+        "description" : "",
+        "operationId" : "authenticateUser",
+        "consumes" : [ "application/x-www-form-urlencoded" ],
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "email",
+          "in" : "formData",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "password",
+          "in" : "formData",
+          "required" : false,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/Usuario"
+            }
+          }
+        }
+      }
+    },
+    "/auth/recuperar" : {
+      "put" : {
+        "tags" : [ "auth" ],
+        "summary" : "Cambiar password",
+        "description" : "",
+        "operationId" : "cambiarPassword",
+        "consumes" : [ "application/x-www-form-urlencoded" ],
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "token",
+          "in" : "formData",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "password",
+          "in" : "formData",
+          "required" : false,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/Usuario"
+            }
+          }
+        }
+      }
+    },
+    "/auth/recuperar/{email}" : {
+      "post" : {
+        "tags" : [ "auth" ],
+        "summary" : "Recuperar password",
+        "description" : "",
+        "operationId" : "recuperarPassword",
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "email",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "default" : {
+            "description" : "successful operation"
+          }
+        }
+      }
+    },
+    "/auth/recuperar/{token}" : {
+      "get" : {
+        "tags" : [ "auth" ],
+        "summary" : "Recuperar email",
+        "description" : "",
+        "operationId" : "recuperarEmail",
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "token",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "default" : {
+            "description" : "successful operation"
+          }
+        }
+      }
+    },
     "/cargos" : {
       "get" : {
         "tags" : [ "cargos" ],
@@ -184,10 +292,10 @@
         }
       }
     },
-    "/colaboradores" : {
+    "/clientes" : {
       "get" : {
-        "tags" : [ "colaboradores" ],
-        "summary" : "Get colaboradores",
+        "tags" : [ "clientes" ],
+        "summary" : "Get clientes",
         "description" : "",
         "operationId" : "findAll",
         "consumes" : [ "application/json" ],
@@ -199,15 +307,15 @@
             "schema" : {
               "type" : "array",
               "items" : {
-                "$ref" : "#/definitions/Colaborador"
+                "$ref" : "#/definitions/Cliente"
               }
             }
           }
         }
       },
       "post" : {
-        "tags" : [ "colaboradores" ],
-        "summary" : "Create colaborador",
+        "tags" : [ "clientes" ],
+        "summary" : "Create Cliente",
         "description" : "",
         "operationId" : "create",
         "consumes" : [ "application/json" ],
@@ -217,23 +325,56 @@
           "name" : "body",
           "required" : false,
           "schema" : {
-            "$ref" : "#/definitions/Colaborador"
+            "$ref" : "#/definitions/Cliente"
           }
         } ],
         "responses" : {
           "200" : {
             "description" : "successful operation",
             "schema" : {
-              "$ref" : "#/definitions/Colaborador"
+              "$ref" : "#/definitions/Cliente"
             }
+          },
+          "500" : {
+            "description" : "Error interno"
+          },
+          "409" : {
+            "description" : "Código o Id ya existe"
           }
         }
       }
     },
-    "/colaboradores/{id}" : {
+    "/clientes/nombreEmpresa/{name}" : {
       "get" : {
-        "tags" : [ "colaboradores" ],
-        "summary" : "Get colaborador",
+        "tags" : [ "clientes" ],
+        "summary" : "Get cliente",
+        "description" : "",
+        "operationId" : "find",
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "name",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/Cliente"
+            }
+          },
+          "404" : {
+            "description" : "Nombre no encontrado"
+          }
+        }
+      }
+    },
+    "/clientes/{id}" : {
+      "get" : {
+        "tags" : [ "clientes" ],
+        "summary" : "Get cliente",
         "description" : "",
         "operationId" : "find",
         "consumes" : [ "application/json" ],
@@ -249,14 +390,17 @@
           "200" : {
             "description" : "successful operation",
             "schema" : {
-              "$ref" : "#/definitions/Colaborador"
+              "$ref" : "#/definitions/Cliente"
             }
+          },
+          "404" : {
+            "description" : "Id no encontrado"
           }
         }
       },
       "put" : {
-        "tags" : [ "colaboradores" ],
-        "summary" : "Edit colaborador",
+        "tags" : [ "clientes" ],
+        "summary" : "Edit cliente",
         "description" : "",
         "operationId" : "edit",
         "consumes" : [ "application/json" ],
@@ -272,15 +416,18 @@
           "name" : "body",
           "required" : false,
           "schema" : {
-            "$ref" : "#/definitions/Colaborador"
+            "$ref" : "#/definitions/Cliente"
           }
         } ],
         "responses" : {
           "200" : {
             "description" : "successful operation",
             "schema" : {
-              "$ref" : "#/definitions/Colaborador"
+              "$ref" : "#/definitions/Cliente"
             }
+          },
+          "304" : {
+            "description" : "Error: objeto no modificado"
           }
         }
       }
@@ -601,6 +748,32 @@
         }
       }
     },
+    "/materiales" : {
+      "post" : {
+        "tags" : [ "materiales" ],
+        "summary" : "Create Material",
+        "description" : "",
+        "operationId" : "create",
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/Material"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/Material"
+            }
+          }
+        }
+      }
+    },
     "/proyectos" : {
       "get" : {
         "tags" : [ "proyectos" ],
@@ -714,210 +887,399 @@
         }
       }
     },
-    "/reportes": {
-      "get": {
-        "tags": [
-          "reportes"
-        ],
-        "summary": "Get estimaciones",
-        "description": "",
-        "operationId": "findAll",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "successful operation",
-            "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/Estimacion"
+    "/registros" : {
+      "get" : {
+        "tags" : [ "registros" ],
+        "summary" : "Get registros",
+        "description" : "",
+        "operationId" : "findAll",
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "parameters" : [ ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/Registro"
+              }
+            }
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "registros" ],
+        "summary" : "Create Registro",
+        "description" : "",
+        "operationId" : "create",
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/Registro"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/Registro"
+            }
+          }
+        }
+      }
+    },
+    "/registros/tarea/{id}" : {
+      "get" : {
+        "tags" : [ "registros" ],
+        "summary" : "Get registros",
+        "description" : "",
+        "operationId" : "findAllByTarea",
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/Registro"
               }
             }
           }
         }
       }
     },
-    "/reportes/estimaciones/proyecto/tarea": {
-      "post": {
-        "tags": [
-          "reportes"
-        ],
-        "summary": "Estimaciones de Proyecto y TipoTarea agrupadas por Cargo",
-        "description": "",
-        "operationId": "findEstimacionesProyectoTipoTareaXCargo",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "in": "body",
-            "name": "body",
-            "required": false,
-            "schema": {
-              "$ref": "#/definitions/Proyecto"
+    "/registros/{id}" : {
+      "get" : {
+        "tags" : [ "registros" ],
+        "summary" : "Get Registro",
+        "description" : "",
+        "operationId" : "find",
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/Registro"
             }
           },
-          {
-            "in": "body",
-            "name": "body",
-            "required": false,
-            "schema": {
-              "$ref": "#/definitions/TipoTarea"
-            }
+          "404" : {
+            "description" : "Id no encontrado"
           }
-        ],
-        "responses": {
-          "200": {
-            "description": "successful operation",
-            "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/EstimacionProyectoTipoTareaXCargo"
+        }
+      },
+      "put" : {
+        "tags" : [ "registros" ],
+        "summary" : "Edit Registro",
+        "description" : "",
+        "operationId" : "edit",
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        }, {
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/Registro"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/Registro"
+            }
+          },
+          "304" : {
+            "description" : "Error: objeto no modificado"
+          }
+        }
+      }
+    },
+    "/reportes" : {
+      "get" : {
+        "tags" : [ "reportes" ],
+        "summary" : "Get estimaciones",
+        "description" : "",
+        "operationId" : "findAll",
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "parameters" : [ ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/Estimacion"
               }
             }
           }
         }
       }
     },
-    "/reportes/horas/proyecto": {
-      "post": {
-        "tags": [
-          "reportes"
-        ],
-        "summary": "Horas de Proyecto agrupadas por Cargo",
-        "description": "",
-        "operationId": "findHorasProyectoXCargo",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "in": "body",
-            "name": "body",
-            "required": false,
-            "schema": {
-              "$ref": "#/definitions/Proyecto"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "successful operation",
-            "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/HorasProyectoXCargo"
+    "/reportes/estimaciones/proyecto/{proyecto_id}/tarea/{tarea_id}" : {
+      "get" : {
+        "tags" : [ "reportes" ],
+        "summary" : "Estimaciones de Proyecto y TipoTarea agrupadas por Cargo",
+        "description" : "",
+        "operationId" : "findEstimacionesProyectoTipoTareaXCargo",
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "proyecto_id",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        }, {
+          "name" : "tarea_id",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/EstimacionProyectoTipoTareaXCargo"
               }
             }
           }
         }
       }
     },
-    "/reportes/horas/proyecto/tarea": {
-      "post": {
-        "tags": [
-          "reportes"
-        ],
-        "summary": "Horas de Proyecto y TipoTarea agrupadas por Cargo",
-        "description": "",
-        "operationId": "findHorasProyectoTipoTareaXCargo",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "in": "body",
-            "name": "body",
-            "required": false,
-            "schema": {
-              "$ref": "#/definitions/Proyecto"
-            }
-          },
-          {
-            "in": "body",
-            "name": "body",
-            "required": false,
-            "schema": {
-              "$ref": "#/definitions/TipoTarea"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "successful operation",
-            "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/HorasProyectoTipoTareaXCargo"
+    "/reportes/horas/proyecto/{proyecto_id}" : {
+      "get" : {
+        "tags" : [ "reportes" ],
+        "summary" : "Horas de Proyecto agrupadas por Cargo",
+        "description" : "",
+        "operationId" : "findHorasProyectoXCargo",
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "proyecto_id",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/HorasProyectoXCargo"
               }
             }
           }
         }
       }
     },
-    "/reportes/horas/proyecto/tarea/cargo": {
-      "post": {
-        "tags": [
-          "reportes"
-        ],
-        "summary": "Horas de Proyecto, TipoTarea y Cargo agrupadas por Colaborador",
-        "description": "",
-        "operationId": "findHorasProyectoTipoTareaCargoXColaborador",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "in": "body",
-            "name": "body",
-            "required": false,
-            "schema": {
-              "$ref": "#/definitions/Proyecto"
-            }
-          },
-          {
-            "in": "body",
-            "name": "body",
-            "required": false,
-            "schema": {
-              "$ref": "#/definitions/TipoTarea"
-            }
-          },
-          {
-            "in": "body",
-            "name": "body",
-            "required": false,
-            "schema": {
-              "$ref": "#/definitions/Cargo"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "successful operation",
-            "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/HorasProyectoTipoTareaCargoXColaborador"
+    "/reportes/horas/proyecto/{proyecto_id}/tarea/{tarea_id}" : {
+      "get" : {
+        "tags" : [ "reportes" ],
+        "summary" : "Horas de Proyecto y TipoTarea agrupadas por Cargo",
+        "description" : "",
+        "operationId" : "findHorasProyectoTipoTareaXCargo",
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "proyecto_id",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        }, {
+          "name" : "tarea_id",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/HorasProyectoTipoTareaXCargo"
               }
             }
+          }
+        }
+      }
+    },
+    "/reportes/horas/proyecto/{proyecto_id}/tarea/{tarea_id}/cargo/{cargo_id}" : {
+      "get" : {
+        "tags" : [ "reportes" ],
+        "summary" : "Horas de Proyecto, TipoTarea y Cargo agrupadas por Usuario",
+        "description" : "",
+        "operationId" : "findHorasProyectoTipoTareaCargoXColaborador",
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "proyecto_id",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        }, {
+          "name" : "tarea_id",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        }, {
+          "name" : "cargo_id",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/HorasProyectoTipoTareaCargoXColaborador"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/rubros" : {
+      "get" : {
+        "tags" : [ "rubros" ],
+        "summary" : "Get rubros",
+        "description" : "",
+        "operationId" : "findAll",
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "parameters" : [ ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/Rubro"
+              }
+            }
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "rubros" ],
+        "summary" : "Create Rubro",
+        "description" : "",
+        "operationId" : "create",
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/Rubro"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/Rubro"
+            }
+          }
+        }
+      }
+    },
+    "/rubros/{id}" : {
+      "get" : {
+        "tags" : [ "rubros" ],
+        "summary" : "Get Rubro",
+        "description" : "",
+        "operationId" : "find",
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/Rubro"
+            }
+          }
+        }
+      },
+      "put" : {
+        "tags" : [ "rubros" ],
+        "summary" : "Edit Rubro",
+        "description" : "",
+        "operationId" : "edit",
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        }, {
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/Rubro"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/Rubro"
+            }
+          },
+          "304" : {
+            "description" : "Error: objeto no modificado"
           }
         }
       }
@@ -944,6 +1306,113 @@
     "/tareas" : {
       "get" : {
         "tags" : [ "tareas" ],
+        "summary" : "Get tareas",
+        "description" : "",
+        "operationId" : "findAll",
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "parameters" : [ ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/Tarea"
+              }
+            }
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "tareas" ],
+        "summary" : "Create Tarea",
+        "description" : "",
+        "operationId" : "create",
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/Tarea"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/Tarea"
+            }
+          }
+        }
+      }
+    },
+    "/tareas/{id}" : {
+      "get" : {
+        "tags" : [ "tareas" ],
+        "summary" : "Get Tarea",
+        "description" : "",
+        "operationId" : "find",
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/Tarea"
+            }
+          },
+          "404" : {
+            "description" : "Id no encontrado"
+          }
+        }
+      },
+      "put" : {
+        "tags" : [ "tareas" ],
+        "summary" : "Edit Tarea",
+        "description" : "",
+        "operationId" : "edit",
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        }, {
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/Tarea"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/Tarea"
+            }
+          },
+          "304" : {
+            "description" : "Error: objeto no modificado"
+          }
+        }
+      }
+    },
+    "/tipotareas" : {
+      "get" : {
+        "tags" : [ "tipotareas" ],
         "summary" : "Get tipos tarea",
         "description" : "",
         "operationId" : "findAll",
@@ -963,7 +1432,7 @@
         }
       },
       "post" : {
-        "tags" : [ "tareas" ],
+        "tags" : [ "tipotareas" ],
         "summary" : "Create Tipo Tarea",
         "description" : "",
         "operationId" : "create",
@@ -993,9 +1462,9 @@
         }
       }
     },
-    "/tareas/{id}" : {
+    "/tipotareas/{id}" : {
       "get" : {
-        "tags" : [ "tareas" ],
+        "tags" : [ "tipotareas" ],
         "summary" : "Get tipo Tarea",
         "description" : "",
         "operationId" : "find",
@@ -1021,7 +1490,7 @@
         }
       },
       "put" : {
-        "tags" : [ "tareas" ],
+        "tags" : [ "tipotareas" ],
         "summary" : "Edit tipo area",
         "description" : "",
         "operationId" : "edit",
@@ -1054,102 +1523,246 @@
         }
       }
     },
-    "/users/login" : {
-      "post" : {
-        "tags" : [ "auth" ],
-        "summary" : "Authenticate user",
-        "description" : "",
-        "operationId" : "authenticateUser",
-        "consumes" : [ "application/x-www-form-urlencoded" ],
-        "produces" : [ "application/json" ],
-        "parameters" : [ {
-          "name" : "email",
-          "in" : "formData",
-          "required" : false,
-          "type" : "string"
-        }, {
-          "name" : "password",
-          "in" : "formData",
-          "required" : false,
-          "type" : "string"
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "successful operation",
-            "schema" : {
-              "$ref" : "#/definitions/Colaborador"
-            }
-          }
-        }
-      }
-    },
-    "/users/recuperar" : {
-      "put" : {
-        "tags" : [ "auth" ],
-        "summary" : "Cambiar password",
-        "description" : "",
-        "operationId" : "cambiarPassword",
-        "consumes" : [ "application/x-www-form-urlencoded" ],
-        "produces" : [ "application/json" ],
-        "parameters" : [ {
-          "name" : "token",
-          "in" : "formData",
-          "required" : false,
-          "type" : "string"
-        }, {
-          "name" : "password",
-          "in" : "formData",
-          "required" : false,
-          "type" : "string"
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "successful operation",
-            "schema" : {
-              "$ref" : "#/definitions/Colaborador"
-            }
-          }
-        }
-      }
-    },
-    "/users/recuperar/{email}" : {
-      "post" : {
-        "tags" : [ "auth" ],
-        "summary" : "Recuperar password",
-        "description" : "",
-        "operationId" : "recuperarPassword",
-        "consumes" : [ "application/json" ],
-        "produces" : [ "application/json" ],
-        "parameters" : [ {
-          "name" : "email",
-          "in" : "path",
-          "required" : true,
-          "type" : "string"
-        } ],
-        "responses" : {
-          "default" : {
-            "description" : "successful operation"
-          }
-        }
-      }
-    },
-    "/users/recuperar/{token}" : {
+    "/trabajos" : {
       "get" : {
-        "tags" : [ "auth" ],
-        "summary" : "Recuperar email",
+        "tags" : [ "trabajos" ],
+        "summary" : "Get trabajos",
         "description" : "",
-        "operationId" : "recuperarEmail",
+        "operationId" : "findAll",
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "parameters" : [ ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/Trabajo"
+              }
+            }
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "trabajos" ],
+        "summary" : "Create Trabajo",
+        "description" : "",
+        "operationId" : "create",
         "consumes" : [ "application/json" ],
         "produces" : [ "application/json" ],
         "parameters" : [ {
-          "name" : "token",
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/Trabajo"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/Trabajo"
+            }
+          },
+          "500" : {
+            "description" : "Error interno"
+          },
+          "409" : {
+            "description" : "Código o Id ya existe"
+          }
+        }
+      }
+    },
+    "/trabajos/estado/{status}" : {
+      "get" : {
+        "tags" : [ "trabajos" ],
+        "summary" : "Get Trabajos",
+        "description" : "",
+        "operationId" : "find",
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "status",
           "in" : "path",
           "required" : true,
           "type" : "string"
         } ],
         "responses" : {
-          "default" : {
-            "description" : "successful operation"
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/Trabajo"
+              }
+            }
+          },
+          "404" : {
+            "description" : "Estado no encontrado"
+          }
+        }
+      }
+    },
+    "/trabajos/{id}" : {
+      "get" : {
+        "tags" : [ "trabajos" ],
+        "summary" : "Get Trabajo",
+        "description" : "",
+        "operationId" : "find",
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/Trabajo"
+            }
+          },
+          "404" : {
+            "description" : "Id no encontrado"
+          }
+        }
+      },
+      "put" : {
+        "tags" : [ "trabajos" ],
+        "summary" : "Edit trabajo",
+        "description" : "",
+        "operationId" : "edit",
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        }, {
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/Trabajo"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/Trabajo"
+            }
+          },
+          "304" : {
+            "description" : "Error: objeto no modificado"
+          }
+        }
+      }
+    },
+    "/usuarios" : {
+      "get" : {
+        "tags" : [ "usuarios" ],
+        "summary" : "Get usuarios",
+        "description" : "",
+        "operationId" : "findAll",
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "parameters" : [ ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/Usuario"
+              }
+            }
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "usuarios" ],
+        "summary" : "Create usuario",
+        "description" : "",
+        "operationId" : "create",
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/Usuario"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/Usuario"
+            }
+          }
+        }
+      }
+    },
+    "/usuarios/{id}" : {
+      "get" : {
+        "tags" : [ "usuarios" ],
+        "summary" : "Get usuario",
+        "description" : "",
+        "operationId" : "find",
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/Usuario"
+            }
+          }
+        }
+      },
+      "put" : {
+        "tags" : [ "usuarios" ],
+        "summary" : "Edit usuario",
+        "description" : "",
+        "operationId" : "edit",
+        "consumes" : [ "application/json" ],
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        }, {
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/Usuario"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/Usuario"
+            }
           }
         }
       }
@@ -1179,6 +1792,18 @@
         }
       }
     },
+    "UsuarioRubro" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "rubro" : {
+          "$ref" : "#/definitions/Rubro"
+        }
+      }
+    },
     "Proyecto" : {
       "type" : "object",
       "required" : [ "codigo", "nombre" ],
@@ -1195,41 +1820,115 @@
         }
       }
     },
-    "HorasProyectoTipoTareaCargoXColaborador": {
+    "HorasProyectoTipoTareaCargoXColaborador" : {
       "type" : "object",
       "properties" : {
-        "cantidadHoras": {
+        "cantidadHoras" : {
           "type" : "integer",
-          "format": "int64",
+          "format" : "int64",
           "readOnly" : true
         },
-        "proyecto": {
-          "$ref": "#/definitions/Proyecto"
+        "proyecto" : {
+          "$ref" : "#/definitions/Proyecto"
         },
-        "tipoTarea": {
-          "$ref": "#/definitions/TipoTarea"
+        "tipoTarea" : {
+          "$ref" : "#/definitions/TipoTarea"
         },
-        "cargo": {
-          "$ref": "#/definitions/Cargo"
+        "cargo" : {
+          "$ref" : "#/definitions/Cargo"
         },
         "colaborador" : {
-          "$ref" : "#/definitions/Colaborador"
+          "$ref" : "#/definitions/Usuario"
         }
       }
     },
-    "HorasProyectoXCargo": {
-      "type": "object",
-      "properties": {
-        "cantidadHoras": {
-          "type": "integer",
-          "format": "int64",
+    "Usuario" : {
+      "type" : "object",
+      "required" : [ "email", "nombre", "role" ],
+      "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "email" : {
+          "type" : "string"
+        },
+        "nombre" : {
+          "type" : "string"
+        },
+        "role" : {
+          "type" : "string"
+        },
+        "token" : {
+          "type" : "string"
+        },
+        "usuarioRubros" : {
+          "type" : "array",
+          "uniqueItems" : true,
+          "items" : {
+            "$ref" : "#/definitions/UsuarioRubro"
+          }
+        }
+      }
+    },
+    "HorasProyectoXCargo" : {
+      "type" : "object",
+      "properties" : {
+        "cantidadHoras" : {
+          "type" : "integer",
+          "format" : "int64",
           "readOnly" : true
         },
-        "proyecto": {
-          "$ref": "#/definitions/Proyecto"
+        "proyecto" : {
+          "$ref" : "#/definitions/Proyecto"
         },
-        "cargo": {
-          "$ref": "#/definitions/Cargo"
+        "cargo" : {
+          "$ref" : "#/definitions/Cargo"
+        }
+      }
+    },
+    "Registro" : {
+      "type" : "object",
+      "required" : [ "fecha", "minutos" ],
+      "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "minutos" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "fecha" : {
+          "type" : "string",
+          "format" : "date",
+          "example" : "23-01-2017"
+        },
+        "borrado" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "usuario" : {
+          "$ref" : "#/definitions/Usuario"
+        },
+        "tarea" : {
+          "$ref" : "#/definitions/Tarea"
+        },
+        "rubro" : {
+          "$ref" : "#/definitions/Rubro"
+        }
+      }
+    },
+    "Rubro" : {
+      "type" : "object",
+      "required" : [ "nombre" ],
+      "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "nombre" : {
+          "type" : "string"
         }
       }
     },
@@ -1246,18 +1945,13 @@
         "duracion" : {
           "type" : "string",
           "format" : "date-time",
-          "example": "PT23H59M"
+          "example" : "PT23H59M"
         }
       }
     },
     "EstimacionDetalle" : {
       "type" : "object",
-      "required": [
-        "cargo",
-        "duracion",
-        "precioTotal",
-        "tipoTarea"
-      ],
+      "required" : [ "cargo", "duracion", "precioTotal", "tipoTarea" ],
       "properties" : {
         "tipoTarea" : {
           "$ref" : "#/definitions/TipoTarea"
@@ -1265,10 +1959,10 @@
         "cargo" : {
           "$ref" : "#/definitions/Cargo"
         },
-        "duracion": {
-          "type": "string",
-          "format": "date-time",
-          "example": "PT23H59M"
+        "duracion" : {
+          "type" : "string",
+          "format" : "date-time",
+          "example" : "PT23H59M"
         },
         "precioTotal" : {
           "type" : "number",
@@ -1296,6 +1990,41 @@
         }
       }
     },
+    "TipoMaterial" : {
+      "type" : "object",
+      "required" : [ "codigo", "nombre" ],
+      "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "nombre" : {
+          "type" : "string"
+        },
+        "codigo" : {
+          "type" : "string"
+        }
+      }
+    },
+    "Material" : {
+      "type" : "object",
+      "required" : [ "nombre" ],
+      "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "nombre" : {
+          "type" : "string"
+        },
+        "descripcion" : {
+          "type" : "string"
+        },
+        "tipoMaterial" : {
+          "$ref" : "#/definitions/TipoMaterial"
+        }
+      }
+    },
     "PrecioHora" : {
       "type" : "object",
       "required" : [ "precioHora", "vigenciaDesde" ],
@@ -1307,7 +2036,7 @@
         "vigenciaDesde" : {
           "type" : "string",
           "format" : "date",
-          "example": "23-01-2017"
+          "example" : "23-01-2017"
         }
       }
     },
@@ -1327,160 +2056,280 @@
         }
       }
     },
-    "Colaborador" : {
+    "Tarea" : {
       "type" : "object",
-      "required": [
-        "email",
-        "nombre",
-        "password",
-        "role"
-      ],
       "properties" : {
         "id" : {
           "type" : "integer",
           "format" : "int64"
         },
-        "email" : {
-          "type" : "string"
-        },
         "nombre" : {
           "type" : "string"
+        },
+        "descripcion" : {
+          "type" : "string"
+        },
+        "minutosEstimados" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "borrado" : {
+          "type" : "integer",
+          "format" : "int32"
+        }
+      }
+    },
+    "Equipo" : {
+      "type" : "object",
+      "required" : [ "color", "marca", "matricula", "modelo" ],
+      "properties" : {
+        "idEquipo" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "cliente" : {
+          "$ref" : "#/definitions/Cliente"
+        },
+        "marca" : {
+          "type" : "string"
+        },
+        "modelo" : {
+          "type" : "string"
+        },
+        "matricula" : {
+          "type" : "string"
+        },
+        "color" : {
+          "type" : "string"
+        },
+        "tipoEquipo" : {
+          "$ref" : "#/definitions/TipoEquipo"
+        }
+      }
+    },
+    "Hora" : {
+      "type" : "object",
+      "required" : [ "colaborador", "dia", "horaIn", "horaOut" ],
+      "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "dia" : {
+          "type" : "string",
+          "format" : "date",
+          "example" : "23-01-2017"
+        },
+        "horaIn" : {
+          "type" : "string",
+          "format" : "date-time",
+          "example" : "08:15"
+        },
+        "horaOut" : {
+          "type" : "string",
+          "format" : "date-time",
+          "example" : "17:34"
+        },
+        "subtotal" : {
+          "type" : "string",
+          "format" : "date-time",
+          "example" : "PT23H59M",
+          "readOnly" : true
+        },
+        "colaborador" : {
+          "$ref" : "#/definitions/Usuario"
+        },
+        "horaDetalleList" : {
+          "type" : "array",
+          "uniqueItems" : true,
+          "items" : {
+            "$ref" : "#/definitions/HoraDetalle"
+          }
+        },
+        "completa" : {
+          "type" : "boolean",
+          "readOnly" : true,
+          "default" : false
+        },
+        "subtotalDetalles" : {
+          "type" : "string",
+          "format" : "date-time",
+          "example" : "PT23H59M",
+          "readOnly" : true
+        }
+      }
+    },
+    "Estimacion" : {
+      "type" : "object",
+      "required" : [ "fecha", "proyecto" ],
+      "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "proyecto" : {
+          "$ref" : "#/definitions/Proyecto"
+        },
+        "descripcion" : {
+          "type" : "string"
+        },
+        "fecha" : {
+          "type" : "string",
+          "format" : "date",
+          "example" : "23-01-2017"
+        },
+        "estimacionDetalleList" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/EstimacionDetalle"
+          }
+        }
+      }
+    },
+    "TipoEquipo" : {
+      "type" : "object",
+      "required" : [ "descripcion", "dibujo" ],
+      "properties" : {
+        "idTipoEquipo" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "descripcion" : {
+          "type" : "string"
+        },
+        "dibujo" : {
+          "type" : "string"
+        }
+      }
+    },
+    "HorasProyectoTipoTareaXCargo" : {
+      "type" : "object",
+      "properties" : {
+        "cantidadHoras" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "proyecto" : {
+          "$ref" : "#/definitions/Proyecto"
+        },
+        "tipoTarea" : {
+          "$ref" : "#/definitions/TipoTarea"
+        },
+        "cargo" : {
+          "$ref" : "#/definitions/Cargo"
+        }
+      }
+    },
+    "EstimacionProyectoTipoTareaXCargo" : {
+      "type" : "object",
+      "properties" : {
+        "proyecto" : {
+          "$ref" : "#/definitions/Proyecto"
+        },
+        "tipoTarea" : {
+          "$ref" : "#/definitions/TipoTarea"
         },
         "cargo" : {
           "$ref" : "#/definitions/Cargo"
         },
-        "password": {
-          "type": "string"
+        "precioTotal" : {
+          "type" : "number",
+          "format" : "double"
+        }
+      }
+    },
+    "Cliente" : {
+      "type" : "object",
+      "required" : [ "nombreEmpresa", "personaContacto", "telefonoContacto" ],
+      "properties" : {
+        "idCliente" : {
+          "type" : "integer",
+          "format" : "int64"
         },
-        "role" : {
+        "nombreEmpresa" : {
           "type" : "string"
         },
-        "token" : {
+        "rut" : {
+          "type" : "string"
+        },
+        "telefono" : {
+          "type" : "string"
+        },
+        "personaContacto" : {
+          "type" : "string"
+        },
+        "telefonoContacto" : {
+          "type" : "string"
+        },
+        "emailEmpresa" : {
+          "type" : "string"
+        },
+        "direccion" : {
           "type" : "string"
         }
       }
     },
-    "Hora": {
-      "type": "object",
-      "required": [
-        "colaborador",
-        "dia",
-        "horaIn",
-        "horaOut"
-      ],
-      "properties": {
-        "id": {
-          "type": "integer",
-          "format": "int64"
+    "Trabajo" : {
+      "type" : "object",
+      "required" : [ "cliente", "estado", "fechaProvistaEntrega", "fechaRecepcion", "motivoVisita" ],
+      "properties" : {
+        "idTrabajo" : {
+          "type" : "integer",
+          "format" : "int64"
         },
-        "dia": {
-          "type": "string",
-          "format": "date",
-          "example": "23-01-2017"
+        "cliente" : {
+          "$ref" : "#/definitions/Cliente"
         },
-        "horaIn": {
-          "type": "string",
-          "format": "date-time",
-          "example": "08:15"
+        "equipo" : {
+          "$ref" : "#/definitions/Equipo"
         },
-        "horaOut": {
-          "type": "string",
-          "format": "date-time",
-          "example": "17:34"
+        "motivoVisita" : {
+          "type" : "string"
         },
-        "subtotal": {
-          "type": "string",
-          "format": "date-time",
-          "example": "PT23H59M",
-          "readOnly": true
+        "fechaRecepcion" : {
+          "type" : "string",
+          "format" : "date",
+          "example" : "23-01-2017 17:20"
         },
-        "colaborador": {
-          "$ref": "#/definitions/Colaborador"
+        "fechaProvistaEntrega" : {
+          "type" : "string",
+          "format" : "date",
+          "example" : "23-01-2017"
         },
-        "horaDetalleList": {
-          "type": "array",
-          "uniqueItems": true,
-          "items": {
-            "$ref": "#/definitions/HoraDetalle"
-          }
+        "requierePresupuesto" : {
+          "type" : "boolean",
+          "default" : false
         },
-        "completa": {
-          "type": "boolean",
-          "readOnly": true,
-          "default": false
+        "comentarios" : {
+          "type" : "string"
         },
-        "subtotalDetalles": {
-          "type": "string",
-          "format": "date-time",
-          "example": "PT23H59M",
-          "readOnly": true
-        }
-      }
-    },
-    "Estimacion": {
-      "type": "object",
-      "required": [
-        "fecha",
-        "proyecto"
-      ],
-      "properties": {
-        "id": {
-          "type": "integer",
-          "format": "int64"
+        "estado" : {
+          "type" : "string"
         },
-        "proyecto": {
-          "$ref": "#/definitions/Proyecto"
+        "dibujoEquipoRecepcion" : {
+          "type" : "string"
         },
-        "descripcion": {
-          "type": "string"
+        "kmEquipoRecepcion" : {
+          "type" : "number",
+          "format" : "double"
         },
-        "fecha": {
-          "type": "string",
-          "format": "date",
-          "example": "23-01-2017"
+        "firmaClienteRecepcion" : {
+          "type" : "string"
         },
-        "estimacionDetalleList": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/EstimacionDetalle"
-          }
-        }
-      }
-    },
-    "HorasProyectoTipoTareaXCargo": {
-      "type": "object",
-      "properties": {
-        "cantidadHoras": {
-          "type": "integer",
-          "format": "int64",
-          "readOnly": true
+        "nombreClienteRecepcion" : {
+          "type" : "string"
         },
-        "proyecto": {
-          "$ref": "#/definitions/Proyecto"
+        "nroFactura" : {
+          "type" : "integer",
+          "format" : "int32"
         },
-        "tipoTarea": {
-          "$ref": "#/definitions/TipoTarea"
+        "nroRemito" : {
+          "type" : "integer",
+          "format" : "int32"
         },
-        "cargo": {
-          "$ref": "#/definitions/Cargo"
-        }
-      }
-    },
-    "EstimacionProyectoTipoTareaXCargo": {
-      "type": "object",
-      "properties": {
-        "proyecto": {
-          "$ref": "#/definitions/Proyecto"
-        },
-        "tipoTarea": {
-          "$ref": "#/definitions/TipoTarea"
-        },
-        "cargo": {
-          "$ref": "#/definitions/Cargo"
-        },
-        "precioTotal": {
-          "type": "number",
-          "format": "double"
+        "nroOrdenCompra" : {
+          "type" : "integer",
+          "format" : "int32"
         }
       }
     }
