@@ -46,8 +46,8 @@ public class EquipoService {
 
     @POST
     @Logged
-    //@JWTTokenNeeded
-    //@RoleNeeded({Role.USER, Role.ADMIN})
+    @JWTTokenNeeded
+    @RoleNeeded({Role.USER, Role.ADMIN})
     @ApiOperation(value = "Create Equipo", response = Equipo.class)
     @ApiResponses(value = {
             @ApiResponse(code = 409, message = "Código o Id ya existe"),
@@ -71,8 +71,8 @@ public class EquipoService {
     }
 
     @GET
-    //@JWTTokenNeeded
-    //@RoleNeeded({Role.USER, Role.ADMIN})
+    @JWTTokenNeeded
+    @RoleNeeded({Role.USER, Role.ADMIN})
     @ApiOperation(value = "Get equipos", response = Equipo.class, responseContainer = "List")
     public Response findAll() {
         List<Equipo> equipoList = equipoDao.findAll();
@@ -81,8 +81,8 @@ public class EquipoService {
 
     @GET
     @Path("{id}")
-    //@JWTTokenNeeded
-    //@RoleNeeded({Role.USER, Role.ADMIN})
+    @JWTTokenNeeded
+    @RoleNeeded({Role.USER, Role.ADMIN})
     @ApiOperation(value = "Get Equipo", response = Equipo.class)
     @ApiResponses(value = {
             @ApiResponse(code = 404, message = "Id no encontrado")})
@@ -94,8 +94,8 @@ public class EquipoService {
 
     @GET
     @Path("matricula/{matricula}")
-    //@JWTTokenNeeded
-    //@RoleNeeded({Role.USER, Role.ADMIN})
+    @JWTTokenNeeded
+    @RoleNeeded({Role.USER, Role.ADMIN})
     @ApiOperation(value = "Get Equipo", response = Equipo.class)
     @ApiResponses(value = {
             @ApiResponse(code = 404, message = "Id no encontrado")})
@@ -107,8 +107,8 @@ public class EquipoService {
 
     @GET
     @Path("cliente/{cliente}")
-    //@JWTTokenNeeded
-    //@RoleNeeded({Role.USER, Role.ADMIN})
+    @JWTTokenNeeded
+    @RoleNeeded({Role.USER, Role.ADMIN})
     @ApiOperation(value = "Get Equipos", response = Equipo.class, responseContainer = "List")
     @ApiResponses(value = {
             @ApiResponse(code = 404, message = "Cliente no encontrado")})
@@ -122,8 +122,8 @@ public class EquipoService {
 
     @PUT
     @Path("{id}")
-    //@JWTTokenNeeded
-    //@RoleNeeded({Role.USER, Role.ADMIN})
+    @JWTTokenNeeded
+    @RoleNeeded({Role.USER, Role.ADMIN})
     @ApiOperation(value = "Edit equipo", response = Equipo.class)
     @ApiResponses(value = {
             @ApiResponse(code = 304, message = "Error: objeto no modificado")})

@@ -4,11 +4,9 @@ import coop.magnesium.potassium.api.utils.JWTTokenNeeded;
 import coop.magnesium.potassium.api.utils.RoleNeeded;
 import coop.magnesium.potassium.db.dao.ClienteDao;
 import coop.magnesium.potassium.db.dao.EquipoDao;
+import coop.magnesium.potassium.db.dao.PuntoControlDao;
 import coop.magnesium.potassium.db.dao.TrabajoDao;
-import coop.magnesium.potassium.db.entities.Cliente;
-import coop.magnesium.potassium.db.entities.Equipo;
-import coop.magnesium.potassium.db.entities.Role;
-import coop.magnesium.potassium.db.entities.Trabajo;
+import coop.magnesium.potassium.db.entities.*;
 import coop.magnesium.potassium.utils.Logged;
 import coop.magnesium.potassium.utils.ex.MagnesiumBdAlredyExistsException;
 import coop.magnesium.potassium.utils.ex.MagnesiumNotFoundException;
@@ -47,11 +45,13 @@ public class TrabajoService {
     private EquipoDao equipoDao;
     @EJB
     private ClienteDao clienteDao;
+    @EJB
+    private PuntoControlDao puntoControlDao;
 
     @POST
     @Logged
-    //@JWTTokenNeeded
-    //@RoleNeeded({Role.USER, Role.ADMIN})
+    @JWTTokenNeeded
+    @RoleNeeded({Role.USER, Role.ADMIN})
     @ApiOperation(value = "Create Trabajo", response = Trabajo.class)
     @ApiResponses(value = {
             @ApiResponse(code = 409, message = "Código o Id ya existe"),
@@ -64,6 +64,8 @@ public class TrabajoService {
 
 
             trabajo = trabajoDao.save(trabajo);
+            PuntoControl puntoControl  = new PuntoControl("Final", trabajo, 0);
+            puntoControl = puntoControlDao.save(puntoControl);
             return Response.status(Response.Status.CREATED).entity(trabajo).build();
         } catch (MagnesiumBdAlredyExistsException exists) {
             logger.warning(exists.getMessage());
@@ -75,8 +77,8 @@ public class TrabajoService {
     }
 
     @GET
-    //@JWTTokenNeeded
-    //@RoleNeeded({Role.USER, Role.ADMIN})
+    @JWTTokenNeeded
+    @RoleNeeded({Role.USER, Role.ADMIN})
     @ApiOperation(value = "Get trabajos", response = Trabajo.class, responseContainer = "List")
     public Response findAll() {
         List<Trabajo> trabajoList = trabajoDao.findAll();
@@ -85,8 +87,8 @@ public class TrabajoService {
 
     @GET
     @Path("{id}")
-    //@JWTTokenNeeded
-    //@RoleNeeded({Role.USER, Role.ADMIN})
+    @JWTTokenNeeded
+    @RoleNeeded({Role.USER, Role.ADMIN})
     @ApiOperation(value = "Get Trabajo", response = Trabajo.class)
     @ApiResponses(value = {
             @ApiResponse(code = 404, message = "Id no encontrado")})
@@ -98,8 +100,8 @@ public class TrabajoService {
 
     @GET
     @Path("estado/{status}")
-    //@JWTTokenNeeded
-    //@RoleNeeded({Role.USER, Role.ADMIN})
+    @JWTTokenNeeded
+    @RoleNeeded({Role.USER, Role.ADMIN})
     @ApiOperation(value = "Get Trabajos", response = Trabajo.class, responseContainer = "List")
     @ApiResponses(value = {
             @ApiResponse(code = 404, message = "Estado no encontrado")})
@@ -111,8 +113,8 @@ public class TrabajoService {
 
     @GET
     @Path("cliente/{id}")
-    //@JWTTokenNeeded
-    //@RoleNeeded({Role.USER, Role.ADMIN})
+    @JWTTokenNeeded
+    @RoleNeeded({Role.USER, Role.ADMIN})
     @ApiOperation(value = "Get Trabajos", response = Trabajo.class, responseContainer = "List")
     @ApiResponses(value = {
             @ApiResponse(code = 404, message = "Cliente no encontrado")})
@@ -126,8 +128,8 @@ public class TrabajoService {
 
     @GET
     @Path("equipo/{id}")
-    //@JWTTokenNeeded
-    //@RoleNeeded({Role.USER, Role.ADMIN})
+    @JWTTokenNeeded
+    @RoleNeeded({Role.USER, Role.ADMIN})
     @ApiOperation(value = "Get Trabajos", response = Trabajo.class, responseContainer = "List")
     @ApiResponses(value = {
             @ApiResponse(code = 404, message = "Equipo no encontrado")})
@@ -143,8 +145,8 @@ public class TrabajoService {
 
     @PUT
     @Path("{id}")
-    //@JWTTokenNeeded
-    //@RoleNeeded({Role.USER, Role.ADMIN})
+    @JWTTokenNeeded
+    @RoleNeeded({Role.USER, Role.ADMIN})
     @ApiOperation(value = "Edit trabajo", response = Trabajo.class)
     @ApiResponses(value = {
             @ApiResponse(code = 304, message = "Error: objeto no modificado")})

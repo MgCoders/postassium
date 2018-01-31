@@ -42,8 +42,8 @@ public class ClienteService {
 
     @POST
     @Logged
-    //@JWTTokenNeeded
-    //@RoleNeeded({Role.USER, Role.ADMIN})
+    @JWTTokenNeeded
+    @RoleNeeded({Role.USER, Role.ADMIN})
     @ApiOperation(value = "Create Cliente", response = Cliente.class)
     @ApiResponses(value = {
             @ApiResponse(code = 409, message = "Código o Id ya existe"),
@@ -67,8 +67,8 @@ public class ClienteService {
     }
 
     @GET
-    //@JWTTokenNeeded
-    //@RoleNeeded({Role.USER, Role.ADMIN})
+    @JWTTokenNeeded
+    @RoleNeeded({Role.USER, Role.ADMIN})
     @ApiOperation(value = "Get clientes", response = Cliente.class, responseContainer = "List")
     public Response findAll() {
         List<Cliente> clienteList = clienteDao.findAll();
@@ -77,8 +77,8 @@ public class ClienteService {
 
     @GET
     @Path("{id}")
-    //@JWTTokenNeeded
-    //@RoleNeeded({Role.USER, Role.ADMIN})
+    @JWTTokenNeeded
+    @RoleNeeded({Role.USER, Role.ADMIN})
     @ApiOperation(value = "Get cliente", response = Cliente.class)
     @ApiResponses(value = {
             @ApiResponse(code = 404, message = "Id no encontrado")})
@@ -90,8 +90,8 @@ public class ClienteService {
 
     @GET
     @Path("nombreEmpresa/{name}")
-    //@JWTTokenNeeded
-    //@RoleNeeded({Role.USER, Role.ADMIN})
+    @JWTTokenNeeded
+    @RoleNeeded({Role.USER, Role.ADMIN})
     @ApiOperation(value = "Get cliente", response = Cliente.class)
     @ApiResponses(value = {
             @ApiResponse(code = 404, message = "Nombre no encontrado")})
@@ -103,8 +103,8 @@ public class ClienteService {
 
     @GET
     @Path("rut/{rut}")
-    //@JWTTokenNeeded
-    //@RoleNeeded({Role.USER, Role.ADMIN})
+    @JWTTokenNeeded
+    @RoleNeeded({Role.USER, Role.ADMIN})
     @ApiOperation(value = "Get cliente", response = Cliente.class)
     @ApiResponses(value = {
             @ApiResponse(code = 404, message = "Nombre no encontrado")})
@@ -116,8 +116,8 @@ public class ClienteService {
 
     @PUT
     @Path("{id}")
-    //@JWTTokenNeeded
-    //@RoleNeeded({Role.USER, Role.ADMIN})
+    @JWTTokenNeeded
+    @RoleNeeded({Role.USER, Role.ADMIN})
     @ApiOperation(value = "Edit cliente", response = Cliente.class)
     @ApiResponses(value = {
             @ApiResponse(code = 304, message = "Error: objeto no modificado")})
