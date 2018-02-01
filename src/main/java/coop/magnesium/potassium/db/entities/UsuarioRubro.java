@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModel;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 /**
  * Created by pablo on 24/01/18.
@@ -19,11 +20,13 @@ public class UsuarioRubro {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "usuario_id", referencedColumnName = "id", nullable = false)
     @JsonIgnore
     private Usuario usuario;
 
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "rubro_id", referencedColumnName = "id", nullable = false)
     private Rubro rubro;

@@ -1,9 +1,15 @@
 package coop.magnesium.potassium.api;
 
+import coop.magnesium.potassium.api.utils.JWTTokenNeeded;
+import coop.magnesium.potassium.api.utils.RoleNeeded;
+import coop.magnesium.potassium.db.dao.PuntoControlDao;
 import coop.magnesium.potassium.db.dao.TareaDao;
+import coop.magnesium.potassium.db.entities.PuntoControl;
 import coop.magnesium.potassium.db.entities.Registro;
+import coop.magnesium.potassium.db.entities.Role;
 import coop.magnesium.potassium.db.entities.Tarea;
 import coop.magnesium.potassium.utils.Logged;
+import coop.magnesium.potassium.utils.ex.MagnesiumBdNotFoundException;
 import coop.magnesium.potassium.utils.ex.MagnesiumException;
 import coop.magnesium.potassium.utils.ex.MagnesiumNotFoundException;
 import io.swagger.annotations.Api;
@@ -39,23 +45,29 @@ public class TareaService {
     @EJB
     private TareaDao tareaDao;
 
+    @EJB
+    private PuntoControlDao puntoControlDao;
 
     @POST
     @Logged
-//    @JWTTokenNeeded
-//    @RoleNeeded({Role.USER, Role.ADMIN})
+    @JWTTokenNeeded
+    @RoleNeeded({Role.USER, Role.ADMIN})
     @ApiOperation(value = "Create Tarea", response = Tarea.class)
     public Response create(@Valid Tarea tarea) {
         try {
             if (tarea.getId() != null) throw new MagnesiumException("Ya existe la tarea");
 
+            PuntoControl puntoControl = puntoControlDao.findById(tarea.getPuntoControl().getId());
+            if (puntoControl == null) throw new MagnesiumBdNotFoundException("No existe el punto de control");
+            tarea.setPuntoControl(puntoControl);
+
             tarea = tareaDao.save(tarea);
 
             return Response.status(Response.Status.CREATED).entity(tarea).build();
-        } catch (MagnesiumException e) {
+        } catch (MagnesiumException | MagnesiumBdNotFoundException e) {
             logger.warning(e.getMessage());
-            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();        }
-        catch (Exception e) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+        } catch (Exception e) {
             logger.severe(e.getMessage());
             return Response.serverError().entity(e.getMessage()).build();
         }
@@ -63,8 +75,8 @@ public class TareaService {
 
     @GET
     @Logged
-//    @JWTTokenNeeded
-//    @RoleNeeded({Role.USER, Role.ADMIN})
+    @JWTTokenNeeded
+    @RoleNeeded({Role.USER, Role.ADMIN})
     @ApiOperation(value = "Get tareas", response = Tarea.class, responseContainer = "List")
     public Response findAll() {
         List<Tarea> tareas = tareaDao.findAll();
@@ -75,8 +87,8 @@ public class TareaService {
     @GET
     @Logged
     @Path("{id}")
-//    @JWTTokenNeeded
-//    @RoleNeeded({Role.USER, Role.ADMIN})
+    @JWTTokenNeeded
+    @RoleNeeded({Role.USER, Role.ADMIN})
     @ApiOperation(value = "Get Tarea", response = Tarea.class)
     @ApiResponses(value = {
             @ApiResponse(code = 404, message = "Id no encontrado")})
@@ -89,8 +101,8 @@ public class TareaService {
     @PUT
     @Logged
     @Path("{id}")
-    //    @JWTTokenNeeded
-//    @RoleNeeded({Role.USER, Role.ADMIN})
+    @JWTTokenNeeded
+    @RoleNeeded({Role.USER, Role.ADMIN})
     @ApiOperation(value = "Edit Tarea", response = Tarea.class)
     @ApiResponses(value = {
             @ApiResponse(code = 304, message = "Error: objeto no modificado")})
@@ -98,6 +110,8 @@ public class TareaService {
         try {
             Tarea tareaVieja = tareaDao.findById(id);
             if (tareaVieja == null) throw new MagnesiumNotFoundException("No existe la tarea");
+
+            tarea.setPuntoControl(tareaVieja.getPuntoControl());
 
             tarea.setId(id);
             tarea = tareaDao.save(tarea);

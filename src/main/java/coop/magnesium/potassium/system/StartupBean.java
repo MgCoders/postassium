@@ -1,9 +1,7 @@
 package coop.magnesium.potassium.system;
 
-import coop.magnesium.potassium.db.dao.TareaDao;
-import coop.magnesium.potassium.db.dao.UsuarioDao;
-import coop.magnesium.potassium.db.entities.Tarea;
-import coop.magnesium.potassium.db.entities.Usuario;
+import coop.magnesium.potassium.db.dao.*;
+import coop.magnesium.potassium.db.entities.*;
 import coop.magnesium.potassium.utils.DataRecuperacionPassword;
 import coop.magnesium.potassium.utils.PasswordUtils;
 import coop.magnesium.potassium.utils.ex.MagnesiumBdMultipleResultsException;
@@ -13,6 +11,7 @@ import javax.annotation.Resource;
 import javax.ejb.*;
 import javax.inject.Inject;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.Date;
@@ -36,6 +35,15 @@ public class StartupBean {
     @EJB
     TareaDao tareaDao;
 
+    @EJB
+    ClienteDao clienteDao;
+
+    @EJB
+    TrabajoDao trabajoDao;
+
+    @EJB
+    PuntoControlDao puntoControlDao;
+
     private ConcurrentHashMap recuperacionPassword = null;
 
     @PostConstruct
@@ -45,7 +53,15 @@ public class StartupBean {
             if (usuarioDao.findByEmail("root@magnesium.coop") == null) {
                 usuarioDao.save(new Usuario("root@magnesium.coop", "root", PasswordUtils.digestPassword(System.getenv("ROOT_PASSWORD") != null ? System.getenv("ROOT_PASSWORD") : "bu"), "ADMIN"));
             }
-            tareaDao.save(new Tarea("T1","D1", 120, 1));
+            Cliente cliente = clienteDao.save(new Cliente("E1","1", "1", "C1", "1", "p", "w"));
+            Trabajo trabajo = new Trabajo();
+            trabajo.setCliente(cliente);
+            trabajo.setMotivoVisita("m1");
+            trabajo.setFechaRecepcion(LocalDateTime.now());
+            trabajo.setFechaProvistaEntrega(LocalDate.now());
+            trabajo = trabajoDao.save(trabajo);
+            PuntoControl puntoControl = puntoControlDao.save(new PuntoControl("n1", trabajo, 1));
+            tareaDao.save(new Tarea("T1","D1", 120, 0, puntoControl));
 
         } catch (MagnesiumBdMultipleResultsException e) {
             logger.warning(e.getMessage());

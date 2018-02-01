@@ -24,10 +24,10 @@ public class Registro {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
+    @NotNull(message = "El registro debe tener minutos")
     private Integer minutos;
 
-    @NotNull
+    @NotNull(message = "El registro debe tener una fecha")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     @ApiModelProperty(dataType = "date", example = "23-01-2017")
     @JsonDeserialize(using = LocalDateDeserializer.class)
@@ -40,6 +40,7 @@ public class Registro {
     @JoinColumn(name = "usuario_id", referencedColumnName = "id")
     private Usuario usuario;
 
+    @NotNull(message = "El registro debe tener una tarea")
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "tarea_id", referencedColumnName = "id", nullable = false)
     private Tarea tarea;

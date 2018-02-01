@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModel;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 /**
  * Created by pablo on 23/01/18.
@@ -12,7 +13,7 @@ import javax.persistence.*;
 @Entity
 @JsonAutoDetect
 @ApiModel
-@Table(name = "tarea_material")
+@Table(name = "tarea_material", uniqueConstraints = @UniqueConstraint(columnNames = {"tarea_id", "material_id"}))
 public class TareaMaterial {
 
     @Id
@@ -21,11 +22,13 @@ public class TareaMaterial {
 
     private Integer cantidad;
 
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "tarea_id", referencedColumnName = "id", nullable = false)
     @JsonIgnore
     private Tarea tarea;
 
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "material_id", referencedColumnName = "id", nullable = false)
     private Material material;

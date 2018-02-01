@@ -1,6 +1,7 @@
 package coop.magnesium.potassium.db.entities;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModel;
 
 import javax.persistence.*;
@@ -22,6 +23,10 @@ public class Rubro {
     @Column(unique = true)
     private String nombre;
 
+    @JsonIgnore
+    @NotNull
+    private Integer borrado = 0;
+
     public Rubro() {
     }
 
@@ -39,5 +44,13 @@ public class Rubro {
 
     public void setNombre(String nombre) {
         this.nombre = nombre;
+    }
+
+    public Integer getBorrado() {
+        return borrado;
+    }
+
+    public void setBorrado(Integer borrado) {
+        this.borrado = borrado;
     }
 }

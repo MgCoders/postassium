@@ -1,12 +1,10 @@
 package coop.magnesium.potassium.db.entities;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.*;
 import io.swagger.annotations.ApiModel;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -22,6 +20,7 @@ public class Tarea {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull(message = "La tarea debe tener un nombre")
     private String nombre;
     private String descripcion;
 
@@ -30,6 +29,9 @@ public class Tarea {
 
     private Integer borrado = 0;
 
+    @NotNull(message = "La tarea debe tener un punto de control")
+    @ManyToOne
+    private PuntoControl puntoControl;
 
     public Tarea() {
     }
@@ -39,6 +41,14 @@ public class Tarea {
         this.descripcion = descripcion;
         this.minutosEstimados = minutosEstimados;
         this.borrado = borrada;
+    }
+
+    public Tarea(String nombre, String descripcion, Integer minutosEstimados, Integer borrado, PuntoControl puntoControl) {
+        this.nombre = nombre;
+        this.descripcion = descripcion;
+        this.minutosEstimados = minutosEstimados;
+        this.borrado = borrado;
+        this.puntoControl = puntoControl;
     }
 
     public Long getId() {
@@ -79,5 +89,15 @@ public class Tarea {
 
     public void setBorrado(Integer borrado) {
         this.borrado = borrado;
+    }
+
+    @JsonIgnore
+    public PuntoControl getPuntoControl() {
+        return puntoControl;
+    }
+
+    @JsonProperty
+    public void setPuntoControl(PuntoControl puntoControl) {
+        this.puntoControl = puntoControl;
     }
 }

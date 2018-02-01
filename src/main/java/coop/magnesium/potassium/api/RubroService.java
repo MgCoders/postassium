@@ -7,6 +7,8 @@ import coop.magnesium.potassium.db.entities.Registro;
 import coop.magnesium.potassium.db.entities.Role;
 import coop.magnesium.potassium.db.entities.Rubro;
 import coop.magnesium.potassium.utils.Logged;
+import coop.magnesium.potassium.utils.ex.MagnesiumBdAlredyExistsException;
+import coop.magnesium.potassium.utils.ex.MagnesiumBdNotFoundException;
 import coop.magnesium.potassium.utils.ex.MagnesiumException;
 import coop.magnesium.potassium.utils.ex.MagnesiumNotFoundException;
 import io.swagger.annotations.Api;
@@ -50,11 +52,12 @@ public class RubroService {
         try {
             if (rubro.getId() != null) throw new MagnesiumException("Ya existe el registro");
 
-            //TODO controlar el unique nombre
+            Rubro rubro1 = rubroDao.findByName(rubro.getNombre());
+            if (rubro1 != null) throw new MagnesiumBdAlredyExistsException("Ya existe el rubro para el nombre: " + rubro.getNombre());
 
             rubro = rubroDao.save(rubro);
             return Response.status(Response.Status.CREATED).entity(rubro).build();
-        } catch (MagnesiumException e) {
+        } catch (MagnesiumException | MagnesiumBdAlredyExistsException e) {
             logger.warning(e.getMessage());
             return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
         } catch (Exception e) {
@@ -107,7 +110,9 @@ public class RubroService {
             Rubro rubroViejo = rubroDao.findById(id);
             if (rubroViejo == null) throw new MagnesiumNotFoundException("No existe el rubro");
 
-            //TODO controlar el unique nombre
+            Rubro rubro1 = rubroDao.findByName(rubro.getNombre());
+            if (rubro1 != null && !rubro1.getId().equals(rubro.getId()))
+                throw new MagnesiumBdAlredyExistsException("Ya existe el rubro para el nombre: " + rubro.getNombre());
 
             rubro.setId(id);
             rubro = rubroDao.save(rubro);

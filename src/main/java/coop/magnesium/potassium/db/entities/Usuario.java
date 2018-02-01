@@ -20,12 +20,12 @@ public class Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotNull
+    @NotNull(message = "El usuario debe tener un email")
     @Column(unique = true)
     private String email;
-    @NotNull
+    @NotNull(message = "El usuario debe tener un nombre")
     private String nombre;
-    @NotNull
+    @NotNull(message = "El usuario debe tener password")
     private String password;
     @NotNull
     private String role = Role.USER.name();

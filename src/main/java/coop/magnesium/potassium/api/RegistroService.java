@@ -61,8 +61,6 @@ public class RegistroService {
         try {
             if (registro.getId() != null) throw new MagnesiumException("Ya existe el registro");
 
-            if (registro.getTarea() == null) throw new MagnesiumNotFoundException("El registro debe tener una tarea");
-
             Tarea tarea = tareaDao.findById(registro.getTarea().getId());
             if (tarea == null) throw new MagnesiumNotFoundException("Tarea no existe");
             registro.setTarea(tarea);
@@ -137,17 +135,10 @@ public class RegistroService {
             @ApiResponse(code = 304, message = "Error: objeto no modificado")})
     public Response edit(@PathParam("id") Long id, @Valid Registro registro) {
         try {
-
             Registro registroViejo = registroDao.findById(registro.getId());
             if (registroViejo == null) throw new MagnesiumNotFoundException("No existe el registro");
 
-            if (registro.getTarea() == null) throw new MagnesiumNotFoundException("El registro debe tener una tarea");
-
-            Tarea tarea = tareaDao.findById(registro.getTarea().getId());
-            if (tarea == null) throw new MagnesiumNotFoundException("Tarea no existe");
-            if (!tarea.getId().equals(registroViejo.getTarea().getId()))
-                throw new MagnesiumException("No se permite cambiar la tarea del registro");
-            registro.setTarea(tarea);
+            registro.setTarea(registroViejo.getTarea()); // No se permite cambiar de tarea.
 
             validate(registro);
 
