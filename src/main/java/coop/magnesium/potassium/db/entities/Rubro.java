@@ -23,6 +23,8 @@ public class Rubro {
     @Column(unique = true)
     private String nombre;
 
+    private String descripcion;
+
     @JsonIgnore
     @NotNull
     private Integer borrado = 0;
@@ -52,5 +54,13 @@ public class Rubro {
 
     public void setBorrado(Integer borrado) {
         this.borrado = borrado;
+    }
+
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
     }
 }
