@@ -10,7 +10,7 @@ import javax.validation.constraints.NotNull;
 public class Equipo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idEquipo;
+    private Long id;
 
     @ManyToOne
     private Cliente cliente;
@@ -42,12 +42,12 @@ public class Equipo {
         this.tipoEquipo = tipoEquipo;
     }
 
-    public Long getIdEquipo() {
-        return idEquipo;
+    public Long getId() {
+        return id;
     }
 
-    public void setIdEquipo(Long idEquipo) {
-        this.idEquipo = idEquipo;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Cliente getCliente() {

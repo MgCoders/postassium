@@ -54,7 +54,7 @@ public class EquipoService {
             @ApiResponse(code = 500, message = "Error interno")})
     public Response create(@Valid Equipo equipo) {
         try {
-            Equipo equipoExists = equipo.getIdEquipo() != null ? equipoDao.findById(equipo.getIdEquipo()) : null;
+            Equipo equipoExists = equipo.getId() != null ? equipoDao.findById(equipo.getId()) : null;
             if (equipoExists != null) throw new MagnesiumBdAlredyExistsException("Id ya existe");
 
 
@@ -130,7 +130,7 @@ public class EquipoService {
     public Response edit(@PathParam("id") Long id, @Valid Equipo equipo) {
         try {
             if (equipoDao.findById(id) == null) throw new MagnesiumNotFoundException("Equipo no encontrado");
-            equipo.setIdEquipo(id);
+            equipo.setId(id);
             equipo = equipoDao.save(equipo);
             return Response.ok(equipo).build();
         } catch (Exception e) {

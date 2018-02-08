@@ -5,10 +5,8 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
 import io.swagger.annotations.ApiModelProperty;
 
 import javax.persistence.*;
@@ -16,7 +14,6 @@ import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 /**
  * Created by msteglich on 1/20/18.
@@ -26,7 +23,7 @@ public class Trabajo {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idTrabajo;
+    private Long id;
 
     @NotNull
     @ManyToOne
@@ -86,12 +83,12 @@ public class Trabajo {
         this.cliente = cliente;
     }
 
-    public Long getIdTrabajo() {
-        return idTrabajo;
+    public Long getId() {
+        return id;
     }
 
-    public void setIdTrabajo(Long idTrabajo) {
-        this.idTrabajo = idTrabajo;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getEstado() {
