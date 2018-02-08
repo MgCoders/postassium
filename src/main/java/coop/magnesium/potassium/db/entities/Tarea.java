@@ -31,7 +31,7 @@ public class Tarea {
 
     @NotNull(message = "La tarea debe tener un punto de control")
     @ManyToOne
-    private PuntoControl puntoControl;
+    private PuntoControl puntoControl; // View annotations in getter and setter
 
     public Tarea() {
     }

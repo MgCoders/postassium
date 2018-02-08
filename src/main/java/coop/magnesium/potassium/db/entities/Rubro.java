@@ -13,7 +13,7 @@ import javax.validation.constraints.NotNull;
 @Entity
 @JsonAutoDetect
 @ApiModel
-public class Rubro {
+public class Rubro extends AbstractEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,10 +24,6 @@ public class Rubro {
     private String nombre;
 
     private String descripcion;
-
-    @JsonIgnore
-    @NotNull
-    private Integer borrado = 0;
 
     public Rubro() {
     }
@@ -46,14 +42,6 @@ public class Rubro {
 
     public void setNombre(String nombre) {
         this.nombre = nombre;
-    }
-
-    public Integer getBorrado() {
-        return borrado;
-    }
-
-    public void setBorrado(Integer borrado) {
-        this.borrado = borrado;
     }
 
     public String getDescripcion() {
