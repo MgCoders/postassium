@@ -22,6 +22,7 @@ import javax.transaction.Transactional;
 import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
+import java.time.Instant;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -111,13 +112,38 @@ public class RubroService {
             if (rubroViejo == null) throw new MagnesiumNotFoundException("No existe el rubro");
 
             Rubro rubro1 = rubroDao.findByName(rubro.getNombre());
-            if (rubro1 != null && !rubro1.getId().equals(rubro.getId()))
+            if (rubro1 != null && !rubro1.getId().equals(id))
                 throw new MagnesiumBdAlredyExistsException("Ya existe el rubro para el nombre: " + rubro.getNombre());
 
             rubro.setId(id);
+
             rubro = rubroDao.save(rubro);
             return Response.ok(rubro).build();
-        } catch (MagnesiumNotFoundException e) {
+        } catch (MagnesiumNotFoundException | MagnesiumBdAlredyExistsException e) {
+            logger.warning(e.getMessage());
+            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
+        } catch (Exception e) {
+            logger.severe(e.getMessage());
+            return Response.serverError().entity(e.getMessage()).build();
+        }
+    }
+
+    @DELETE
+    @Logged
+    @Path("{id}")
+    @JWTTokenNeeded
+    @RoleNeeded({Role.USER, Role.ADMIN})
+    @ApiOperation(value = "Delete Rubro", response = Rubro.class)
+    public Response delete(@PathParam("id") Long id) {
+        try {
+            Rubro rubro = rubroDao.findById(id);
+            if (rubro == null) throw new MagnesiumBdNotFoundException("No existe el rubro");
+
+            rubro.setBorrado(1);
+            rubroDao.save(rubro);
+
+            return Response.ok(rubro).build();
+        } catch (MagnesiumBdNotFoundException e) {
             logger.warning(e.getMessage());
             return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
         } catch (Exception e) {
