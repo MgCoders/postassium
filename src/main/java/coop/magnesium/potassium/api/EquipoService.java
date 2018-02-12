@@ -112,8 +112,8 @@ public class EquipoService {
     @ApiOperation(value = "Get Equipos", response = Equipo.class, responseContainer = "List")
     @ApiResponses(value = {
             @ApiResponse(code = 404, message = "Cliente no encontrado")})
-    public Response findByCliente(@PathParam("cliente") Long idCliente) {
-        Cliente cliente = clienteDao.findById(idCliente);
+    public Response findByCliente(@PathParam("cliente") Long id) {
+        Cliente cliente = clienteDao.findById(id);
         if (cliente == null) return Response.status(Response.Status.NOT_FOUND).build();
 
         List<Equipo> equipoList = equipoDao.findAllByCliente(cliente);
