@@ -58,7 +58,7 @@ public class TrabajoService {
             @ApiResponse(code = 500, message = "Error interno")})
     public Response create(@Valid Trabajo trabajo) {
         try {
-            Trabajo trabajoExists = trabajo.getIdTrabajo() != null ? trabajoDao.findById(trabajo.getIdTrabajo()) : null;
+            Trabajo trabajoExists = trabajo.getId() != null ? trabajoDao.findById(trabajo.getId()) : null;
             if (trabajoExists != null) throw new MagnesiumBdAlredyExistsException("Id ya existe");
 
 
@@ -153,7 +153,7 @@ public class TrabajoService {
     public Response edit(@PathParam("id") Long id, @Valid Trabajo trabajo) {
         try {
             if (trabajoDao.findById(id) == null) throw new MagnesiumNotFoundException("Trabajo no encontrado");
-            trabajo.setIdTrabajo(id);
+            trabajo.setId(id);
             trabajo = trabajoDao.save(trabajo);
             return Response.ok(trabajo).build();
         } catch (Exception e) {

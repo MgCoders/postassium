@@ -50,7 +50,7 @@ public class ClienteService {
             @ApiResponse(code = 500, message = "Error interno")})
     public Response create(@Valid Cliente cliente) {
         try {
-            Cliente clienteExists = cliente.getIdCliente() != null ? clienteDao.findById(cliente.getIdCliente()) : null;
+            Cliente clienteExists = cliente.getId() != null ? clienteDao.findById(cliente.getId()) : null;
             if (clienteExists != null) throw new MagnesiumBdAlredyExistsException("Id ya existe");
 
 
@@ -124,7 +124,7 @@ public class ClienteService {
     public Response edit(@PathParam("id") Long id, @Valid Cliente cliente) {
         try {
             if (clienteDao.findById(id) == null) throw new MagnesiumNotFoundException("Cliente no encontrado");
-            cliente.setIdCliente(id);
+            cliente.setId(id);
             cliente = clienteDao.save(cliente);
             return Response.ok(cliente).build();
         } catch (Exception e) {
