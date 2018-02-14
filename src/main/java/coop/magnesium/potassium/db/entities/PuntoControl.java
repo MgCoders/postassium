@@ -33,8 +33,7 @@ public class PuntoControl {
     @NotNull
     private Integer orden;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    @JoinColumn(name = "punto_control_id")
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER, mappedBy = "puntoControl")
     private List<Tarea> tareas = new ArrayList<>();
 
 

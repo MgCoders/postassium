@@ -31,6 +31,7 @@ public class Tarea {
 
     @NotNull(message = "La tarea debe tener un punto de control")
     @ManyToOne
+    @JoinColumn(name = "punto_control_id")
     private PuntoControl puntoControl; // View annotations in getter and setter
 
     public Tarea() {
