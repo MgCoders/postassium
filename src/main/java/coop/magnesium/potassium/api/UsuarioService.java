@@ -9,8 +9,6 @@ import coop.magnesium.potassium.db.entities.Usuario;
 import coop.magnesium.potassium.utils.Logged;
 import coop.magnesium.potassium.utils.PasswordUtils;
 import coop.magnesium.potassium.utils.ex.MagnesiumBdAlredyExistsException;
-import coop.magnesium.potassium.utils.ex.MagnesiumBdMultipleResultsException;
-import coop.magnesium.potassium.utils.ex.MagnesiumException;
 import coop.magnesium.potassium.utils.ex.MagnesiumNotFoundException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
