@@ -10,6 +10,7 @@ import coop.magnesium.potassium.utils.Logged;
 import coop.magnesium.potassium.utils.PasswordUtils;
 import coop.magnesium.potassium.utils.ex.MagnesiumBdAlredyExistsException;
 import coop.magnesium.potassium.utils.ex.MagnesiumBdMultipleResultsException;
+import coop.magnesium.potassium.utils.ex.MagnesiumException;
 import coop.magnesium.potassium.utils.ex.MagnesiumNotFoundException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -46,22 +47,16 @@ public class UsuarioService {
     @ApiOperation(value = "Create usuario", response = Usuario.class)
     public Response create(@Valid Usuario usuario) {
         try {
-            Usuario colaboradorExists = usuarioDao.findByEmail(usuario.getEmail());
-            if (colaboradorExists != null) throw new MagnesiumBdAlredyExistsException("Email ya existe");
+            Usuario usuarioExists = usuarioDao.findByEmail(usuario.getEmail());
+            if (usuarioExists != null) throw new MagnesiumBdAlredyExistsException("Email ya existe");
+
             usuario.setPassword(PasswordUtils.digestPassword(usuario.getPassword()));
-//            if (usuario.getCargo() != null) {
-//                Cargo cargo = cargoDao.findById(usuario.getCargo().getId());
-//                if (cargo == null) throw new MagnesiumNotFoundException("Cargo no existe");
-//                usuario.setCargo(cargo);
-//            }
+
             usuario = usuarioDao.save(usuario);
             return Response.status(Response.Status.CREATED).entity(usuario).build();
-        } catch (MagnesiumBdMultipleResultsException | MagnesiumBdAlredyExistsException exists) {
-            logger.warning("Email ya existe");
-            return Response.status(Response.Status.CONFLICT).entity("Email ya existe").build();
-//        } catch (MagnesiumNotFoundException e) {
-//            logger.warning(e.getMessage());
-//            return Response.status(Response.Status.BAD_REQUEST).entity("Rol no existe").build();
+        } catch (MagnesiumBdAlredyExistsException e) {
+            logger.warning(e.getMessage());
+            return Response.status(Response.Status.CONFLICT).entity(e.getMessage()).build();
         } catch (Exception e) {
             logger.severe(e.getMessage());
             return Response.serverError().entity(e.getMessage()).build();
@@ -96,8 +91,14 @@ public class UsuarioService {
     @ApiOperation(value = "Edit usuario", response = Usuario.class)
     public Response edit(@PathParam("id") Long id, @Valid Usuario usuario) {
         try {
-            if (usuarioDao.findById(id) == null) throw new MagnesiumNotFoundException("Usuario no encontrado");
+            Usuario usuarioViejo = usuarioDao.findById(id);
+            if (usuarioViejo == null) throw new MagnesiumNotFoundException("Usuario no encontrado");
+
+            Usuario usuarioExists = usuarioDao.findByEmail(usuario.getEmail());
+            if (usuarioExists != null && !usuarioExists.getId().equals(id)) throw new MagnesiumBdAlredyExistsException("Email ya existe");
+
             usuario.setId(id);
+
             usuario = usuarioDao.save(usuario);
             return Response.ok(usuario).build();
         } catch (Exception e) {

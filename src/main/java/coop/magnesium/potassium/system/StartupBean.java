@@ -61,7 +61,7 @@ public class StartupBean {
             trabajo.setFechaProvistaEntrega(LocalDate.now());
             trabajo = trabajoDao.save(trabajo);
             PuntoControl puntoControl = puntoControlDao.save(new PuntoControl("n1", trabajo, 1));
-            PuntoControl puntoControl2 = puntoControlDao.save(new PuntoControl("n1", trabajo, 1));
+            PuntoControl puntoControl2 = puntoControlDao.save(new PuntoControl("n2", trabajo, 1));
             tareaDao.save(new Tarea("T1","D1", 120, 0, puntoControl));
             tareaDao.save(new Tarea("T2","D2", 120, 0, puntoControl));
             tareaDao.save(new Tarea("T2","D2", 120, 0, puntoControl2));

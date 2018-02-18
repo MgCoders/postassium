@@ -70,15 +70,15 @@ public class AuthService {
                                      @FormParam("password") String password) {
         try {
             // Authenticate the sulfurUser using the credentials provided
-            Usuario sulfurUser = authenticate(email, password);
+            Usuario usuario = authenticate(email, password);
             //Info que quiero guardar en token
             Map<String, Object> map = new HashMap<>();
-            map.put("role", sulfurUser.getRole());
-            map.put("id", String.valueOf(sulfurUser.getId()));
+            map.put("role", usuario.getRole());
+            map.put("id", String.valueOf(usuario.getId()));
             // Issue a token for the sulfurUser
             String token = issueToken(email, map);
-            sulfurUser.setToken(token);
-            return Response.ok(sulfurUser).build();
+            usuario.setToken(token);
+            return Response.ok(usuario).build();
         } catch (MagnesiumSecurityException | MagnesiumBdMultipleResultsException | MagnesiumBdNotFoundException e) {
             logger.warning(e.getMessage());
             return Response.status(UNAUTHORIZED).build();

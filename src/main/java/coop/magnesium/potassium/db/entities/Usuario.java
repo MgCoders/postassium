@@ -25,7 +25,7 @@ public class Usuario {
     private String email;
     @NotNull(message = "El usuario debe tener un nombre")
     private String nombre;
-    @NotNull(message = "El usuario debe tener password")
+
     private String password;
     @NotNull
     private String role = Role.USER.name();

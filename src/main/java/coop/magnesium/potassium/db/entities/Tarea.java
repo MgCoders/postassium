@@ -32,7 +32,7 @@ public class Tarea {
     @NotNull(message = "La tarea debe tener un punto de control")
     @ManyToOne
     @JoinColumn(name = "punto_control_id")
-    private PuntoControl puntoControl; // View annotations in getter and setter
+    private PuntoControl puntoControl;
 
     public Tarea() {
     }
@@ -92,12 +92,12 @@ public class Tarea {
         this.borrado = borrado;
     }
 
-    @JsonIgnore
+    //@JsonIgnore
     public PuntoControl getPuntoControl() {
         return puntoControl;
     }
 
-    @JsonProperty
+    //@JsonProperty
     public void setPuntoControl(PuntoControl puntoControl) {
         this.puntoControl = puntoControl;
     }

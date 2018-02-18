@@ -1,6 +1,7 @@
 package coop.magnesium.potassium.db.entities;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModel;
 
 import javax.persistence.*;
@@ -33,6 +34,7 @@ public class PuntoControl {
     @NotNull
     private Integer orden;
 
+    @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER, mappedBy = "puntoControl")
     private List<Tarea> tareas = new ArrayList<>();
 
