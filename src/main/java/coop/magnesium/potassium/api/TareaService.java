@@ -83,6 +83,16 @@ public class TareaService {
         return Response.ok(tareas).build();
     }
 
+    @GET
+    @Logged
+    @Path("trabajo/{id}")
+    @JWTTokenNeeded
+    @RoleNeeded({Role.USER, Role.ADMIN})
+    @ApiOperation(value = "Get tareas", response = Tarea.class, responseContainer = "List")
+    public Response findAllByTrabajo(@PathParam("id") Long id) {
+        List<Tarea> tareas = tareaDao.findAllByTrabajo(id);
+        return Response.ok(tareas).build();
+    }
 
     @GET
     @Logged
@@ -111,7 +121,9 @@ public class TareaService {
             Tarea tareaVieja = tareaDao.findById(id);
             if (tareaVieja == null) throw new MagnesiumNotFoundException("No existe la tarea");
 
-            tarea.setPuntoControl(tareaVieja.getPuntoControl());
+            PuntoControl puntoControl = puntoControlDao.findById(tarea.getPuntoControl().getId());
+            if (puntoControl == null) throw new MagnesiumBdNotFoundException("No existe el punto de control");
+            tarea.setPuntoControl(puntoControl);
 
             tarea.setId(id);
             tarea = tareaDao.save(tarea);
