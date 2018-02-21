@@ -1,0 +1,43 @@
+version: '3.3'
+
+services:
+
+  jee_REPLACE_PROJECT_NAME:
+    image: REPLACE_IMAGE_NAME
+    networks:
+      - traefik_proxy
+    environment:
+       DB_HOST: postgres
+       DB_NAME: postgres
+       DB_USER: postgres
+       DB_PASS: postgres
+       LOGSTASH_HOST:
+       ZOHO_MAIL_FROM: testing@magnesium.coop
+       ZOHO_MAIL_PASS: testing
+       ZOHO_MAIL_HOST: mails_mailhog
+       ZOHO_MAIL_PORT: 1025
+       ROOT_PASSWORD: root
+    deploy:
+      labels:
+        - "traefik.port=8080"
+        - "traefik.backend=jee_REPLACE_PROJECT_NAME"
+        - "traefik.frontend.rule=Host:REPLACE_URL_TEST"
+        - "traefik.enable=true"
+        - "traefik.docker.network=traefik_proxy"
+        - "traefik.backend.loadbalancer.sticky=true"
+        - "traefik.frontend.passHostHeader=true"
+      restart_policy:
+        condition: on-failure
+
+  postgres:
+    image: postgres
+    networks:
+      - traefik_proxy
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+
+networks:
+  traefik_proxy:
+    external: true
