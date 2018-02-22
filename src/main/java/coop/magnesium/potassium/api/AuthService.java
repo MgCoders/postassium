@@ -176,12 +176,13 @@ public class AuthService {
 
         Usuario usuario = usuarioDao.findByEmail(email);
 
-        // TODO siempre retornar el mismo mensaje
         if (usuario == null) {
-            throw new MagnesiumSecurityException("Invalid Usuario");
+            logger.info("Usuario no encontrado");
+            throw new MagnesiumSecurityException("Invalid user/password");
         }
         if (!PasswordUtils.digestPassword(password).equals(usuario.getPassword())) {
-            throw new MagnesiumSecurityException("Invalid password");
+            logger.info("Password no es correcta");
+            throw new MagnesiumSecurityException("Invalid user/password");
         }
 
         return usuario;
