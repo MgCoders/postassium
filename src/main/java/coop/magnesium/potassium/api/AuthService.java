@@ -174,10 +174,17 @@ public class AuthService {
     private Usuario authenticate(String email, String password)
             throws MagnesiumBdNotFoundException, MagnesiumBdMultipleResultsException, MagnesiumSecurityException {
 
-        Usuario sulfurUser = usuarioDao.findByEmail(email);
-        if (sulfurUser == null || !PasswordUtils.digestPassword(password).equals(sulfurUser.getPassword()))
-            throw new MagnesiumSecurityException("Invalid sulfurUser/password");
-        return sulfurUser;
+        Usuario usuario = usuarioDao.findByEmail(email);
+
+        // TODO siempre retornar el mismo mensaje
+        if (usuario == null) {
+            throw new MagnesiumSecurityException("Invalid Usuario");
+        }
+        if (!PasswordUtils.digestPassword(password).equals(usuario.getPassword())) {
+            throw new MagnesiumSecurityException("Invalid password");
+        }
+
+        return usuario;
     }
 
     private String issueToken(String login, Map<String, Object> claims) {
