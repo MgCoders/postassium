@@ -22,7 +22,7 @@ public class TipoTarea {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @NotNull
-    @Column(unique = true)
+
     private String codigo;
     @NotNull
     private String nombre;

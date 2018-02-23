@@ -44,6 +44,13 @@ public class StartupBean {
     @EJB
     PuntoControlDao puntoControlDao;
 
+    @EJB
+    TipoEquioDao tipoEquipoDao;
+
+    @EJB
+    EquipoDao equipoDao;
+
+
     private ConcurrentHashMap recuperacionPassword = null;
 
     @PostConstruct
@@ -53,7 +60,8 @@ public class StartupBean {
             if (usuarioDao.findByEmail("root@magnesium.coop") == null) {
                 usuarioDao.save(new Usuario("root@magnesium.coop", "root", PasswordUtils.digestPassword(System.getenv("ROOT_PASSWORD") != null ? System.getenv("ROOT_PASSWORD") : "bu"), "ADMIN"));
             }
-            Cliente cliente = clienteDao.save(new Cliente("E1","1", "1", "C1", "1", "p", "w"));
+            Cliente cliente = clienteDao.save(new Cliente("Empresa 1","100 321 6546", "099 111 111", "C1", "1", "p@asd.ewe", "w"));
+            Cliente cliente2 = clienteDao.save(new Cliente("Eempresa 2","218 987 352", "097 666 666", "C2", "1", "kk.qwe@asdas", "w"));
             Trabajo trabajo = new Trabajo();
             trabajo.setCliente(cliente);
             trabajo.setMotivoVisita("m1");
@@ -65,6 +73,16 @@ public class StartupBean {
             tareaDao.save(new Tarea("T1","D1", 120, 0, puntoControl));
             tareaDao.save(new Tarea("T2","D2", 120, 0, puntoControl));
             tareaDao.save(new Tarea("T2","D2", 120, 0, puntoControl2));
+
+
+            TipoEquipo camion = tipoEquipoDao.save(new TipoEquipo("Camion","Camion"));
+            TipoEquipo remolque = tipoEquipoDao.save(new TipoEquipo("Remolque","Remolque"));
+            TipoEquipo barco = tipoEquipoDao.save(new TipoEquipo("Barco","Barco"));
+
+            equipoDao.save( new Equipo(cliente, "Scania", "48 ruedas", "sdasd", "Rojo", camion));
+            equipoDao.save( new Equipo(cliente, "Volkswagen", "52 ruedas", "asdasd", "Azul", remolque));
+            equipoDao.save( new Equipo(cliente2, "Mercedes Benz", "67 ruedas", "asdasd", "Blanco", barco));
+
 
         } catch (MagnesiumBdMultipleResultsException e) {
             logger.warning(e.getMessage());
