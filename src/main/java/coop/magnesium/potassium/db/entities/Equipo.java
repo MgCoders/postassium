@@ -1,5 +1,8 @@
 package coop.magnesium.potassium.db.entities;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import io.swagger.annotations.ApiModel;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
@@ -7,12 +10,16 @@ import javax.validation.constraints.NotNull;
  * Created by msteglich on 1/20/18.
  */
 @Entity
+@JsonAutoDetect
+@ApiModel
 public class Equipo {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.ALL})
+    @NotNull(message = "La tarea debe tener un Cliente")
     private Cliente cliente;
 
     @NotNull
@@ -27,7 +34,7 @@ public class Equipo {
     @NotNull
     private String color;
 
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.ALL})
     private TipoEquipo tipoEquipo;
 
     public Equipo() {
