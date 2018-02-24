@@ -61,7 +61,7 @@ public class TipoEquipo {
 
     @Override
     public String toString() {
-        return "TipoTarea{" +
+        return "TipoEquipo{" +
                 "id=" + idTipoEquipo +
                 ", descripcion='" + descripcion + '\'' +
                 ", dibujo='" + dibujo + '\'' +
