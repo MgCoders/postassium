@@ -13,7 +13,7 @@ import javax.validation.constraints.NotNull;
 @Entity
 @JsonAutoDetect
 @ApiModel
-@Table(name = "tarea_material", uniqueConstraints = @UniqueConstraint(columnNames = {"tarea_id", "material_id"}))
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"tarea_id", "material_id"}))
 public class TareaMaterial {
 
     @Id

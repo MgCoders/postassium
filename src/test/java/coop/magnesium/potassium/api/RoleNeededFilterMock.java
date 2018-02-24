@@ -3,7 +3,7 @@ package coop.magnesium.potassium.api;
 import coop.magnesium.potassium.api.utils.JWTTokenNeeded;
 import coop.magnesium.potassium.api.utils.RoleNeeded;
 import coop.magnesium.potassium.db.entities.Role;
-import coop.magnesium.potassium.db.entities.SulfurUser;
+import coop.magnesium.potassium.db.entities.PotassiumUser;
 import coop.magnesium.potassium.utils.KeyGenerator;
 
 import javax.annotation.Priority;
@@ -104,10 +104,10 @@ public class RoleNeededFilterMock implements ContainerRequestFilter {
 
     public static class Authorizer implements SecurityContext {
 
-        private SulfurUser sulfurUser;
+        private PotassiumUser sulfurUser;
 
         public Authorizer(Long colaboradorId, String role) {
-            this.sulfurUser = new SulfurUser(colaboradorId, role);
+            this.sulfurUser = new PotassiumUser(colaboradorId, role);
         }
 
         @Override

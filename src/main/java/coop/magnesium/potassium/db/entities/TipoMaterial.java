@@ -12,7 +12,6 @@ import javax.validation.constraints.NotNull;
 @Entity
 @JsonAutoDetect
 @ApiModel
-@Table(name = "tipo_material")
 public class TipoMaterial {
 
     @Id

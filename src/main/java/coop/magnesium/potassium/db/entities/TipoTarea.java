@@ -15,7 +15,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 @Entity
 @JsonAutoDetect
 @ApiModel
-@Table(name = "tipo_tarea")
 public class TipoTarea {
 
     @Id

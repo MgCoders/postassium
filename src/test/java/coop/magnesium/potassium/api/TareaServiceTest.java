@@ -1,29 +1,5 @@
 package coop.magnesium.potassium.api;
 
-import coop.magnesium.potassium.api.dto.HorasProyectoXCargo;
-import coop.magnesium.potassium.db.dao.TipoTareaDao;
-import coop.magnesium.potassium.db.entities.Cargo;
-import coop.magnesium.potassium.db.entities.TipoTarea;
-import coop.magnesium.potassium.utils.Logged;
-import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.container.test.api.RunAsClient;
-import org.jboss.arquillian.extension.rest.client.ArquillianResteasyResource;
-import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.arquillian.junit.InSequence;
-import org.jboss.shrinkwrap.api.Filters;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.EmptyAsset;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.GenericType;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import java.util.List;
-
 import static org.junit.Assert.assertEquals;
 
 /**
