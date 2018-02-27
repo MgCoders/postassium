@@ -7,16 +7,16 @@ import java.security.Principal;
 /**
  * Created by rsperoni on 05/05/17.
  */
-public class SulfurUser implements Principal {
+public class PotassiumUser implements Principal {
 
     private Long colaboradorId;
     private String role;
 
 
-    public SulfurUser() {
+    public PotassiumUser() {
     }
 
-    public SulfurUser(Long colaboradorId, String role) {
+    public PotassiumUser(Long colaboradorId, String role) {
         this.colaboradorId = colaboradorId;
         this.role = role;
     }

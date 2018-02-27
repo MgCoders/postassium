@@ -1,6 +1,5 @@
 package coop.magnesium.potassium.api;
 
-import coop.magnesium.potassium.api.dto.HorasProyectoXCargo;
 import coop.magnesium.potassium.db.dao.RegistroDao;
 import coop.magnesium.potassium.db.dao.RubroDao;
 import coop.magnesium.potassium.db.dao.TareaDao;
@@ -11,8 +10,6 @@ import coop.magnesium.potassium.db.entities.Tarea;
 import coop.magnesium.potassium.db.entities.Usuario;
 import coop.magnesium.potassium.utils.Logged;
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.container.test.api.RunAsClient;
-import org.jboss.arquillian.extension.rest.client.ArquillianResteasyResource;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.junit.InSequence;
 import org.jboss.shrinkwrap.api.Filters;
@@ -24,12 +21,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import javax.inject.Inject;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.WebTarget;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 import java.io.File;
-import java.time.LocalDate;
 import java.util.logging.Logger;
 
 import static org.junit.Assert.assertEquals;

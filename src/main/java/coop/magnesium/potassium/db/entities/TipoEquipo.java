@@ -1,9 +1,9 @@
 package coop.magnesium.potassium.db.entities;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import io.swagger.annotations.ApiModel;
+
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 
@@ -11,13 +11,17 @@ import javax.validation.constraints.NotNull;
  * Created by msteglich on 1/20/18.
  */
 @Entity
+@JsonAutoDetect
+@ApiModel
+@Table(name = "tipo_equipo")
 public class TipoEquipo {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long idTipoEquipo;
 
     @NotNull
+    @Column(unique = true)
     private String descripcion;
 
     @NotNull
@@ -53,5 +57,14 @@ public class TipoEquipo {
 
     public void setDibujo(String dibujo) {
         this.dibujo = dibujo;
+    }
+
+    @Override
+    public String toString() {
+        return "TipoEquipo{" +
+                "id=" + idTipoEquipo +
+                ", descripcion='" + descripcion + '\'' +
+                ", dibujo='" + dibujo + '\'' +
+                '}';
     }
 }

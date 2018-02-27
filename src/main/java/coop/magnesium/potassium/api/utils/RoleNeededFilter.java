@@ -1,7 +1,7 @@
 package coop.magnesium.potassium.api.utils;
 
 import coop.magnesium.potassium.db.entities.Role;
-import coop.magnesium.potassium.db.entities.SulfurUser;
+import coop.magnesium.potassium.db.entities.PotassiumUser;
 import coop.magnesium.potassium.utils.KeyGenerator;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
@@ -111,20 +111,20 @@ public class RoleNeededFilter implements ContainerRequestFilter {
 
     public static class Authorizer implements SecurityContext {
 
-        private SulfurUser sulfurUser;
+        private PotassiumUser potassiumUser;
 
         public Authorizer(Long colaboradorId, String role) {
-            this.sulfurUser = new SulfurUser(colaboradorId, role);
+            this.potassiumUser = new PotassiumUser(colaboradorId, role);
         }
 
         @Override
         public Principal getUserPrincipal() {
-            return this.sulfurUser;
+            return this.potassiumUser;
         }
 
         @Override
         public boolean isUserInRole(String s) {
-            return sulfurUser.getRole().equals(s);
+            return potassiumUser.getRole().equals(s);
         }
 
         @Override

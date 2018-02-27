@@ -3,7 +3,6 @@ package coop.magnesium.potassium.api;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import coop.magnesium.potassium.api.dto.HorasProyectoXCargo;
 import coop.magnesium.potassium.db.dao.UsuarioDao;
 import coop.magnesium.potassium.db.entities.Usuario;
 import coop.magnesium.potassium.system.MailEvent;
@@ -61,8 +60,7 @@ public class LoginServiceTest {
                         Usuario.class.getPackage(),
                         Logged.class.getPackage(),
                         MagnesiumSecurityException.class.getPackage(),
-                        UsuarioDao.class.getPackage(),
-                        HorasProyectoXCargo.class.getPackage())
+                        UsuarioDao.class.getPackage())
                 .addClass(JAXRSConfiguration.class)
                 .addClass(AuthService.class)
                 .addClass(MailEvent.class)

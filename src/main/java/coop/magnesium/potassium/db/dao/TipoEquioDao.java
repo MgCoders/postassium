@@ -1,23 +1,19 @@
 package coop.magnesium.potassium.db.dao;
 
-import coop.magnesium.potassium.db.entities.TipoTarea;
+import coop.magnesium.potassium.db.entities.TipoEquipo;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-/**
- * Created by rsperoni on 28/10/17.
- */
 @Stateless
-public class TipoTareaDao extends AbstractDao<TipoTarea, Long> {
-
+public class TipoEquioDao extends AbstractDao<TipoEquipo, Long> {
     @PersistenceContext
     EntityManager em;
 
     @Override
-    public Class<TipoTarea> getEntityClass() {
-        return TipoTarea.class;
+    public Class<TipoEquipo> getEntityClass() {
+        return TipoEquipo.class;
     }
 
     @Override
