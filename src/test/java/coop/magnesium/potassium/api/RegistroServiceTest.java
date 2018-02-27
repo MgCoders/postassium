@@ -59,8 +59,7 @@ public class RegistroServiceTest {
                         Usuario.class.getPackage(),
                         UsuarioDao.class.getPackage(),
                         Rubro.class.getPackage(),
-                        RubroDao.class.getPackage(),
-                        HorasProyectoXCargo.class.getPackage())
+                        RubroDao.class.getPackage())
                 .addClass(JAXRSConfiguration.class)
                 .addClass(RegistroService.class)
                 .addAsResource("META-INF/persistence.xml")
