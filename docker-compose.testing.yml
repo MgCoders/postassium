@@ -6,6 +6,8 @@ services:
     image: REPLACE_IMAGE_NAME
     networks:
       - traefik_proxy
+    secrets:
+      - root_password_jee
     environment:
        DB_HOST: pg_REPLACE_PROJECT_NAME
        DB_NAME: postgres
@@ -33,6 +35,8 @@ services:
     image: postgres
     networks:
       - traefik_proxy
+    volumes:
+      - REPLACE_PROJECT_NAME_pg_vol:/var/lib/postgresql/data
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
