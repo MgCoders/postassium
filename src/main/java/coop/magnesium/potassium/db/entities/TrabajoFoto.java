@@ -9,7 +9,7 @@ public class TrabajoFoto {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idFoto;
+    private Long id;
 
     @ManyToOne
     private Trabajo trabajo;
@@ -24,12 +24,12 @@ public class TrabajoFoto {
         this.foto = foto;
     }
 
-    public Long getIdFoto() {
-        return idFoto;
+    public Long getId() {
+        return id;
     }
 
-    public void setIdFoto(Long idFoto) {
-        this.idFoto = idFoto;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Trabajo getTrabajo() {
