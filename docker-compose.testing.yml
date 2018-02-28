@@ -16,7 +16,7 @@ services:
        ZOHO_MAIL_PASS: testing
        ZOHO_MAIL_HOST: localhost
        ZOHO_MAIL_PORT: 1025
-       ROOT_PASSWORD: root
+       ROOT_PASSWORD: /run/secrets/root_password_jee
     deploy:
       labels:
         - "traefik.port=8080"
@@ -40,4 +40,11 @@ services:
 
 networks:
   traefik_proxy:
+    external: true
+
+volumes:
+  REPLACE_PROJECT_NAME_pg_vol:
+
+secrets:
+  root_password_jee:
     external: true
