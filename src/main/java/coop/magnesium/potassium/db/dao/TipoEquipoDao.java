@@ -7,7 +7,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 @Stateless
-public class TipoEquioDao extends AbstractDao<TipoEquipo, Long> {
+public class TipoEquipoDao extends AbstractDao<TipoEquipo, Long> {
     @PersistenceContext
     EntityManager em;
 
@@ -20,4 +20,6 @@ public class TipoEquioDao extends AbstractDao<TipoEquipo, Long> {
     public EntityManager getEntityManager() {
         return em;
     }
+
+
 }
