@@ -200,4 +200,26 @@ public class TareaService {
             return Response.serverError().entity(e.getMessage()).build();
         }
     }
+    @DELETE
+    @Path("{idTarea}/materiales/{id}")
+    @Logged
+    @JWTTokenNeeded
+    @RoleNeeded({Role.USER, Role.ADMIN})
+    @ApiOperation(value = "Delete TareaMaterial", response = TareaMaterial.class)
+    public Response delete(@PathParam("id") Long id) {
+        try {
+            TareaMaterial tareaMaterial = tareaMaterialDao.findById(id);
+            if (tareaMaterial == null) throw new MagnesiumBdNotFoundException("No existe tareamaterial");
+
+            tareaMaterialDao.delete(id);
+
+            return Response.ok().build();
+        } catch (MagnesiumBdNotFoundException e) {
+            logger.warning(e.getMessage());
+            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
+        } catch (Exception e) {
+            logger.severe(e.getMessage());
+            return Response.serverError().entity(e.getMessage()).build();
+        }
+    }
 }
