@@ -2,10 +2,12 @@ package coop.magnesium.potassium.db.dao;
 
 import coop.magnesium.potassium.db.entities.TipoMaterial;
 
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
 
+@Stateless
 public class TipoMaterialDao extends AbstractDao<TipoMaterial, Long> {
 
     @PersistenceContext

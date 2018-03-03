@@ -3,6 +3,7 @@ package coop.magnesium.potassium.db.dao;
 import coop.magnesium.potassium.db.entities.Tarea;
 import coop.magnesium.potassium.db.entities.TareaMaterial;
 
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -12,6 +13,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.util.List;
 
+@Stateless
 public class TareaMaterialDao extends AbstractDao<TareaMaterial, Long> {
 
     @PersistenceContext

@@ -32,7 +32,7 @@ public class Usuario {
     @Transient
     private String token;
 
-    @OneToMany(mappedBy = "usuario", fetch = FetchType.EAGER, orphanRemoval = true)
+    @OneToMany(mappedBy = "usuario", fetch = FetchType.EAGER, orphanRemoval = true, cascade = CascadeType.ALL)
     private Set<UsuarioRubro> usuarioRubros = new HashSet<>();
 
     public Usuario() {

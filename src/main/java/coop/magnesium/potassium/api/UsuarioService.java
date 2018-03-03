@@ -3,12 +3,17 @@ package coop.magnesium.potassium.api;
 
 import coop.magnesium.potassium.api.utils.JWTTokenNeeded;
 import coop.magnesium.potassium.api.utils.RoleNeeded;
+import coop.magnesium.potassium.db.dao.RubroDao;
 import coop.magnesium.potassium.db.dao.UsuarioDao;
+import coop.magnesium.potassium.db.dao.UsuarioRubroDao;
 import coop.magnesium.potassium.db.entities.Role;
+import coop.magnesium.potassium.db.entities.Rubro;
 import coop.magnesium.potassium.db.entities.Usuario;
+import coop.magnesium.potassium.db.entities.UsuarioRubro;
 import coop.magnesium.potassium.utils.Logged;
 import coop.magnesium.potassium.utils.PasswordUtils;
 import coop.magnesium.potassium.utils.ex.MagnesiumBdAlredyExistsException;
+import coop.magnesium.potassium.utils.ex.MagnesiumBdNotFoundException;
 import coop.magnesium.potassium.utils.ex.MagnesiumNotFoundException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -20,6 +25,7 @@ import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 import java.util.List;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
@@ -39,6 +45,11 @@ public class UsuarioService {
     @EJB
     private UsuarioDao usuarioDao;
 
+    @EJB
+    private RubroDao rubroDao;
+
+    @EJB
+    private UsuarioRubroDao usuarioRubroDao;
 
     @POST
     @Logged
@@ -48,8 +59,18 @@ public class UsuarioService {
             Usuario usuarioExists = usuarioDao.findByEmail(usuario.getEmail());
             if (usuarioExists != null) throw new MagnesiumBdAlredyExistsException("Email ya existe");
 
-            usuario.setPassword(PasswordUtils.digestPassword(usuario.getPassword()));
+            if (usuarioDao.findByEmail(usuario.getEmail()) != null) throw new MagnesiumBdAlredyExistsException("Email ya existe");
 
+            for (UsuarioRubro ur : usuario.getUsuarioRubros()) {
+                Rubro rubro = rubroDao.findById(ur.getRubro().getId());
+                if (rubro == null) throw new MagnesiumBdNotFoundException("Rubro no encontrado");
+                ur.setRubro(rubro);
+                ur.setUsuario(usuario);
+                UsuarioRubro urAux = usuarioRubroDao.findByUsuarioAndRubro(usuario, rubro);
+                if (urAux != null) throw new MagnesiumBdAlredyExistsException("UsuarioRubro ya existe");
+            }
+
+            usuario.setPassword(PasswordUtils.digestPassword(UUID.randomUUID().toString()));
             usuario = usuarioDao.save(usuario);
             return Response.status(Response.Status.CREATED).entity(usuario).build();
         } catch (MagnesiumBdAlredyExistsException e) {
@@ -96,6 +117,18 @@ public class UsuarioService {
             if (usuarioExists != null && !usuarioExists.getId().equals(id)) throw new MagnesiumBdAlredyExistsException("Email ya existe");
 
             usuario.setId(id);
+            usuario.setPassword(usuarioExists.getPassword());
+
+            for (UsuarioRubro ur : usuario.getUsuarioRubros()) {
+                Rubro rubro = rubroDao.findById(ur.getRubro().getId());
+                if (rubro == null) throw new MagnesiumBdNotFoundException("Rubro no encontrado");
+                ur.setRubro(rubro);
+                ur.setUsuario(usuario);
+                UsuarioRubro urAux = usuarioRubroDao.findByUsuarioAndRubro(usuario, rubro);
+                if (urAux != null) ur.setId(urAux.getId());
+                ur.setUsuario(usuario);
+                ur.setRubro(rubro);
+            }
 
             usuario = usuarioDao.save(usuario);
             return Response.ok(usuario).build();
@@ -105,4 +138,7 @@ public class UsuarioService {
     }
 
 
+    private void usuarioRubro(Usuario usuario, List<UsuarioRubro> usuarioRubroList) {
+
+    }
 }
