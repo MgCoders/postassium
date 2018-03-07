@@ -8,6 +8,7 @@ import coop.magnesium.potassium.db.dao.TareaDao;
 import coop.magnesium.potassium.db.dao.TareaMaterialDao;
 import coop.magnesium.potassium.db.entities.*;
 import coop.magnesium.potassium.utils.Logged;
+import coop.magnesium.potassium.utils.ex.MagnesiumBdAlredyExistsException;
 import coop.magnesium.potassium.utils.ex.MagnesiumBdNotFoundException;
 import coop.magnesium.potassium.utils.ex.MagnesiumException;
 import coop.magnesium.potassium.utils.ex.MagnesiumNotFoundException;
@@ -173,18 +174,26 @@ public class TareaService {
     }
 
     @POST
-    @Path("{id}/materiales")
+    @Path("materiales")
     @Logged
     @JWTTokenNeeded
     @RoleNeeded({Role.USER, Role.ADMIN})
     @ApiOperation(value = "Create TareaMaterial", response = TareaMaterial.class)
-    public Response addMaterial(@PathParam("id") Long id, @Valid TareaMaterial tareaMaterial) {
+    public Response addMaterial(@Valid TareaMaterial tareaMaterial) {
         try {
-            Tarea tarea = tareaDao.findById(id);
+            if (tareaMaterial.getId() != null) {
+                throw new MagnesiumException("Ya existe el material en la tarea");
+            }
+
+            Tarea tarea = tareaDao.findById(tareaMaterial.getTarea().getId());
             if (tarea == null) throw new MagnesiumNotFoundException("Tarea no encontrada");
 
             Material material = materialDao.findById(tareaMaterial.getMaterial().getId());
             if (material == null) throw new MagnesiumNotFoundException("Material no encontrado");
+
+            if (tareaMaterialDao.findByTareaAndMaterial(tarea, material) != null) {
+                throw new MagnesiumBdAlredyExistsException("Ya existe el material para la tarea.");
+            }
 
             tareaMaterial.setMaterial(material);
             tareaMaterial.setTarea(tarea);
@@ -200,8 +209,9 @@ public class TareaService {
             return Response.serverError().entity(e.getMessage()).build();
         }
     }
+
     @DELETE
-    @Path("{idTarea}/materiales/{id}")
+    @Path("/materiales/{id}")
     @Logged
     @JWTTokenNeeded
     @RoleNeeded({Role.USER, Role.ADMIN})
