@@ -67,6 +67,13 @@ public class StartupBean {
                 trabajo.setFechaRecepcion(LocalDateTime.now());
                 trabajo.setFechaProvistaEntrega(LocalDate.now());
                 trabajo = trabajoDao.save(trabajo);
+                Trabajo trabajo2 = new Trabajo();
+                trabajo2.setCliente(cliente);
+                trabajo2.setMotivoVisita("m2");
+                trabajo2.setFechaRecepcion(LocalDateTime.now());
+                trabajo2.setFechaProvistaEntrega(LocalDate.now());
+                trabajo2.setEstado("PENDIENTE_FACTURA");
+                trabajo2 = trabajoDao.save(trabajo2);
                 PuntoControl puntoControl = puntoControlDao.save(new PuntoControl("n1", trabajo, 1));
                 PuntoControl puntoControl2 = puntoControlDao.save(new PuntoControl("n2", trabajo, 1));
                 tareaDao.save(new Tarea("T1","D1", 120, 0, puntoControl));

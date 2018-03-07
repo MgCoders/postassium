@@ -34,10 +34,7 @@ public class TrabajoDao extends AbstractDao<Trabajo, Long>{
     }
 
     public List<Trabajo> findByEstado(String estado){
-        List<Trabajo> result = findByField("estado", estado);
-        if (result.size() == 0) return null;
-
-        return result;
+        return (List<Trabajo>) findByField("estado", estado);
 
     }
 
