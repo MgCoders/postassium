@@ -179,7 +179,7 @@ public class TareaService {
     @JWTTokenNeeded
     @RoleNeeded({Role.USER, Role.ADMIN})
     @ApiOperation(value = "Create TareaMaterial", response = TareaMaterial.class)
-    public Response addMaterial(@Valid TareaMaterial tareaMaterial) {
+    public Response addTareaMaterial(@Valid TareaMaterial tareaMaterial) {
         try {
             if (tareaMaterial.getId() != null) {
                 throw new MagnesiumException("Ya existe el material en la tarea");
@@ -192,6 +192,44 @@ public class TareaService {
             if (material == null) throw new MagnesiumNotFoundException("Material no encontrado");
 
             if (tareaMaterialDao.findByTareaAndMaterial(tarea, material) != null) {
+                throw new MagnesiumBdAlredyExistsException("Ya existe el material para la tarea.");
+            }
+
+            tareaMaterial.setMaterial(material);
+            tareaMaterial.setTarea(tarea);
+
+            tareaMaterial = tareaMaterialDao.save(tareaMaterial);
+
+            return Response.ok(tareaMaterial).build();
+        } catch (MagnesiumNotFoundException e) {
+            logger.warning(e.getMessage());
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+        } catch (Exception e) {
+            logger.severe(e.getMessage());
+            return Response.serverError().entity(e.getMessage()).build();
+        }
+    }
+
+    @PUT
+    @Path("materiales/{id}")
+    @Logged
+    @JWTTokenNeeded
+    @RoleNeeded({Role.USER, Role.ADMIN})
+    @ApiOperation(value = "Update TareaMaterial", response = TareaMaterial.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 304, message = "Error: objeto no modificado")})
+    public Response editTareaMaterial(@PathParam("id") Long id, @Valid TareaMaterial tareaMaterial) {
+        try {
+            if (tareaMaterialDao.findById(id) == null) throw new MagnesiumNotFoundException("TareaMaterial no encontrado");
+
+            Tarea tarea = tareaDao.findById(tareaMaterial.getTarea().getId());
+            if (tarea == null) throw new MagnesiumNotFoundException("Tarea no encontrada");
+
+            Material material = materialDao.findById(tareaMaterial.getMaterial().getId());
+            if (material == null) throw new MagnesiumNotFoundException("Material no encontrado");
+
+            TareaMaterial tareaMaterialAux = tareaMaterialDao.findByTareaAndMaterial(tarea, material);
+            if (tareaMaterialAux != null && !tareaMaterialAux.getId().equals(id)) {
                 throw new MagnesiumBdAlredyExistsException("Ya existe el material para la tarea.");
             }
 
