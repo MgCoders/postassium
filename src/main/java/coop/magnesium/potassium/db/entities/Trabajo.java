@@ -57,6 +57,51 @@ public class Trabajo {
     @NotNull
     private String estado = Estado.CREADO.name();
 
+    private Boolean equipoDocumentos;
+
+    private Boolean equipoRadio;
+
+    private Boolean equipoExtintor;
+
+    private Boolean equipoBalizas;
+
+    private Boolean equipoLlaveRuedas;
+
+    private Boolean equipoHerramientas;
+
+    private Boolean equipoManuales;
+
+    private Boolean equipoFrenteRadio;
+
+    private Boolean equipoMangueraCabina;
+
+    private Boolean equipoCenicero;
+
+    private Boolean equipoGatoPalanca;
+
+    private Boolean equipoParabrisasSano;
+
+    private Boolean equipoVidriosLaterales;
+
+    private Boolean equipoVidriosLateralesSanos;
+
+    private Boolean equipoEspejos;
+
+    private Boolean equipoEspejosSanos;
+
+    private Boolean equipoSenalerosSanos;
+
+    private Boolean equipoLucesTraserasSanas;
+
+    private Boolean equipoRayones;
+
+    private Boolean equipoAbollones;
+
+    private Boolean equipoAuxiliar;
+
+    private Boolean equipoAuxiliarArmada;
+
+    private Integer equipoCantidadCombustible;
     //@ManyToOne
     //private Usuario usuarioRecepcion;
 
@@ -210,5 +255,189 @@ public class Trabajo {
 
     public void setNroOrdenCompra(Integer nroOrdenCompra) {
         this.nroOrdenCompra = nroOrdenCompra;
+    }
+
+    public Boolean getEquipoDocumentos() {
+        return equipoDocumentos;
+    }
+
+    public void setEquipoDocumentos(Boolean equipoDocumentos) {
+        this.equipoDocumentos = equipoDocumentos;
+    }
+
+    public Boolean getEquipoRadio() {
+        return equipoRadio;
+    }
+
+    public void setEquipoRadio(Boolean equipoRadio) {
+        this.equipoRadio = equipoRadio;
+    }
+
+    public Boolean getEquipoExtintor() {
+        return equipoExtintor;
+    }
+
+    public void setEquipoExtintor(Boolean equipoExtintor) {
+        this.equipoExtintor = equipoExtintor;
+    }
+
+    public Boolean getEquipoBalizas() {
+        return equipoBalizas;
+    }
+
+    public void setEquipoBalizas(Boolean equipoBalizas) {
+        this.equipoBalizas = equipoBalizas;
+    }
+
+    public Boolean getEquipoLlaveRuedas() {
+        return equipoLlaveRuedas;
+    }
+
+    public void setEquipoLlaveRuedas(Boolean equipoLlaveRuedas) {
+        this.equipoLlaveRuedas = equipoLlaveRuedas;
+    }
+
+    public Boolean getEquipoHerramientas() {
+        return equipoHerramientas;
+    }
+
+    public void setEquipoHerramientas(Boolean equipoHerramientas) {
+        this.equipoHerramientas = equipoHerramientas;
+    }
+
+    public Boolean getEquipoManuales() {
+        return equipoManuales;
+    }
+
+    public void setEquipoManuales(Boolean equipoManuales) {
+        this.equipoManuales = equipoManuales;
+    }
+
+    public Boolean getEquipoFrenteRadio() {
+        return equipoFrenteRadio;
+    }
+
+    public void setEquipoFrenteRadio(Boolean equipoFrenteRadio) {
+        this.equipoFrenteRadio = equipoFrenteRadio;
+    }
+
+    public Boolean getEquipoMangueraCabina() {
+        return equipoMangueraCabina;
+    }
+
+    public void setEquipoMangueraCabina(Boolean equipoMangueraCabina) {
+        this.equipoMangueraCabina = equipoMangueraCabina;
+    }
+
+    public Boolean getEquipoCenicero() {
+        return equipoCenicero;
+    }
+
+    public void setEquipoCenicero(Boolean equipoCenicero) {
+        this.equipoCenicero = equipoCenicero;
+    }
+
+    public Boolean getEquipoGatoPalanca() {
+        return equipoGatoPalanca;
+    }
+
+    public void setEquipoGatoPalanca(Boolean equipoGatoPalanca) {
+        this.equipoGatoPalanca = equipoGatoPalanca;
+    }
+
+    public Boolean getEquipoParabrisasSano() {
+        return equipoParabrisasSano;
+    }
+
+    public void setEquipoParabrisasSano(Boolean equipoParabrisasSano) {
+        this.equipoParabrisasSano = equipoParabrisasSano;
+    }
+
+    public Boolean getEquipoVidriosLaterales() {
+        return equipoVidriosLaterales;
+    }
+
+    public void setEquipoVidriosLaterales(Boolean equipoVidriosLaterales) {
+        this.equipoVidriosLaterales = equipoVidriosLaterales;
+    }
+
+    public Boolean getEquipoVidriosLateralesSanos() {
+        return equipoVidriosLateralesSanos;
+    }
+
+    public void setEquipoVidriosLateralesSanos(Boolean equipoVidriosLateralesSanos) {
+        this.equipoVidriosLateralesSanos = equipoVidriosLateralesSanos;
+    }
+
+    public Boolean getEquipoEspejos() {
+        return equipoEspejos;
+    }
+
+    public void setEquipoEspejos(Boolean equipoEspejos) {
+        this.equipoEspejos = equipoEspejos;
+    }
+
+    public Boolean getEquipoEspejosSanos() {
+        return equipoEspejosSanos;
+    }
+
+    public void setEquipoEspejosSanos(Boolean equipoEspejosSanos) {
+        this.equipoEspejosSanos = equipoEspejosSanos;
+    }
+
+    public Boolean getEquipoSenalerosSanos() {
+        return equipoSenalerosSanos;
+    }
+
+    public void setEquipoSenalerosSanos(Boolean equipoSenalerosSanos) {
+        this.equipoSenalerosSanos = equipoSenalerosSanos;
+    }
+
+    public Boolean getEquipoLucesTraserasSanas() {
+        return equipoLucesTraserasSanas;
+    }
+
+    public void setEquipoLucesTraserasSanas(Boolean equipoLucesTraserasSanas) {
+        this.equipoLucesTraserasSanas = equipoLucesTraserasSanas;
+    }
+
+    public Boolean getEquipoRayones() {
+        return equipoRayones;
+    }
+
+    public void setEquipoRayones(Boolean equipoRayones) {
+        this.equipoRayones = equipoRayones;
+    }
+
+    public Boolean getEquipoAbollones() {
+        return equipoAbollones;
+    }
+
+    public void setEquipoAbollones(Boolean equipoAbollones) {
+        this.equipoAbollones = equipoAbollones;
+    }
+
+    public Boolean getEquipoAuxiliar() {
+        return equipoAuxiliar;
+    }
+
+    public void setEquipoAuxiliar(Boolean equipoAuxiliar) {
+        this.equipoAuxiliar = equipoAuxiliar;
+    }
+
+    public Boolean getEquipoAuxiliarArmada() {
+        return equipoAuxiliarArmada;
+    }
+
+    public void setEquipoAuxiliarArmada(Boolean equipoAuxiliarArmada) {
+        this.equipoAuxiliarArmada = equipoAuxiliarArmada;
+    }
+
+    public Integer getEquipoCantidadCombustible() {
+        return equipoCantidadCombustible;
+    }
+
+    public void setEquipoCantidadCombustible(Integer equipoCantidadCombustible) {
+        this.equipoCantidadCombustible = equipoCantidadCombustible;
     }
 }
