@@ -2,13 +2,13 @@ package coop.magnesium.potassium.api;
 
 import coop.magnesium.potassium.api.utils.JWTTokenNeeded;
 import coop.magnesium.potassium.api.utils.RoleNeeded;
+import coop.magnesium.potassium.db.dao.MaterialDao;
 import coop.magnesium.potassium.db.dao.PuntoControlDao;
 import coop.magnesium.potassium.db.dao.TareaDao;
-import coop.magnesium.potassium.db.entities.PuntoControl;
-import coop.magnesium.potassium.db.entities.Registro;
-import coop.magnesium.potassium.db.entities.Role;
-import coop.magnesium.potassium.db.entities.Tarea;
+import coop.magnesium.potassium.db.dao.TareaMaterialDao;
+import coop.magnesium.potassium.db.entities.*;
 import coop.magnesium.potassium.utils.Logged;
+import coop.magnesium.potassium.utils.ex.MagnesiumBdAlredyExistsException;
 import coop.magnesium.potassium.utils.ex.MagnesiumBdNotFoundException;
 import coop.magnesium.potassium.utils.ex.MagnesiumException;
 import coop.magnesium.potassium.utils.ex.MagnesiumNotFoundException;
@@ -47,6 +47,13 @@ public class TareaService {
 
     @EJB
     private PuntoControlDao puntoControlDao;
+
+    @EJB
+    private TareaMaterialDao tareaMaterialDao;
+
+    @EJB
+    private MaterialDao materialDao;
+
 
     @POST
     @Logged
@@ -131,6 +138,133 @@ public class TareaService {
         } catch (MagnesiumNotFoundException e) {
             logger.warning(e.getMessage());
             return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+        } catch (Exception e) {
+            logger.severe(e.getMessage());
+            return Response.serverError().entity(e.getMessage()).build();
+        }
+    }
+
+    /****
+     *
+     * MATERIALES DE LA TAREA
+     *
+     */
+
+    @GET
+    @Path("{id}/materiales")
+    @Logged
+    @JWTTokenNeeded
+    @RoleNeeded({Role.USER, Role.ADMIN})
+    @ApiOperation(value = "Get TareaMaterial", response = TareaMaterial.class, responseContainer = "List")
+    public Response findAllByTarea(@PathParam("id") Long id) {
+        try {
+            Tarea tarea = tareaDao.findById(id);
+            if (tarea == null) throw new MagnesiumNotFoundException("Tarea no encontrada");
+
+            List<TareaMaterial> tareaMaterialList = tareaMaterialDao.findAllByTarea(tarea);
+
+            return Response.ok(tareaMaterialList).build();
+        } catch (MagnesiumNotFoundException e) {
+            logger.warning(e.getMessage());
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+        } catch (Exception e) {
+            logger.severe(e.getMessage());
+            return Response.serverError().entity(e.getMessage()).build();
+        }
+    }
+
+    @POST
+    @Path("materiales")
+    @Logged
+    @JWTTokenNeeded
+    @RoleNeeded({Role.USER, Role.ADMIN})
+    @ApiOperation(value = "Create TareaMaterial", response = TareaMaterial.class)
+    public Response addTareaMaterial(@Valid TareaMaterial tareaMaterial) {
+        try {
+            if (tareaMaterial.getId() != null) {
+                throw new MagnesiumException("Ya existe el material en la tarea");
+            }
+
+            Tarea tarea = tareaDao.findById(tareaMaterial.getTarea().getId());
+            if (tarea == null) throw new MagnesiumNotFoundException("Tarea no encontrada");
+
+            Material material = materialDao.findById(tareaMaterial.getMaterial().getId());
+            if (material == null) throw new MagnesiumNotFoundException("Material no encontrado");
+
+            if (tareaMaterialDao.findByTareaAndMaterial(tarea, material) != null) {
+                throw new MagnesiumBdAlredyExistsException("Ya existe el material para la tarea.");
+            }
+
+            tareaMaterial.setMaterial(material);
+            tareaMaterial.setTarea(tarea);
+
+            tareaMaterial = tareaMaterialDao.save(tareaMaterial);
+
+            return Response.ok(tareaMaterial).build();
+        } catch (MagnesiumNotFoundException e) {
+            logger.warning(e.getMessage());
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+        } catch (Exception e) {
+            logger.severe(e.getMessage());
+            return Response.serverError().entity(e.getMessage()).build();
+        }
+    }
+
+    @PUT
+    @Path("materiales/{id}")
+    @Logged
+    @JWTTokenNeeded
+    @RoleNeeded({Role.USER, Role.ADMIN})
+    @ApiOperation(value = "Update TareaMaterial", response = TareaMaterial.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 304, message = "Error: objeto no modificado")})
+    public Response editTareaMaterial(@PathParam("id") Long id, @Valid TareaMaterial tareaMaterial) {
+        try {
+            if (tareaMaterialDao.findById(id) == null) throw new MagnesiumNotFoundException("TareaMaterial no encontrado");
+
+            Tarea tarea = tareaDao.findById(tareaMaterial.getTarea().getId());
+            if (tarea == null) throw new MagnesiumNotFoundException("Tarea no encontrada");
+
+            Material material = materialDao.findById(tareaMaterial.getMaterial().getId());
+            if (material == null) throw new MagnesiumNotFoundException("Material no encontrado");
+
+            TareaMaterial tareaMaterialAux = tareaMaterialDao.findByTareaAndMaterial(tarea, material);
+            if (tareaMaterialAux != null && !tareaMaterialAux.getId().equals(id)) {
+                throw new MagnesiumBdAlredyExistsException("Ya existe el material para la tarea.");
+            }
+
+            tareaMaterial.setMaterial(material);
+            tareaMaterial.setTarea(tarea);
+
+            tareaMaterial = tareaMaterialDao.save(tareaMaterial);
+
+            return Response.ok(tareaMaterial).build();
+        } catch (MagnesiumNotFoundException e) {
+            logger.warning(e.getMessage());
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+        } catch (Exception e) {
+            logger.severe(e.getMessage());
+            return Response.serverError().entity(e.getMessage()).build();
+        }
+    }
+
+    @DELETE
+    @Path("/materiales/{id}")
+    @Logged
+    @JWTTokenNeeded
+    @RoleNeeded({Role.USER, Role.ADMIN})
+    @ApiOperation(value = "Delete TareaMaterial", response = TareaMaterial.class)
+    public Response delete(@PathParam("id") Long id) {
+        try {
+            TareaMaterial tareaMaterial = tareaMaterialDao.findById(id);
+            if (tareaMaterial == null) throw new MagnesiumBdNotFoundException("No existe tareamaterial");
+
+            tareaMaterialDao.delete(id);
+
+            return Response.ok().build();
+        } catch (MagnesiumBdNotFoundException e) {
+            logger.warning(e.getMessage());
+            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
         } catch (Exception e) {
             logger.severe(e.getMessage());
             return Response.serverError().entity(e.getMessage()).build();

@@ -20,29 +20,39 @@ public class Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @NotNull(message = "El usuario debe tener un email")
     @Column(unique = true)
     private String email;
+
     @NotNull(message = "El usuario debe tener un nombre")
     private String nombre;
 
+    private String apellido;
+
     private String password;
+
     @NotNull
     private String role = Role.USER.name();
+
     @Transient
     private String token;
 
-    @OneToMany(mappedBy = "usuario", fetch = FetchType.EAGER, orphanRemoval = true)
+    @NotNull
+    private boolean login;
+
+    @OneToMany(mappedBy = "usuario", fetch = FetchType.EAGER, orphanRemoval = true, cascade = CascadeType.ALL)
     private Set<UsuarioRubro> usuarioRubros = new HashSet<>();
 
     public Usuario() {
     }
 
-    public Usuario(String email, String nombre, String password, String role) {
+    public Usuario(String email, String nombre, String password, String role, boolean login) {
         this.email = email;
         this.nombre = nombre;
         this.password = password;
         this.role = role;
+        this.login = login;
     }
 
     public String getToken() {
@@ -85,6 +95,22 @@ public class Usuario {
     @JsonProperty
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getApellido() {
+        return apellido;
+    }
+
+    public void setApellido(String apellido) {
+        this.apellido = apellido;
+    }
+
+    public boolean isLogin() {
+        return login;
+    }
+
+    public void setLogin(boolean login) {
+        this.login = login;
     }
 
     public String getRole() {

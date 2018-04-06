@@ -2,8 +2,10 @@ package coop.magnesium.potassium.api;
 
 import coop.magnesium.potassium.api.utils.JWTTokenNeeded;
 import coop.magnesium.potassium.api.utils.RoleNeeded;
-import coop.magnesium.potassium.db.dao.*;
-import coop.magnesium.potassium.db.entities.*;
+import coop.magnesium.potassium.db.dao.TipoMaterialDao;
+import coop.magnesium.potassium.db.entities.Material;
+import coop.magnesium.potassium.db.entities.Role;
+import coop.magnesium.potassium.db.entities.TipoMaterial;
 import coop.magnesium.potassium.utils.Logged;
 import coop.magnesium.potassium.utils.ex.MagnesiumBdAlredyExistsException;
 import coop.magnesium.potassium.utils.ex.MagnesiumException;
@@ -19,41 +21,40 @@ import javax.transaction.Transactional;
 import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
-
-import java.util.List;
 import java.util.logging.Logger;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
-/**
- * Created by pablo on 21/01/18.
- */
-@Path("/materiales")
+@Path("/tiposmateriales")
 @Produces(APPLICATION_JSON)
 @Consumes(APPLICATION_JSON)
 @Transactional
-@Api(description = "Materiales service", tags = "materiales")
-public class MaterialService {
+@Api(description = "Tipos Materiales service", tags = "tiposmateriales")
+public class TipoMaterialService {
 
     @Inject
     private Logger logger;
 
     @EJB
-    private MaterialDao materialDao;
+    private TipoMaterialDao tipoMaterialDao;
 
     @POST
     @Logged
     @JWTTokenNeeded
     @RoleNeeded({Role.USER, Role.ADMIN})
     @ApiOperation(value = "Create Material", response = Material.class)
-    public Response create(@Valid Material material) {
+    public Response create(@Valid TipoMaterial tipoMaterial) {
         try {
-            if (material.getId() != null) throw new MagnesiumException("Ya existe el material");
+            if (tipoMaterial.getId() != null) throw new MagnesiumException("Ya existe el tipomaterial");
 
-            material = materialDao.save(material);
+            if (tipoMaterialDao.findByCodigo(tipoMaterial.getCodigo()) != null) {
+                throw new MagnesiumBdAlredyExistsException("Ya existe el tipomaterial para el codigo: " + tipoMaterial.getCodigo());
+            }
 
-            return Response.status(Response.Status.CREATED).entity(material).build();
-        } catch (MagnesiumNotFoundException e) {
+            tipoMaterial = tipoMaterialDao.save(tipoMaterial);
+
+            return Response.status(Response.Status.CREATED).entity(tipoMaterial).build();
+        } catch (MagnesiumNotFoundException | MagnesiumBdAlredyExistsException e) {
             logger.warning(e.getMessage());
             return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
         } catch (Exception e) {
@@ -62,31 +63,38 @@ public class MaterialService {
         }
     }
 
+
     @GET
     @Logged
     @JWTTokenNeeded
     @RoleNeeded({Role.USER, Role.ADMIN})
-    @ApiOperation(value = "Get Material", response = Material.class, responseContainer = "List")
+    @ApiOperation(value = "Get tipomaterial", response = TipoMaterial.class, responseContainer = "List")
     public Response findAll() {
-        return Response.ok(materialDao.findAll()).build();
+        return Response.ok(tipoMaterialDao.findAll()).build();
     }
+
 
     @PUT
     @Logged
     @Path("{id}")
     @JWTTokenNeeded
     @RoleNeeded({Role.USER, Role.ADMIN})
-    @ApiOperation(value = "Edit Material", response = Material.class)
+    @ApiOperation(value = "Edit TipoMaterial", response = TipoMaterial.class)
     @ApiResponses(value = {
             @ApiResponse(code = 304, message = "Error: objeto no modificado")})
-    public Response edit(@PathParam("id") Long id, @Valid Material material) {
+    public Response edit(@PathParam("id") Long id, @Valid TipoMaterial tipoMaterial) {
         try {
-            if (materialDao.findById(id) == null) throw new MagnesiumNotFoundException("No existe el material");
+            if (tipoMaterialDao.findById(id) == null) throw new MagnesiumNotFoundException("No existe el tipomaterial");
 
-            material.setId(id);
+            TipoMaterial tipoMaterialAux = tipoMaterialDao.findByCodigo(tipoMaterial.getCodigo());
+            if (tipoMaterialAux != null && !tipoMaterialAux.getId().equals(id)) {
+                throw new MagnesiumBdAlredyExistsException("Ya existe el tipomaterial para el codigo: " + tipoMaterial.getCodigo());
+            }
 
-            material = materialDao.save(material);
-            return Response.ok(material).build();
+            tipoMaterial.setId(id);
+
+            tipoMaterial = tipoMaterialDao.save(tipoMaterial);
+            return Response.ok(tipoMaterial).build();
         } catch (MagnesiumNotFoundException e) {
             logger.warning(e.getMessage());
             return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();

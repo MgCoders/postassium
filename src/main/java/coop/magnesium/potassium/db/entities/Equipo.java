@@ -32,10 +32,14 @@ public class Equipo {
     private String matricula;
 
     @NotNull
+    private String numeroChasis;
+
+    @NotNull
     private String color;
 
     @ManyToOne(cascade = {CascadeType.ALL})
     private TipoEquipo tipoEquipo;
+
 
     public Equipo() {
     }
@@ -45,6 +49,16 @@ public class Equipo {
         this.marca = marca;
         this.modelo = modelo;
         this.matricula = matricula;
+        this.color = color;
+        this.tipoEquipo = tipoEquipo;
+    }
+
+    public Equipo(Cliente cliente, String marca, String modelo, String matricula, String numeroChasis, String color, TipoEquipo tipoEquipo) {
+        this.cliente = cliente;
+        this.marca = marca;
+        this.modelo = modelo;
+        this.matricula = matricula;
+        this.numeroChasis = numeroChasis;
         this.color = color;
         this.tipoEquipo = tipoEquipo;
     }
@@ -103,5 +117,13 @@ public class Equipo {
 
     public void setTipoEquipo(TipoEquipo tipoEquipo) {
         this.tipoEquipo = tipoEquipo;
+    }
+
+    public String getNumeroChasis() {
+        return numeroChasis;
+    }
+
+    public void setNumeroChasis(String numeroChasis) {
+        this.numeroChasis = numeroChasis;
     }
 }

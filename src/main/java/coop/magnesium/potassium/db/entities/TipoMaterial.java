@@ -19,7 +19,9 @@ public class TipoMaterial {
     private Long id;
     @NotNull
     private String nombre;
+
     @NotNull
+    @Column(unique = true)
     private String codigo;
 
     public TipoMaterial() {

@@ -25,7 +25,6 @@ public class TareaMaterial {
     @NotNull
     @ManyToOne
     @JoinColumn(name = "tarea_id", referencedColumnName = "id", nullable = false)
-    @JsonIgnore
     private Tarea tarea;
 
     @NotNull
