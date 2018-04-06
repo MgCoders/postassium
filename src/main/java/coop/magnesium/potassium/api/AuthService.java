@@ -100,7 +100,9 @@ public class AuthService {
     @Logged
     public Response recuperarPassword(@PathParam("email") String email) {
         try {
-            if (usuarioDao.findByEmail(email) == null) throw new ObjectNotFoundException("no existe el usuario");
+            Usuario usuario = usuarioDao.findByEmail(email);
+            if (usuario == null) throw new ObjectNotFoundException("no existe el usuario");
+            if (!usuario.isLogin()) throw new MagnesiumBdNotFoundException("El usuario no tiene login");
 
             DataRecuperacionPassword dataRecuperacionPassword = new DataRecuperacionPassword(email,
                     UUID.randomUUID().toString(), LocalDateTime.now().plusHours(1));
@@ -157,9 +159,12 @@ public class AuthService {
         try {
             DataRecuperacionPassword dataRecuperacionPassword = startupBean.getRecuperacionInfo(token);
             if (dataRecuperacionPassword == null) throw new MagnesiumBdNotFoundException("no existe recuperación");
-            Usuario colaborador = usuarioDao.findByEmail(dataRecuperacionPassword.getEmail());
-            if (colaborador == null) throw new MagnesiumBdNotFoundException("no existe usuario");
-            colaborador.setPassword(PasswordUtils.digestPassword(password));
+
+            Usuario usuario = usuarioDao.findByEmail(dataRecuperacionPassword.getEmail());
+            if (usuario == null) throw new MagnesiumBdNotFoundException("no existe usuario");
+            if (!usuario.isLogin()) throw new MagnesiumBdNotFoundException("El usuario no tiene login");
+
+            usuario.setPassword(PasswordUtils.digestPassword(password));
             return Response.ok().build();
         } catch (MagnesiumBdNotFoundException e) {
             logger.warning(e.getMessage());
@@ -178,6 +183,10 @@ public class AuthService {
 
         if (usuario == null) {
             logger.info("Usuario no encontrado");
+            throw new MagnesiumSecurityException("Invalid user/password");
+        }
+        if (!usuario.isLogin()) {
+            logger.info("Usuario no tiene login");
             throw new MagnesiumSecurityException("Invalid user/password");
         }
         if (!PasswordUtils.digestPassword(password).equals(usuario.getPassword())) {
