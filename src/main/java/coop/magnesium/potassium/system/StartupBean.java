@@ -68,9 +68,9 @@ public class StartupBean {
                 TipoEquipo remolque = tipoEquipoDao.save(new TipoEquipo("Remolque","Remolque"));
                 TipoEquipo barco = tipoEquipoDao.save(new TipoEquipo("Barco","Barco"));
 
-                Equipo equipo1 = equipoDao.save( new Equipo(cliente, "Scania", "48 ruedas", "sdasd", "Rojo", camion));
-                Equipo equipo2 = equipoDao.save( new Equipo(cliente, "Volkswagen", "52 ruedas", "asdasd", "Azul", remolque));
-                equipoDao.save( new Equipo(cliente2, "Mercedes Benz", "67 ruedas", "asdasd", "Blanco", barco));
+                Equipo equipo1 = equipoDao.save( new Equipo(cliente, "Scania", "48 ruedas", "sdasd", "WER2343F44", "Rojo", camion));
+                Equipo equipo2 = equipoDao.save( new Equipo(cliente, "Volkswagen", "52 ruedas", "asdasd", "1234564AD3", "Azul", remolque));
+                equipoDao.save( new Equipo(cliente2, "Mercedes Benz", "67 ruedas", "asdasd","A23D43F44", "Blanco", barco));
 
                 Trabajo trabajo = new Trabajo();
                 trabajo.setCliente(cliente);
