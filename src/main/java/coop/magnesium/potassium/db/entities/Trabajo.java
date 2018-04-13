@@ -102,6 +102,7 @@ public class Trabajo {
     private Boolean equipoAuxiliarArmada;
 
     private Integer equipoCantidadCombustible;
+
     //@ManyToOne
     //private Usuario usuarioRecepcion;
 
@@ -110,9 +111,16 @@ public class Trabajo {
 
     private BigDecimal kmEquipoRecepcion;
 
+
+    @Column(length=10485760)
     private String firmaClienteRecepcion; //Guardar array de bytes de la firma
 
     private String nombreClienteRecepcion;
+
+    private String nombreEmpleadoRecepcion;
+
+    @Column(length=10485760)
+    private String firmaEmpleadoRecepcion;
 
     private Integer nroFactura;
 
@@ -439,5 +447,21 @@ public class Trabajo {
 
     public void setEquipoCantidadCombustible(Integer equipoCantidadCombustible) {
         this.equipoCantidadCombustible = equipoCantidadCombustible;
+    }
+
+    public String getNombreEmpleadoRecepcion() {
+        return nombreEmpleadoRecepcion;
+    }
+
+    public void setNombreEmpleadoRecepcion(String nombreEmpleadoRecepcion) {
+        this.nombreEmpleadoRecepcion = nombreEmpleadoRecepcion;
+    }
+
+    public String getFirmaEmpleadoRecepcion() {
+        return firmaEmpleadoRecepcion;
+    }
+
+    public void setFirmaEmpleadoRecepcion(String firmaEmpleadoRecepcion) {
+        this.firmaEmpleadoRecepcion = firmaEmpleadoRecepcion;
     }
 }
