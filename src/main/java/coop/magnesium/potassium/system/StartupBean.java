@@ -50,6 +50,8 @@ public class StartupBean {
     @EJB
     EquipoDao equipoDao;
 
+    @EJB
+    RubroDao rubroDao;
 
     private ConcurrentHashMap recuperacionPassword = null;
 
@@ -58,14 +60,24 @@ public class StartupBean {
         this.recuperacionPassword = new ConcurrentHashMap();
         try {
             if (usuarioDao.findByEmail("root@magnesium.coop") == null) {
-                usuarioDao.save(new Usuario("root@magnesium.coop", "root", PasswordUtils.digestPassword(System.getenv("ROOT_PASSWORD") != null ? System.getenv("ROOT_PASSWORD") : "bu"), "ADMIN"));
+                usuarioDao.save(new Usuario("root@magnesium.coop", "root", PasswordUtils.digestPassword(System.getenv("ROOT_PASSWORD") != null ? System.getenv("ROOT_PASSWORD") : "bu"), "ADMIN", true));
                 Cliente cliente = clienteDao.save(new Cliente("Empresa 1","100 321 6546", "099 111 111", "C1", "1", "p@asd.ewe", "w"));
                 Cliente cliente2 = clienteDao.save(new Cliente("Eempresa 2","218 987 352", "097 666 666", "C2", "1", "kk.qwe@asdas", "w"));
+
+                TipoEquipo camion = tipoEquipoDao.save(new TipoEquipo("Camion","Camion"));
+                TipoEquipo remolque = tipoEquipoDao.save(new TipoEquipo("Remolque","Remolque"));
+                TipoEquipo barco = tipoEquipoDao.save(new TipoEquipo("Barco","Barco"));
+
+                Equipo equipo1 = equipoDao.save( new Equipo(cliente, "Scania", "48 ruedas", "sdasd", "WER2343F44", "Rojo", camion));
+                Equipo equipo2 = equipoDao.save( new Equipo(cliente, "Volkswagen", "52 ruedas", "asdasd", "1234564AD3", "Azul", remolque));
+                equipoDao.save( new Equipo(cliente2, "Mercedes Benz", "67 ruedas", "asdasd","A23D43F44", "Blanco", barco));
+
                 Trabajo trabajo = new Trabajo();
                 trabajo.setCliente(cliente);
                 trabajo.setMotivoVisita("m1");
                 trabajo.setFechaRecepcion(LocalDateTime.now());
                 trabajo.setFechaProvistaEntrega(LocalDate.now());
+                trabajo.setEquipo(equipo1);
                 trabajo = trabajoDao.save(trabajo);
                 Trabajo trabajo2 = new Trabajo();
                 trabajo2.setCliente(cliente);
@@ -73,20 +85,17 @@ public class StartupBean {
                 trabajo2.setFechaRecepcion(LocalDateTime.now());
                 trabajo2.setFechaProvistaEntrega(LocalDate.now());
                 trabajo2.setEstado("PENDIENTE_FACTURA");
+                trabajo2.setEquipo(equipo2);
                 trabajo2 = trabajoDao.save(trabajo2);
+
                 PuntoControl puntoControl = puntoControlDao.save(new PuntoControl("n1", trabajo, 1));
                 PuntoControl puntoControl2 = puntoControlDao.save(new PuntoControl("n2", trabajo, 1));
                 tareaDao.save(new Tarea("T1","D1", 120, 0, puntoControl));
                 tareaDao.save(new Tarea("T2","D2", 120, 0, puntoControl));
                 tareaDao.save(new Tarea("T2","D2", 120, 0, puntoControl2));
 
-                TipoEquipo camion = tipoEquipoDao.save(new TipoEquipo("Camion","Camion"));
-                TipoEquipo remolque = tipoEquipoDao.save(new TipoEquipo("Remolque","Remolque"));
-                TipoEquipo barco = tipoEquipoDao.save(new TipoEquipo("Barco","Barco"));
-
-                equipoDao.save( new Equipo(cliente, "Scania", "48 ruedas", "sdasd", "Rojo", camion));
-                equipoDao.save( new Equipo(cliente, "Volkswagen", "52 ruedas", "asdasd", "Azul", remolque));
-                equipoDao.save( new Equipo(cliente2, "Mercedes Benz", "67 ruedas", "asdasd", "Blanco", barco));
+                rubroDao.save(new Rubro("Soldador","El que suelda"));
+                rubroDao.save(new Rubro("Pintor","El que pinta"));
             }
 
 

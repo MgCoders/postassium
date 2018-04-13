@@ -53,6 +53,16 @@ public class Equipo {
         this.tipoEquipo = tipoEquipo;
     }
 
+    public Equipo(Cliente cliente, String marca, String modelo, String matricula, String numeroChasis, String color, TipoEquipo tipoEquipo) {
+        this.cliente = cliente;
+        this.marca = marca;
+        this.modelo = modelo;
+        this.matricula = matricula;
+        this.numeroChasis = numeroChasis;
+        this.color = color;
+        this.tipoEquipo = tipoEquipo;
+    }
+
     public Long getId() {
         return id;
     }

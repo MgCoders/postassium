@@ -80,7 +80,7 @@ public class LoginServiceTest {
     @Test
     @InSequence(1)
     public void inicializarBd() {
-        logger.info(usuarioDao.save(new Usuario("bu", "bu", PasswordUtils.digestPassword("bu"), "ADMIN")).toString());
+        logger.info(usuarioDao.save(new Usuario("bu", "bu", PasswordUtils.digestPassword("bu"), "ADMIN", true)).toString());
     }
 
 

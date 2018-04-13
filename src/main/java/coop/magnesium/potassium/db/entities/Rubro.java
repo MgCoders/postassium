@@ -1,7 +1,6 @@
 package coop.magnesium.potassium.db.entities;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModel;
 
 import javax.persistence.*;
@@ -26,6 +25,11 @@ public class Rubro extends AbstractEntity {
     private String descripcion;
 
     public Rubro() {
+    }
+
+    public Rubro(String nombre, String descripcion) {
+        this.nombre = nombre;
+        this.descripcion = descripcion;
     }
 
     public Long getId() {
