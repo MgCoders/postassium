@@ -14,6 +14,8 @@ public class TrabajoFoto {
     @ManyToOne
     private Trabajo trabajo;
 
+
+    @Column(length=10485760)
     private String foto; //array bytes de la foto
 
     public TrabajoFoto() {
