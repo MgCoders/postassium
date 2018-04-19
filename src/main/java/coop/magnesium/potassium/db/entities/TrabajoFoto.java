@@ -18,6 +18,9 @@ public class TrabajoFoto {
     @Column(length=10485760)
     private String foto; //array bytes de la foto
 
+
+    private String descripcion;
+
     public TrabajoFoto() {
     }
 
@@ -48,5 +51,13 @@ public class TrabajoFoto {
 
     public void setFoto(String foto) {
         this.foto = foto;
+    }
+
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
     }
 }
