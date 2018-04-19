@@ -9,7 +9,7 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
-import javax.persistence.Entity;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
@@ -21,6 +21,14 @@ import java.time.LocalDate;
 @ApiModel
 public class Factura {
 
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @OneToOne
+    @JoinColumn(name = "trabajo_id", referencedColumnName = "id", nullable = false)
+    private Trabajo trabajo;
 
     @NotNull
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
@@ -34,18 +42,36 @@ public class Factura {
 
     @NotNull
     private String formaPago;
+
     @NotNull
     private Integer iva;
 
     @NotNull
     private String observaciones;
 
-    public Factura(LocalDate fecha, String moneda, String formaPago, Integer iva, String observaciones) {
+    public Factura(Trabajo trabajo, LocalDate fecha, String moneda, String formaPago, Integer iva, String observaciones) {
+        this.trabajo = trabajo;
         this.fecha = fecha;
         this.moneda = moneda;
         this.formaPago = formaPago;
         this.iva = iva;
         this.observaciones = observaciones;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Trabajo getTrabajo() {
+        return trabajo;
+    }
+
+    public void setTrabajo(Trabajo trabajo) {
+        this.trabajo = trabajo;
     }
 
     public LocalDate getFecha() {
@@ -87,4 +113,6 @@ public class Factura {
     public void setObservaciones(String observaciones) {
         this.observaciones = observaciones;
     }
+
+
 }

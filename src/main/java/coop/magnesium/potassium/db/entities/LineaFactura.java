@@ -9,9 +9,7 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
@@ -23,7 +21,12 @@ import java.time.LocalDate;
 @ApiModel
 public class LineaFactura {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     @ManyToOne(cascade = {CascadeType.ALL})
+    @JoinColumn(name = "factura_id", referencedColumnName = "id", nullable = false)
     private Factura factura;
 
 
@@ -41,6 +44,14 @@ public class LineaFactura {
         this.descripcion = descripcion;
         this.cantidad = cantidad;
         this.precioUnitario = precioUnitario;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Factura getFactura() {
