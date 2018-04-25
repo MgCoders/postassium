@@ -5,6 +5,9 @@ import javax.persistence.*;
 /**
  * Created by msteglich on 1/20/18.
  */
+@Entity
+@JsonAutoDetect
+@ApiModel
 public class TrabajoFoto {
 
     @Id
