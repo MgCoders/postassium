@@ -4,7 +4,10 @@ import coop.magnesium.potassium.api.utils.JWTTokenNeeded;
 import coop.magnesium.potassium.api.utils.RoleNeeded;
 import coop.magnesium.potassium.db.dao.TrabajoDao;
 import coop.magnesium.potassium.db.dao.TrabajoFotoDao;
-import coop.magnesium.potassium.db.entities.*;
+import coop.magnesium.potassium.db.entities.Role;
+import coop.magnesium.potassium.db.entities.Tarea;
+import coop.magnesium.potassium.db.entities.Trabajo;
+import coop.magnesium.potassium.db.entities.TrabajoFoto;
 import coop.magnesium.potassium.utils.Logged;
 import coop.magnesium.potassium.utils.ex.MagnesiumBdNotFoundException;
 import coop.magnesium.potassium.utils.ex.MagnesiumException;
@@ -15,12 +18,9 @@ import javax.ejb.EJB;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
-
+import java.util.List;
 import java.util.logging.Logger;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
@@ -65,6 +65,18 @@ public class TrabajoFotoService {
             logger.severe(e.getMessage());
             return Response.serverError().entity(e.getMessage()).build();
         }
+    }
+
+
+    @GET
+    @Logged
+    @Path("trabajo/{id}")
+    @JWTTokenNeeded
+    @RoleNeeded({Role.USER, Role.ADMIN})
+    @ApiOperation(value = "Get tareas", response = TrabajoFoto.class, responseContainer = "List")
+    public Response findAllByTrabajo(@PathParam("id") Long id) {
+        List<TrabajoFoto> fotos = trabajoFotoDao.findAllByTrabajo(id);
+        return Response.ok(fotos).build();
     }
 
 }
