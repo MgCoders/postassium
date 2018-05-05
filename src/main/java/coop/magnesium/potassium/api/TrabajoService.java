@@ -9,6 +9,7 @@ import coop.magnesium.potassium.db.dao.TrabajoDao;
 import coop.magnesium.potassium.db.entities.*;
 import coop.magnesium.potassium.utils.Logged;
 import coop.magnesium.potassium.utils.ex.MagnesiumBdAlredyExistsException;
+import coop.magnesium.potassium.utils.ex.MagnesiumBdNotFoundException;
 import coop.magnesium.potassium.utils.ex.MagnesiumNotFoundException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -21,7 +22,6 @@ import javax.transaction.Transactional;
 import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
-
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -158,6 +158,31 @@ public class TrabajoService {
             return Response.ok(trabajo).build();
         } catch (Exception e) {
             return Response.notModified().entity(e.getMessage()).build();
+        }
+    }
+
+
+    @DELETE
+    @Logged
+    @Path("{id}")
+    @JWTTokenNeeded
+    @RoleNeeded({Role.USER, Role.ADMIN})
+    @ApiOperation(value = "Delete Trabajo", response = Trabajo.class)
+    public Response delete(@PathParam("id") Long id) {
+        try {
+            Trabajo trabajo = trabajoDao.findById(id);
+            if (trabajo == null) throw new MagnesiumBdNotFoundException("Trabajo no encontrado");
+
+            trabajo.setEstado(Estado.BORRADO.name());
+            trabajoDao.save(trabajo);
+
+            return Response.ok(trabajo).build();
+        } catch (MagnesiumBdNotFoundException e) {
+            logger.warning(e.getMessage());
+            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
+        } catch (Exception e) {
+            logger.severe(e.getMessage());
+            return Response.serverError().entity(e.getMessage()).build();
         }
     }
 }

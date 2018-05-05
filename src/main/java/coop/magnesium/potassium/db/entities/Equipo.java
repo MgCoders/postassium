@@ -19,24 +19,23 @@ public class Equipo {
     private Long id;
 
     @ManyToOne(cascade = {CascadeType.ALL})
-    @NotNull(message = "La tarea debe tener un Cliente")
+    @NotNull(message = "El equipo debe tener un Cliente")
     private Cliente cliente;
 
-    @NotNull
     private String marca;
 
-    @NotNull
     private String modelo;
 
-    @NotNull
     private String matricula;
 
-    @NotNull
     private String numeroChasis;
 
-    @NotNull
     private String color;
 
+    @NotNull(message = "El equipo debe tener una descripcion")
+    private String descripcion;
+
+    @NotNull(message = "El equipo debe tener un tipo de equipo")
     @ManyToOne(cascade = {CascadeType.ALL})
     private TipoEquipo tipoEquipo;
 
@@ -60,6 +59,17 @@ public class Equipo {
         this.matricula = matricula;
         this.numeroChasis = numeroChasis;
         this.color = color;
+        this.tipoEquipo = tipoEquipo;
+    }
+
+    public Equipo(Cliente cliente, String marca, String modelo, String matricula, String numeroChasis, String color, String descripcion, TipoEquipo tipoEquipo) {
+        this.cliente = cliente;
+        this.marca = marca;
+        this.modelo = modelo;
+        this.matricula = matricula;
+        this.numeroChasis = numeroChasis;
+        this.color = color;
+        this.descripcion = descripcion;
         this.tipoEquipo = tipoEquipo;
     }
 
@@ -125,5 +135,13 @@ public class Equipo {
 
     public void setNumeroChasis(String numeroChasis) {
         this.numeroChasis = numeroChasis;
+    }
+
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
     }
 }
