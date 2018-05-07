@@ -13,5 +13,6 @@ public enum Estado {
     FINALIZADO,
     EN_PROCESO,
     RECIBIDO,
-    CREADO
+    CREADO,
+    BORRADO
 }

@@ -122,9 +122,6 @@ public class Trabajo {
     @Column(length=10485760)
     private String firmaEmpleadoRecepcion;
 
-    private Integer nroFactura;
-
-    private Integer nroRemito;
 
     private Integer nroOrdenCompra;
 
@@ -241,21 +238,6 @@ public class Trabajo {
         this.nombreClienteRecepcion = nombreClienteRecepcion;
     }
 
-    public Integer getNroFactura() {
-        return nroFactura;
-    }
-
-    public void setNroFactura(Integer nroFactura) {
-        this.nroFactura = nroFactura;
-    }
-
-    public Integer getNroRemito() {
-        return nroRemito;
-    }
-
-    public void setNroRemito(Integer nroRemito) {
-        this.nroRemito = nroRemito;
-    }
 
     public Integer getNroOrdenCompra() {
         return nroOrdenCompra;

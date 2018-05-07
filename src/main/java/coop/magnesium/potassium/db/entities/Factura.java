@@ -2,6 +2,7 @@ package coop.magnesium.potassium.db.entities;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
@@ -12,6 +13,8 @@ import io.swagger.annotations.ApiModelProperty;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by msteglich on 4/12/18.
@@ -48,6 +51,14 @@ public class Factura {
 
     @NotNull
     private String observaciones;
+
+    private Integer nroFactura;
+
+    private Integer nroRemito;
+
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER, mappedBy = "factura")
+    private List<LineaFactura> lineas = new ArrayList<>();
 
     public Factura(Trabajo trabajo, LocalDate fecha, String moneda, String formaPago, Integer iva, String observaciones) {
         this.trabajo = trabajo;
@@ -114,5 +125,27 @@ public class Factura {
         this.observaciones = observaciones;
     }
 
+    public Integer getNroFactura() {
+        return nroFactura;
+    }
 
+    public void setNroFactura(Integer nroFactura) {
+        this.nroFactura = nroFactura;
+    }
+
+    public Integer getNroRemito() {
+        return nroRemito;
+    }
+
+    public void setNroRemito(Integer nroRemito) {
+        this.nroRemito = nroRemito;
+    }
+
+    public List<LineaFactura> getLineas() {
+        return lineas;
+    }
+
+    public void setLineas(List<LineaFactura> lineas) {
+        this.lineas = lineas;
+    }
 }
