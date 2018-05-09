@@ -25,6 +25,7 @@ public class TipoEquipo {
     private String descripcion;
 
     @NotNull
+    @Column(length=10485760)
     private String dibujo; //Array de bytes del dibujo
 
     public TipoEquipo() {

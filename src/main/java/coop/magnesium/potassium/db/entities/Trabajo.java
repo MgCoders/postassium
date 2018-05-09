@@ -106,11 +106,14 @@ public class Trabajo {
     //@ManyToOne
     //private Usuario usuarioRecepcion;
 
+    @Column(length=10485760)
     private String dibujoEquipoRecepcion; //Para el dibujito de cuando lo recibe, guardar el array de bytes
 
+    private Integer dibujoAncho;
+
+    private Integer dibujoAlto;
 
     private BigDecimal kmEquipoRecepcion;
-
 
     @Column(length=10485760)
     private String firmaClienteRecepcion; //Guardar array de bytes de la firma
@@ -122,9 +125,6 @@ public class Trabajo {
     @Column(length=10485760)
     private String firmaEmpleadoRecepcion;
 
-    private Integer nroFactura;
-
-    private Integer nroRemito;
 
     private Integer nroOrdenCompra;
 
@@ -241,21 +241,6 @@ public class Trabajo {
         this.nombreClienteRecepcion = nombreClienteRecepcion;
     }
 
-    public Integer getNroFactura() {
-        return nroFactura;
-    }
-
-    public void setNroFactura(Integer nroFactura) {
-        this.nroFactura = nroFactura;
-    }
-
-    public Integer getNroRemito() {
-        return nroRemito;
-    }
-
-    public void setNroRemito(Integer nroRemito) {
-        this.nroRemito = nroRemito;
-    }
 
     public Integer getNroOrdenCompra() {
         return nroOrdenCompra;
@@ -463,5 +448,21 @@ public class Trabajo {
 
     public void setFirmaEmpleadoRecepcion(String firmaEmpleadoRecepcion) {
         this.firmaEmpleadoRecepcion = firmaEmpleadoRecepcion;
+    }
+
+    public Integer getDibujoAncho() {
+        return dibujoAncho;
+    }
+
+    public void setDibujoAncho(Integer dibujoAncho) {
+        this.dibujoAncho = dibujoAncho;
+    }
+
+    public Integer getDibujoAlto() {
+        return dibujoAlto;
+    }
+
+    public void setDibujoAlto(Integer dibujoAlto) {
+        this.dibujoAlto = dibujoAlto;
     }
 }

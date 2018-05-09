@@ -93,4 +93,22 @@ public class FacturaService {
         if (factura == null) return Response.status(Response.Status.NOT_FOUND).build();
         return Response.ok(factura).build();
     }
+
+    @PUT
+    @Path("{id}")
+    @JWTTokenNeeded
+    @RoleNeeded({Role.USER, Role.ADMIN})
+    @ApiOperation(value = "Edit factura", response = Factura.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 304, message = "Error: objeto no modificado")})
+    public Response edit(@PathParam("id") Long id, @Valid Factura factura) {
+        try {
+            if (facturaDao.findById(id) == null) throw new MagnesiumNotFoundException("Factura no encontrada");
+            factura.setId(id);
+            factura = facturaDao.save(factura);
+            return Response.ok(factura).build();
+        } catch (Exception e) {
+            return Response.notModified().entity(e.getMessage()).build();
+        }
+    }
 }
