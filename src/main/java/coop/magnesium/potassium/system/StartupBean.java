@@ -29,8 +29,12 @@ public class StartupBean {
     UsuarioDao usuarioDao;
     @Inject
     Logger logger;
-    @Resource
-    TimerService timerService;
+    @Inject
+    ConfiguracionDao configuracionDao;
+    @Inject
+    String jbossNodeName;
+    @Inject
+    RecuperacionPasswordDao recuperacionPasswordDao;
 
     @EJB
     TareaDao tareaDao;
@@ -53,11 +57,11 @@ public class StartupBean {
     @EJB
     RubroDao rubroDao;
 
-    private ConcurrentHashMap recuperacionPassword = null;
-
     @PostConstruct
     public void init() {
-        this.recuperacionPassword = new ConcurrentHashMap();
+        System.setProperty("user.timezone", "America/Montevideo");
+        logger.warning("FECHA HORA DE JVM: " + LocalDateTime.now());
+
         try {
             if (usuarioDao.findByEmail("root@magnesium.coop") == null) {
                 usuarioDao.save(new Usuario("root@magnesium.coop", "root", PasswordUtils.digestPassword(System.getenv("ROOT_PASSWORD") != null ? System.getenv("ROOT_PASSWORD") : "bu"), "ADMIN", true));
@@ -119,29 +123,61 @@ public class StartupBean {
         }
     }
 
-    @Timeout
-    public void timeout(Timer timer) {
-        logger.info("Timeout: " + timer.toString());
-        recuperacionPassword.remove(timer.getInfo());
+    public void configuraciones() {
+        if (!configuracionDao.isEmailOn()) {
+            configuracionDao.setMailOn(false);
+        }
+        if (configuracionDao.getPeriodicidadNotificaciones().equals(0L)) {
+            configuracionDao.setPeriodicidadNotificaciones(48L);
+        }
+        if (configuracionDao.getDestinatariosNotificacionesAdmins().isEmpty()) {
+            configuracionDao.addDestinatarioNotificacionesAdmins("info@magnesium.coop");
+        }
+        if (configuracionDao.getMailFrom() == null) {
+            configuracionDao.setMailFrom("no-reply@mm.com");
+        }
+        if (configuracionDao.getMailHost() == null) {
+            configuracionDao.setMailPort("1025");
+        }
+        if (configuracionDao.getMailPort() == null) {
+            configuracionDao.setMailHost("ip-172-31-6-242");
+        }
+        if (configuracionDao.getProjectName() == null) {
+            configuracionDao.setProjectName("MMMM");
+        }
+        if (configuracionDao.getProjectLogo() == null) {
+            configuracionDao.setProjectLogo("https://fffff.com");
+        }
+        configuracionDao.ifNullSetStringProperty(TipoConfiguracion.FRONTEND_HOST, "https://fffff.com");
+        configuracionDao.ifNullSetStringProperty(TipoConfiguracion.FRONTEND_PATH, "/#/extra/new-password?token=");
+        configuracionDao.ifNullSetStringProperty(TipoConfiguracion.REST_BASE_PATH, "api");
     }
 
-    public void putRecuperacionPassword(DataRecuperacionPassword dataRecuperacionPassword) {
-        Instant instant = dataRecuperacionPassword.getExpirationDate().toInstant(ZoneOffset.UTC);
-        TimerConfig timerConfig = new TimerConfig();
-        timerConfig.setInfo(dataRecuperacionPassword.getToken());
-        timerService.createSingleActionTimer(Date.from(instant), timerConfig);
-        recuperacionPassword.put(dataRecuperacionPassword.getToken(), dataRecuperacionPassword);
+    public void putRecuperacionPassword(RecuperacionPassword recuperacionPassword) {
+        recuperacionPasswordDao.save(recuperacionPassword);
     }
 
-    public DataRecuperacionPassword getRecuperacionInfo(String token) {
-        DataRecuperacionPassword dataRecuperacionPassword = (DataRecuperacionPassword) recuperacionPassword.get(token);
-        if (dataRecuperacionPassword != null && dataRecuperacionPassword.getExpirationDate().isAfter(LocalDateTime.now())) {
-            return (DataRecuperacionPassword) recuperacionPassword.get(token);
+    public RecuperacionPassword getRecuperacionInfo(String token) {
+        RecuperacionPassword recuperacionPassword = recuperacionPasswordDao.findById(token);
+        if (recuperacionPassword != null && recuperacionPassword.getExpirationDate().isAfter(LocalDateTime.now())) {
+            return recuperacionPassword;
         } else {
-            recuperacionPassword.remove(token);
+            recuperacionPasswordDao.delete(token);
             return null;
         }
     }
 
+    @Schedule(hour = "*/24", info = "cleanRecuperacionContrasena", persistent = false)
+    public void cleanRecuperacionContrasena() {
+        //Solo si soy master
+        if (configuracionDao.getNodoMaster().equals(jbossNodeName)) {
+            logger.info("Master cleaning Recuperacion Contraseña");
+            recuperacionPasswordDao.findAll().forEach(recuperacionPassword -> {
+                if (recuperacionPassword.getExpirationDate().isBefore(LocalDateTime.now())) {
+                    recuperacionPasswordDao.delete(recuperacionPassword);
+                }
+            });
+        }
+    }
 
 }
