@@ -125,8 +125,8 @@ public class TrabajoService {
 
     @GET
     @Path("PDF/{id}")
-    //@JWTTokenNeeded
-    //@RoleNeeded({Role.USER, Role.ADMIN})
+    @JWTTokenNeeded
+    @RoleNeeded({Role.USER, Role.ADMIN})
     @ApiOperation(value = "Get PDF del trabajo.")
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     @ApiResponses(value = {
