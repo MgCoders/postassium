@@ -1,7 +1,10 @@
 package coop.magnesium.potassium.api;
 
 
+import coop.magnesium.potassium.db.dao.ConfiguracionDao;
 import coop.magnesium.potassium.db.dao.UsuarioDao;
+import coop.magnesium.potassium.db.entities.RecuperacionPassword;
+import coop.magnesium.potassium.db.entities.TipoConfiguracion;
 import coop.magnesium.potassium.db.entities.Usuario;
 import coop.magnesium.potassium.system.MailEvent;
 import coop.magnesium.potassium.system.MailService;
@@ -42,7 +45,7 @@ import static javax.ws.rs.core.Response.Status.UNAUTHORIZED;
 @Produces(APPLICATION_JSON)
 @Consumes(APPLICATION_JSON)
 @Transactional
-@Api(description = "Aplication auth service", tags = "auth")
+@Api(description = "Application auth service", tags = "auth")
 public class AuthService {
 
     @Inject
@@ -60,6 +63,8 @@ public class AuthService {
     private UsuarioDao usuarioDao;
     @EJB
     private StartupBean startupBean;
+    @Inject
+    ConfiguracionDao configuracionDao;
 
     @POST
     @Path("/login")
@@ -104,17 +109,22 @@ public class AuthService {
             if (usuario == null) throw new ObjectNotFoundException("no existe el usuario");
             if (!usuario.isLogin()) throw new MagnesiumBdNotFoundException("El usuario no tiene login");
 
-            DataRecuperacionPassword dataRecuperacionPassword = new DataRecuperacionPassword(email,
+            RecuperacionPassword recuperacionPassword = new RecuperacionPassword(email,
                     UUID.randomUUID().toString(), LocalDateTime.now().plusHours(1));
 
-            startupBean.putRecuperacionPassword(dataRecuperacionPassword);
+            startupBean.putRecuperacionPassword(recuperacionPassword);
+
+            String projectName = configuracionDao.getStringProperty(TipoConfiguracion.PROJECT_NAME);
+            String frontendHost = configuracionDao.getStringProperty(TipoConfiguracion.FRONTEND_HOST);
+            String frontendPath = configuracionDao.getStringProperty(TipoConfiguracion.FRONTEND_PATH);
 
             mailEvent.fire(new MailEvent(Arrays.asList(email),
-                    MailService.generarEmailRecuperacionClave(dataRecuperacionPassword.getToken(),
-                            endpointsProperties.getProperty("frontend.host"),
-                            endpointsProperties.getProperty("frontend.path")), "SIGPO: Recuperación de Contraseña"));
+                    MailService.generarEmailRecuperacionClave(recuperacionPassword.getToken(),
+                            frontendHost,
+                            frontendPath),
+                    projectName + ": Recuperación de Contraseña"));
 
-            logger.info(dataRecuperacionPassword.getToken());
+            logger.info(recuperacionPassword.getToken());
             return Response.ok().build();
         } catch (ObjectNotFoundException e) {
             logger.warning(e.getMessage());
@@ -137,9 +147,9 @@ public class AuthService {
     @Logged
     public Response recuperarEmail(@PathParam("token") String token) {
         try {
-            DataRecuperacionPassword dataRecuperacionPassword = startupBean.getRecuperacionInfo(token);
-            if (dataRecuperacionPassword == null) throw new ObjectNotFoundException("no existe recuperación");
-            return Response.ok(dataRecuperacionPassword).build();
+            RecuperacionPassword recuperacionPassword = startupBean.getRecuperacionInfo(token);
+            if (recuperacionPassword == null) throw new ObjectNotFoundException("no existe recuperación");
+            return Response.ok(recuperacionPassword).build();
         } catch (ObjectNotFoundException e) {
             logger.warning(e.getMessage());
             return Response.status(UNAUTHORIZED).build();
@@ -157,10 +167,10 @@ public class AuthService {
     public Response cambiarPassword(@FormParam("token") String token,
                                     @FormParam("password") String password) {
         try {
-            DataRecuperacionPassword dataRecuperacionPassword = startupBean.getRecuperacionInfo(token);
-            if (dataRecuperacionPassword == null) throw new MagnesiumBdNotFoundException("no existe recuperación");
+            RecuperacionPassword recuperacionPassword = startupBean.getRecuperacionInfo(token);
+            if (recuperacionPassword == null) throw new MagnesiumBdNotFoundException("no existe recuperación");
 
-            Usuario usuario = usuarioDao.findByEmail(dataRecuperacionPassword.getEmail());
+            Usuario usuario = usuarioDao.findByEmail(recuperacionPassword.getEmail());
             if (usuario == null) throw new MagnesiumBdNotFoundException("no existe usuario");
             if (!usuario.isLogin()) throw new MagnesiumBdNotFoundException("El usuario no tiene login");
 
