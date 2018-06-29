@@ -37,6 +37,9 @@ public class StartupBean {
     RecuperacionPasswordDao recuperacionPasswordDao;
 
     @EJB
+    NotificacionDao notificacionDao;
+
+    @EJB
     TareaDao tareaDao;
 
     @EJB
@@ -177,6 +180,15 @@ public class StartupBean {
                     recuperacionPasswordDao.delete(recuperacionPassword);
                 }
             });
+        }
+    }
+
+    @Schedule(hour = "*/72", info = "limpiarNotificacionesAntiguas", persistent = false)
+    public void limpiarNotificacionesAntiguas(){
+        //Solo si soy master
+        if (configuracionDao.getNodoMaster().equals(jbossNodeName)) {
+            logger.info("Master limpiando notificaciones antiguas");
+            notificacionDao.findAll(LocalDateTime.now().minusDays(100), LocalDateTime.now().minusDays(30)).forEach(notificacion -> notificacionDao.delete(notificacion));
         }
     }
 
