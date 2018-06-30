@@ -18,7 +18,7 @@ public class TipoEquipo {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long idTipoEquipo;
+    private Long id;
 
     @NotNull
     @Column(unique = true)
@@ -36,12 +36,12 @@ public class TipoEquipo {
         this.dibujo = dibujo;
     }
 
-    public Long getIdTipoEquipo() {
-        return idTipoEquipo;
+    public Long getId() {
+        return id;
     }
 
-    public void setIdTipoEquipo(Long idTipoEquipo) {
-        this.idTipoEquipo = idTipoEquipo;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getDescripcion() {
@@ -63,7 +63,7 @@ public class TipoEquipo {
     @Override
     public String toString() {
         return "TipoEquipo{" +
-                "id=" + idTipoEquipo +
+                "id=" + id +
                 ", descripcion='" + descripcion + '\'' +
                 ", dibujo='" + dibujo + '\'' +
                 '}';

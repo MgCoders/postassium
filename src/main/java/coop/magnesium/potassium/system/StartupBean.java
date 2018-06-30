@@ -93,7 +93,7 @@ public class StartupBean {
                 trabajo2.setMotivoVisita("REPARACION");
                 trabajo2.setFechaRecepcion(LocalDateTime.now());
                 trabajo2.setFechaProvistaEntrega(LocalDate.now());
-                trabajo2.setEstado("CREADO");
+                trabajo2.setEstado("EN_PROCESO");
                 trabajo2.setEquipo(equipo2);
                 trabajo2 = trabajoDao.save(trabajo2);
 
