@@ -429,6 +429,25 @@ public class TrabajoService {
     }
 
     @GET
+    @Path("estados/{status}")
+    @JWTTokenNeeded
+    @RoleNeeded({Role.USER, Role.ADMIN})
+    @ApiOperation(value = "Get Trabajos", response = Trabajo.class, responseContainer = "List")
+    @ApiResponses(value = {
+            @ApiResponse(code = 404, message = "Estado no encontrado")})
+    public Response findByMultipleStatus(@PathParam("status") String status) {
+
+        String[] estados = status.split(",");
+        List<Trabajo> trabajoList = new ArrayList<>();
+        for (String estado : estados){
+            trabajoList.addAll(trabajoDao.findByEstado(estado));
+        }
+
+
+        return Response.ok(trabajoList).build();
+    }
+
+    @GET
     @Path("cliente/{id}")
     @JWTTokenNeeded
     @RoleNeeded({Role.USER, Role.ADMIN})
