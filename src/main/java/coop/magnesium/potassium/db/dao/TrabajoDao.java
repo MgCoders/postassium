@@ -38,6 +38,7 @@ public class TrabajoDao extends AbstractDao<Trabajo, Long>{
 
     }
 
+
     public List<Trabajo> findAllByCliente(Cliente cliente){
         CriteriaBuilder criteriaBuilder = this.getEntityManager().getCriteriaBuilder();
         CriteriaQuery criteriaQuery = criteriaBuilder.createQuery();
