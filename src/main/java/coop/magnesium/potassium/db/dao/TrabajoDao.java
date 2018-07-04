@@ -9,9 +9,9 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
+import javax.persistence.criteria.*;
+import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -60,6 +60,28 @@ public class TrabajoDao extends AbstractDao<Trabajo, Long>{
         return (List<Trabajo>) query.getResultList();
     }
 
+    public List<Trabajo> findAllNearDeadline() {
+        // TODO tincho revisar esta query - los estados de trabajos en proceso ver si faltan...
+        LocalDate hoy = LocalDate.now();
+        LocalDate deadline = hoy.plusDays(6);
+
+        CriteriaBuilder criteriaBuilder = this.getEntityManager().getCriteriaBuilder();
+        CriteriaQuery criteriaQuery = criteriaBuilder.createQuery();
+        Root entity = criteriaQuery.from(Trabajo.class);
+        criteriaQuery.select(entity);
+
+        Predicate start = criteriaBuilder.greaterThanOrEqualTo(entity.get("fechaProvistaEntrega"), hoy);
+        Predicate end = criteriaBuilder.lessThanOrEqualTo(entity.get("fechaProvistaEntrega"), deadline);
+
+        List<String> sinTerminar = Arrays.asList(
+                new String[]{Estado.EN_PROCESO.toString(), Estado.EN_ESPERA.toString() });
+        Expression<String> estadosExp = entity.get("estadp");
+        Predicate estados = estadosExp.in(sinTerminar);
+        criteriaQuery.where(criteriaBuilder.and(start, end, estados));
+
+        Query query = this.getEntityManager().createQuery(criteriaQuery);
+        return query.getResultList();
+    }
 
 
 }

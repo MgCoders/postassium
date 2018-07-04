@@ -50,6 +50,12 @@ public class Notificacion {
         this.enviado =false;
     }
 
+    public Notificacion(TipoNotificacion tipo, String texto) {
+        this.tipo = tipo;
+        this.fechaHora = LocalDateTime.now();
+        this.texto = texto;
+        this.enviado =false;
+    }
 
     public Long getId() {
         return id;
