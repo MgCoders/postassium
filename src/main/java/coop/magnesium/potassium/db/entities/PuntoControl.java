@@ -39,6 +39,8 @@ public class PuntoControl {
     private List<Tarea> tareas = new ArrayList<>();
 
 
+    private Boolean verificado;
+
     public PuntoControl() {
     }
 
@@ -94,5 +96,13 @@ public class PuntoControl {
 
     public void setTareas(List<Tarea> tareas) {
         this.tareas = tareas;
+    }
+
+    public Boolean getVerificado() {
+        return verificado;
+    }
+
+    public void setVerificado(Boolean verificado) {
+        this.verificado = verificado;
     }
 }

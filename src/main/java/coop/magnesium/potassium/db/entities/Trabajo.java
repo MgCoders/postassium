@@ -130,6 +130,8 @@ public class Trabajo {
 
     private Boolean esReparacion = true;
 
+    private Boolean paraFinalizar = false;
+
 
     public Trabajo() {
     }
@@ -474,5 +476,13 @@ public class Trabajo {
 
     public void setEsReparacion(Boolean esReparacion) {
         this.esReparacion = esReparacion;
+    }
+
+    public Boolean getParaFinalizar() {
+        return paraFinalizar;
+    }
+
+    public void setParaFinalizar(Boolean paraFinalizar) {
+        this.paraFinalizar = paraFinalizar;
     }
 }
