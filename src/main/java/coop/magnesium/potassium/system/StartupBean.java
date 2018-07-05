@@ -9,12 +9,14 @@ import coop.magnesium.potassium.utils.ex.MagnesiumBdMultipleResultsException;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.ejb.*;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
@@ -35,6 +37,8 @@ public class StartupBean {
     String jbossNodeName;
     @Inject
     RecuperacionPasswordDao recuperacionPasswordDao;
+    @Inject
+    Event<Notificacion> notificacionEvent;
 
     @EJB
     NotificacionDao notificacionDao;
@@ -65,6 +69,8 @@ public class StartupBean {
         System.setProperty("user.timezone", "America/Montevideo");
         logger.warning("FECHA HORA DE JVM: " + LocalDateTime.now());
 
+
+        // TODO borrar todo esto para subir al server...
         try {
             if (usuarioDao.findByEmail("root@magnesium.coop") == null) {
                 usuarioDao.save(new Usuario("root@magnesium.coop", "root", PasswordUtils.digestPassword(System.getenv("ROOT_PASSWORD") != null ? System.getenv("ROOT_PASSWORD") : "bu"), "ADMIN", true));
@@ -189,6 +195,73 @@ public class StartupBean {
         if (configuracionDao.getNodoMaster().equals(jbossNodeName)) {
             logger.info("Master limpiando notificaciones antiguas");
             notificacionDao.findAll(LocalDateTime.now().minusDays(100), LocalDateTime.now().minusDays(30)).forEach(notificacion -> notificacionDao.delete(notificacion));
+        }
+    }
+
+    @Schedule(dayOfWeek = "Mon", hour = "3", info = "notificacionTrabajosDeadline", persistent = false)
+    public void notificacionTrabajosDeadline() {
+        //Solo si soy master
+        if (configuracionDao.getNodoMaster().equals(jbossNodeName)) {
+            logger.info("Master generando notificacionTrabajosDeadline");
+            List<Trabajo> trabajos = trabajoDao.findAllNearDeadline();
+            fireNotificacionesTrabajo(trabajos, TipoNotificacion.DEADLINE);
+        }
+    }
+
+    @Schedule(dayOfWeek = "Mon", hour = "6", info = "emailTrabajosDeadline", persistent = false)
+    public void emailTrabajosDeadline() {
+        //Solo si soy master
+        if (configuracionDao.getNodoMaster().equals(jbossNodeName)) {
+            logger.info("Master generando emailTrabajosDeadline");
+
+            // leer las notificaciones sin enviar y enviar los mails, usar
+            // consolidarNotificacionTrabajo para juntar todas en un mail solo
+
+
+        }
+    }
+
+    @Schedule(dayOfWeek = "Mon", hour = "3", minute = "30", info = "notificacionTrabajosAtrasados", persistent = false)
+    public void notificacionTrabajosAtrasados() {
+        //Solo si soy master
+        if (configuracionDao.getNodoMaster().equals(jbossNodeName)) {
+            logger.info("Master generando notificacionTrabajosAtrasados");
+
+
+
+        }
+    }
+
+    @Schedule(dayOfWeek = "Mon", hour = "6", minute = "30", info = "emailTrabajosAtrasados", persistent = false)
+    public void emailTrabajosAtrasados() {
+        //Solo si soy master
+        if (configuracionDao.getNodoMaster().equals(jbossNodeName)) {
+            logger.info("Master generando emailTrabajosAtrasados");
+
+            // similar a notificacionTrabajosDeadline
+            // se debe hacer una consulta que retorne los trabajos sin finalizar con fecha entrega menor a hoy
+        }
+    }
+
+    private String consolidarNotificacionTrabajo(List<Notificacion> notificaciones) {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (Notificacion notificacion : notificaciones) {
+            stringBuilder.append(notificacion.getTexto()).append("\n").append("\n");
+        }
+        return stringBuilder.toString();
+    }
+
+    private void fireNotificacionesTrabajo(List<Trabajo> trabajos, TipoNotificacion tipo) {
+        for (Trabajo trabajo : trabajos) {
+            Notificacion notificacion = new Notificacion();
+            notificacion.setTipo(tipo);
+            notificacion.setFechaHora(LocalDateTime.now());
+            notificacion.setEnviado(false);
+            notificacion.setTexto("ID: " + trabajo.getId() + "\n"
+                    + "Cliente: " + trabajo.getCliente().getNombreEmpresa() + "\n"
+                    + "Mat: " + (trabajo.getEquipo() != null ? trabajo.getEquipo().getMatricula() : ""));
+
+            notificacionEvent.fire(notificacion);
         }
     }
 

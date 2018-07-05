@@ -12,6 +12,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import java.util.ArrayList;
 import java.util.List;
 
 @Stateless
@@ -62,5 +63,14 @@ public class NotificacionDestinatarioDao extends AbstractDao<NotificacionDestina
         Query query = this.getEntityManager().createQuery(criteriaQuery);
         query.setParameter("tipo", tipo);
         return query.getResultList();
+    }
+
+    public List<String> findAllMailByTipo(TipoNotificacion tipo) {
+        List<NotificacionDestinatario> destinatarios = this.findAllByTipo(tipo);
+        List<String> emails = new ArrayList<>();
+        for (NotificacionDestinatario n : destinatarios) {
+            emails.add(n.getUsuario().getEmail());
+        }
+        return emails;
     }
 }
