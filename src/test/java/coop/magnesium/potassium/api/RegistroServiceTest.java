@@ -41,8 +41,8 @@ public class RegistroServiceTest {
     @Inject
     TareaDao tareaDao;
 
-    final Tarea tarea1 = new Tarea("T1","D1", 120, 1);
-    final Tarea tarea2 = new Tarea("T2","D2", 180, 1);
+    final Tarea tarea1 = new Tarea("T1","D1", 120, 1, false);
+    final Tarea tarea2 = new Tarea("T2","D2", 180, 1, false);
 
 
     @Deployment(testable = true)
