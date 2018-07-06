@@ -9,12 +9,14 @@ import coop.magnesium.potassium.utils.ex.MagnesiumBdMultipleResultsException;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.ejb.*;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
@@ -29,8 +31,17 @@ public class StartupBean {
     UsuarioDao usuarioDao;
     @Inject
     Logger logger;
-    @Resource
-    TimerService timerService;
+    @Inject
+    ConfiguracionDao configuracionDao;
+    @Inject
+    String jbossNodeName;
+    @Inject
+    RecuperacionPasswordDao recuperacionPasswordDao;
+    @Inject
+    Event<Notificacion> notificacionEvent;
+
+    @EJB
+    NotificacionDao notificacionDao;
 
     @EJB
     TareaDao tareaDao;
@@ -53,11 +64,13 @@ public class StartupBean {
     @EJB
     RubroDao rubroDao;
 
-    private ConcurrentHashMap recuperacionPassword = null;
-
     @PostConstruct
     public void init() {
-        this.recuperacionPassword = new ConcurrentHashMap();
+        System.setProperty("user.timezone", "America/Montevideo");
+        logger.warning("FECHA HORA DE JVM: " + LocalDateTime.now());
+
+
+        // TODO borrar todo esto para subir al server...
         try {
             if (usuarioDao.findByEmail("root@magnesium.coop") == null) {
                 usuarioDao.save(new Usuario("root@magnesium.coop", "root", PasswordUtils.digestPassword(System.getenv("ROOT_PASSWORD") != null ? System.getenv("ROOT_PASSWORD") : "bu"), "ADMIN", true));
@@ -86,7 +99,7 @@ public class StartupBean {
                 trabajo2.setMotivoVisita("REPARACION");
                 trabajo2.setFechaRecepcion(LocalDateTime.now());
                 trabajo2.setFechaProvistaEntrega(LocalDate.now());
-                trabajo2.setEstado("CREADO");
+                trabajo2.setEstado("EN_PROCESO");
                 trabajo2.setEquipo(equipo2);
                 trabajo2 = trabajoDao.save(trabajo2);
 
@@ -119,29 +132,137 @@ public class StartupBean {
         }
     }
 
-    @Timeout
-    public void timeout(Timer timer) {
-        logger.info("Timeout: " + timer.toString());
-        recuperacionPassword.remove(timer.getInfo());
+    public void configuraciones() {
+        if (!configuracionDao.isEmailOn()) {
+            configuracionDao.setMailOn(false);
+        }
+        if (configuracionDao.getPeriodicidadNotificaciones().equals(0L)) {
+            configuracionDao.setPeriodicidadNotificaciones(48L);
+        }
+        if (configuracionDao.getDestinatariosNotificacionesAdmins().isEmpty()) {
+            configuracionDao.addDestinatarioNotificacionesAdmins("info@magnesium.coop");
+        }
+        if (configuracionDao.getMailFrom() == null) {
+            configuracionDao.setMailFrom("no-reply@mm.com");
+        }
+        if (configuracionDao.getMailHost() == null) {
+            configuracionDao.setMailPort("1025");
+        }
+        if (configuracionDao.getMailPort() == null) {
+            configuracionDao.setMailHost("ip-172-31-6-242");
+        }
+        if (configuracionDao.getProjectName() == null) {
+            configuracionDao.setProjectName("MMMM");
+        }
+        if (configuracionDao.getProjectLogo() == null) {
+            configuracionDao.setProjectLogo("https://fffff.com");
+        }
+        configuracionDao.ifNullSetStringProperty(TipoConfiguracion.FRONTEND_HOST, "https://fffff.com");
+        configuracionDao.ifNullSetStringProperty(TipoConfiguracion.FRONTEND_PATH, "/#/extra/new-password?token=");
+        configuracionDao.ifNullSetStringProperty(TipoConfiguracion.REST_BASE_PATH, "api");
     }
 
-    public void putRecuperacionPassword(DataRecuperacionPassword dataRecuperacionPassword) {
-        Instant instant = dataRecuperacionPassword.getExpirationDate().toInstant(ZoneOffset.UTC);
-        TimerConfig timerConfig = new TimerConfig();
-        timerConfig.setInfo(dataRecuperacionPassword.getToken());
-        timerService.createSingleActionTimer(Date.from(instant), timerConfig);
-        recuperacionPassword.put(dataRecuperacionPassword.getToken(), dataRecuperacionPassword);
+    public void putRecuperacionPassword(RecuperacionPassword recuperacionPassword) {
+        recuperacionPasswordDao.save(recuperacionPassword);
     }
 
-    public DataRecuperacionPassword getRecuperacionInfo(String token) {
-        DataRecuperacionPassword dataRecuperacionPassword = (DataRecuperacionPassword) recuperacionPassword.get(token);
-        if (dataRecuperacionPassword != null && dataRecuperacionPassword.getExpirationDate().isAfter(LocalDateTime.now())) {
-            return (DataRecuperacionPassword) recuperacionPassword.get(token);
+    public RecuperacionPassword getRecuperacionInfo(String token) {
+        RecuperacionPassword recuperacionPassword = recuperacionPasswordDao.findById(token);
+        if (recuperacionPassword != null && recuperacionPassword.getExpirationDate().isAfter(LocalDateTime.now())) {
+            return recuperacionPassword;
         } else {
-            recuperacionPassword.remove(token);
+            recuperacionPasswordDao.delete(token);
             return null;
         }
     }
 
+    @Schedule(hour = "*/24", info = "cleanRecuperacionContrasena", persistent = false)
+    public void cleanRecuperacionContrasena() {
+        //Solo si soy master
+        if (configuracionDao.getNodoMaster().equals(jbossNodeName)) {
+            logger.info("Master cleaning Recuperacion Contraseña");
+            recuperacionPasswordDao.findAll().forEach(recuperacionPassword -> {
+                if (recuperacionPassword.getExpirationDate().isBefore(LocalDateTime.now())) {
+                    recuperacionPasswordDao.delete(recuperacionPassword);
+                }
+            });
+        }
+    }
+
+    @Schedule(hour = "*/72", info = "limpiarNotificacionesAntiguas", persistent = false)
+    public void limpiarNotificacionesAntiguas(){
+        //Solo si soy master
+        if (configuracionDao.getNodoMaster().equals(jbossNodeName)) {
+            logger.info("Master limpiando notificaciones antiguas");
+            notificacionDao.findAll(LocalDateTime.now().minusDays(100), LocalDateTime.now().minusDays(30)).forEach(notificacion -> notificacionDao.delete(notificacion));
+        }
+    }
+
+    @Schedule(dayOfWeek = "Mon", hour = "3", info = "notificacionTrabajosDeadline", persistent = false)
+    public void notificacionTrabajosDeadline() {
+        //Solo si soy master
+        if (configuracionDao.getNodoMaster().equals(jbossNodeName)) {
+            logger.info("Master generando notificacionTrabajosDeadline");
+            List<Trabajo> trabajos = trabajoDao.findAllNearDeadline();
+            fireNotificacionesTrabajo(trabajos, TipoNotificacion.DEADLINE);
+        }
+    }
+
+    @Schedule(dayOfWeek = "Mon", hour = "6", info = "emailTrabajosDeadline", persistent = false)
+    public void emailTrabajosDeadline() {
+        //Solo si soy master
+        if (configuracionDao.getNodoMaster().equals(jbossNodeName)) {
+            logger.info("Master generando emailTrabajosDeadline");
+
+            // leer las notificaciones sin enviar y enviar los mails, usar
+            // consolidarNotificacionTrabajo para juntar todas en un mail solo
+
+
+        }
+    }
+
+    @Schedule(dayOfWeek = "Mon", hour = "3", minute = "30", info = "notificacionTrabajosAtrasados", persistent = false)
+    public void notificacionTrabajosAtrasados() {
+        //Solo si soy master
+        if (configuracionDao.getNodoMaster().equals(jbossNodeName)) {
+            logger.info("Master generando notificacionTrabajosAtrasados");
+
+
+
+        }
+    }
+
+    @Schedule(dayOfWeek = "Mon", hour = "6", minute = "30", info = "emailTrabajosAtrasados", persistent = false)
+    public void emailTrabajosAtrasados() {
+        //Solo si soy master
+        if (configuracionDao.getNodoMaster().equals(jbossNodeName)) {
+            logger.info("Master generando emailTrabajosAtrasados");
+
+            // similar a notificacionTrabajosDeadline
+            // se debe hacer una consulta que retorne los trabajos sin finalizar con fecha entrega menor a hoy
+        }
+    }
+
+    private String consolidarNotificacionTrabajo(List<Notificacion> notificaciones) {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (Notificacion notificacion : notificaciones) {
+            stringBuilder.append(notificacion.getTexto()).append("\n").append("\n");
+        }
+        return stringBuilder.toString();
+    }
+
+    private void fireNotificacionesTrabajo(List<Trabajo> trabajos, TipoNotificacion tipo) {
+        for (Trabajo trabajo : trabajos) {
+            Notificacion notificacion = new Notificacion();
+            notificacion.setTipo(tipo);
+            notificacion.setFechaHora(LocalDateTime.now());
+            notificacion.setEnviado(false);
+            notificacion.setTexto("ID: " + trabajo.getId() + "\n"
+                    + "Cliente: " + trabajo.getCliente().getNombreEmpresa() + "\n"
+                    + "Mat: " + (trabajo.getEquipo() != null ? trabajo.getEquipo().getMatricula() : ""));
+
+            notificacionEvent.fire(notificacion);
+        }
+    }
 
 }

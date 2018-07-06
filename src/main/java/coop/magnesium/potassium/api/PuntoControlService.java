@@ -56,7 +56,7 @@ public class PuntoControlService {
             @ApiResponse(code = 500, message = "Error interno")})
     public Response create(@PathParam("id") Long id, @Valid PuntoControl puntoControl) {
         try {
-            Trabajo trabajo = trabajoDao.findById(id);
+            Trabajo trabajo = trabajoDao.findById(puntoControl.getTrabajo().getId());
             PuntoControl puntoControlExists  = puntoControl.getId() != null ? puntoControlDao.findById(puntoControl.getId()) : null;
             if (puntoControlExists != null) throw new MagnesiumBdAlredyExistsException("Id ya existe");
 

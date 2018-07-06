@@ -128,6 +128,10 @@ public class Trabajo {
 
     private Integer nroOrdenCompra;
 
+    private Boolean esReparacion = true;
+
+    private Boolean paraFinalizar = false;
+
 
     public Trabajo() {
     }
@@ -464,5 +468,21 @@ public class Trabajo {
 
     public void setDibujoAlto(Integer dibujoAlto) {
         this.dibujoAlto = dibujoAlto;
+    }
+
+    public Boolean getEsReparacion() {
+        return esReparacion;
+    }
+
+    public void setEsReparacion(Boolean esReparacion) {
+        this.esReparacion = esReparacion;
+    }
+
+    public Boolean getParaFinalizar() {
+        return paraFinalizar;
+    }
+
+    public void setParaFinalizar(Boolean paraFinalizar) {
+        this.paraFinalizar = paraFinalizar;
     }
 }

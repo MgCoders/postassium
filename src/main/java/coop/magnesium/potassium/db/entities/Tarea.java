@@ -34,14 +34,17 @@ public class Tarea {
     @JoinColumn(name = "punto_control_id")
     private PuntoControl puntoControl;
 
+    private Boolean completa;
+
     public Tarea() {
     }
 
-    public Tarea(String nombre, String descripcion, Integer minutosEstimados, Integer borrada) {
+    public Tarea(String nombre, String descripcion, Integer minutosEstimados, Integer borrada, Boolean completa) {
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.minutosEstimados = minutosEstimados;
         this.borrado = borrada;
+        this.completa = completa;
     }
 
     public Tarea(String nombre, String descripcion, Integer minutosEstimados, Integer borrado, PuntoControl puntoControl) {
@@ -100,5 +103,13 @@ public class Tarea {
     //@JsonProperty
     public void setPuntoControl(PuntoControl puntoControl) {
         this.puntoControl = puntoControl;
+    }
+
+    public Boolean getCompleta() {
+        return completa;
+    }
+
+    public void setCompleta(Boolean completa) {
+        this.completa = completa;
     }
 }

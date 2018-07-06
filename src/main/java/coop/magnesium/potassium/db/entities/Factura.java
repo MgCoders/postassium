@@ -56,7 +56,7 @@ public class Factura {
 
     private Integer nroRemito;
 
-    @JsonIgnore
+
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER, mappedBy = "factura")
     private List<LineaFactura> lineas = new ArrayList<>();
 
