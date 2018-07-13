@@ -39,6 +39,11 @@ public class LineaFactura {
     @NotNull
     private Double precioUnitario;
 
+    private Integer borrado = 0;
+
+    public LineaFactura() {
+    }
+
     public LineaFactura(Factura factura, String descripcion, Double cantidad, Double precioUnitario) {
         this.factura = factura;
         this.descripcion = descripcion;
@@ -84,5 +89,13 @@ public class LineaFactura {
 
     public void setPrecioUnitario(Double precioUnitario) {
         this.precioUnitario = precioUnitario;
+    }
+
+    public Integer getBorrado() {
+        return borrado;
+    }
+
+    public void setBorrado(Integer borrado) {
+        this.borrado = borrado;
     }
 }

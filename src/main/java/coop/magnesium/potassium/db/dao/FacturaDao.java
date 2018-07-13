@@ -34,16 +34,16 @@ public class FacturaDao extends AbstractDao<Factura, Long>{
 
 
 
-    public Factura findByTrabajo(Trabajo trabajo)
+    public List<Factura> findByTrabajo(Trabajo trabajo)
     {
         CriteriaBuilder criteriaBuilder = this.getEntityManager().getCriteriaBuilder();
         CriteriaQuery criteriaQuery = criteriaBuilder.createQuery();
-        Root entity = criteriaQuery.from(Equipo.class);
+        Root entity = criteriaQuery.from(Factura.class);
         criteriaQuery.select(entity);
         criteriaQuery.where(criteriaBuilder.equal(entity.get("trabajo"), criteriaBuilder.parameter(Trabajo.class, "t")));
         Query query = this.getEntityManager().createQuery(criteriaQuery);
         query.setParameter("t", trabajo);
-        return query.getResultList().isEmpty() ? null : (Factura) query.getResultList().get(0);
+        return query.getResultList();
     }
 
 
