@@ -25,9 +25,9 @@ public class LineaFactura {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    /*@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "factura", referencedColumnName = "id", nullable = false)
-    private Factura factura;
+    private Factura factura;*/
 
 
     @NotNull
@@ -45,7 +45,7 @@ public class LineaFactura {
     }
 
     public LineaFactura(Factura factura, String descripcion, Double cantidad, Double precioUnitario) {
-        this.factura = factura;
+        //this.factura = factura;
         this.descripcion = descripcion;
         this.cantidad = cantidad;
         this.precioUnitario = precioUnitario;
@@ -59,13 +59,13 @@ public class LineaFactura {
         this.id = id;
     }
 
-   public Factura getFactura() {
+  /*public Factura getFactura() {
         return factura;
     }
 
     public void setFactura(Factura factura) {
         this.factura = factura;
-    }
+    }*/
 
     public String getDescripcion() {
         return descripcion;

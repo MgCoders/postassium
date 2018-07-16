@@ -58,9 +58,9 @@ public class FacturaService {
             //if (facturaDao.findByTrabajo(factura.getTrabajo()) != null) throw new MagnesiumException("Ya existe factura para el trabajo");
 
 
-            for (LineaFactura lf : factura.getLineas()){
+            /*for (LineaFactura lf : factura.getLineas()){
                 lf.setFactura(factura);
-            }
+            }*/
 
             factura = facturaDao.save(factura);
 
@@ -113,9 +113,9 @@ public class FacturaService {
             if (facturaDao.findById(id) == null) throw new MagnesiumNotFoundException("Factura no encontrada");
             factura.setId(id);
 
-            for (LineaFactura lf : factura.getLineas()){
+            /*for (LineaFactura lf : factura.getLineas()){
                 lf.setFactura(factura);
-            }
+            }*/
             
             factura = facturaDao.save(factura);
             return Response.ok(factura).build();
