@@ -25,8 +25,8 @@ public class LineaFactura {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(cascade = {CascadeType.ALL})
-    @JoinColumn(name = "factura_id", referencedColumnName = "id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "factura", referencedColumnName = "id", nullable = false)
     private Factura factura;
 
 
@@ -59,7 +59,7 @@ public class LineaFactura {
         this.id = id;
     }
 
-    public Factura getFactura() {
+   public Factura getFactura() {
         return factura;
     }
 

@@ -59,7 +59,7 @@ public class Factura {
     private Integer borrado = 0;
 
 
-    @OneToMany(orphanRemoval = true, fetch = FetchType.EAGER, mappedBy = "factura")
+    @OneToMany(cascade = CascadeType.ALL,orphanRemoval = true, fetch = FetchType.EAGER, mappedBy = "factura")
     private List<LineaFactura> lineas = new ArrayList<>();
 
     public Factura() {

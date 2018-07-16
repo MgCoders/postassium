@@ -7,7 +7,6 @@ import coop.magnesium.potassium.db.dao.TrabajoDao;
 import coop.magnesium.potassium.db.entities.Factura;
 import coop.magnesium.potassium.db.entities.LineaFactura;
 import coop.magnesium.potassium.db.entities.Role;
-import coop.magnesium.potassium.db.entities.Trabajo;
 import coop.magnesium.potassium.utils.Logged;
 import coop.magnesium.potassium.utils.ex.MagnesiumException;
 import coop.magnesium.potassium.utils.ex.MagnesiumNotFoundException;
@@ -46,6 +45,7 @@ public class FacturaService {
     @EJB
     private TrabajoDao trabajoDao;
 
+
     @POST
     @Logged
     @JWTTokenNeeded
@@ -56,6 +56,11 @@ public class FacturaService {
             if (factura.getId() != null) throw new MagnesiumException("Ya existe la factura");
 
             //if (facturaDao.findByTrabajo(factura.getTrabajo()) != null) throw new MagnesiumException("Ya existe factura para el trabajo");
+
+
+            for (LineaFactura lf : factura.getLineas()){
+                lf.setFactura(factura);
+            }
 
             factura = facturaDao.save(factura);
 
@@ -107,6 +112,11 @@ public class FacturaService {
         try {
             if (facturaDao.findById(id) == null) throw new MagnesiumNotFoundException("Factura no encontrada");
             factura.setId(id);
+
+            for (LineaFactura lf : factura.getLineas()){
+                lf.setFactura(factura);
+            }
+            
             factura = facturaDao.save(factura);
             return Response.ok(factura).build();
         } catch (Exception e) {
