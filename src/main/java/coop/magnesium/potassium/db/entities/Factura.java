@@ -54,7 +54,6 @@ public class Factura {
 
     private Integer nroFactura;
 
-    private Integer nroRemito;
 
     private Integer borrado = 0;
 
@@ -139,13 +138,6 @@ public class Factura {
         this.nroFactura = nroFactura;
     }
 
-    public Integer getNroRemito() {
-        return nroRemito;
-    }
-
-    public void setNroRemito(Integer nroRemito) {
-        this.nroRemito = nroRemito;
-    }
 
     public List<LineaFactura> getLineas() {
         return lineas;

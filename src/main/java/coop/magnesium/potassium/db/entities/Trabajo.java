@@ -132,6 +132,7 @@ public class Trabajo {
 
     private Boolean paraFinalizar = false;
 
+    private Integer nroRemito;
 
     public Trabajo() {
     }
@@ -484,5 +485,13 @@ public class Trabajo {
 
     public void setParaFinalizar(Boolean paraFinalizar) {
         this.paraFinalizar = paraFinalizar;
+    }
+
+    public Integer getNroRemito() {
+        return nroRemito;
+    }
+
+    public void setNroRemito(Integer nroRemito) {
+        this.nroRemito = nroRemito;
     }
 }
