@@ -25,9 +25,9 @@ public class LineaFactura {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(cascade = {CascadeType.ALL})
-    @JoinColumn(name = "factura_id", referencedColumnName = "id", nullable = false)
-    private Factura factura;
+    /*@ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "factura", referencedColumnName = "id", nullable = false)
+    private Factura factura;*/
 
 
     @NotNull
@@ -39,8 +39,13 @@ public class LineaFactura {
     @NotNull
     private Double precioUnitario;
 
+    private Integer borrado = 0;
+
+    public LineaFactura() {
+    }
+
     public LineaFactura(Factura factura, String descripcion, Double cantidad, Double precioUnitario) {
-        this.factura = factura;
+        //this.factura = factura;
         this.descripcion = descripcion;
         this.cantidad = cantidad;
         this.precioUnitario = precioUnitario;
@@ -54,13 +59,13 @@ public class LineaFactura {
         this.id = id;
     }
 
-    public Factura getFactura() {
+  /*public Factura getFactura() {
         return factura;
     }
 
     public void setFactura(Factura factura) {
         this.factura = factura;
-    }
+    }*/
 
     public String getDescripcion() {
         return descripcion;
@@ -84,5 +89,13 @@ public class LineaFactura {
 
     public void setPrecioUnitario(Double precioUnitario) {
         this.precioUnitario = precioUnitario;
+    }
+
+    public Integer getBorrado() {
+        return borrado;
+    }
+
+    public void setBorrado(Integer borrado) {
+        this.borrado = borrado;
     }
 }

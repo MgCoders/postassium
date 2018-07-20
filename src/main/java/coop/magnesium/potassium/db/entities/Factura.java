@@ -29,7 +29,7 @@ public class Factura {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "trabajo_id", referencedColumnName = "id", nullable = false)
     private Trabajo trabajo;
 
@@ -54,11 +54,16 @@ public class Factura {
 
     private Integer nroFactura;
 
-    private Integer nroRemito;
+
+    private Integer borrado = 0;
 
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER, mappedBy = "factura")
+    @OneToMany(cascade = CascadeType.ALL,orphanRemoval = true, fetch = FetchType.EAGER)
+    @JoinColumn(name = "factura")
     private List<LineaFactura> lineas = new ArrayList<>();
+
+    public Factura() {
+    }
 
     public Factura(Trabajo trabajo, LocalDate fecha, String moneda, String formaPago, Integer iva, String observaciones) {
         this.trabajo = trabajo;
@@ -133,13 +138,6 @@ public class Factura {
         this.nroFactura = nroFactura;
     }
 
-    public Integer getNroRemito() {
-        return nroRemito;
-    }
-
-    public void setNroRemito(Integer nroRemito) {
-        this.nroRemito = nroRemito;
-    }
 
     public List<LineaFactura> getLineas() {
         return lineas;
@@ -147,5 +145,13 @@ public class Factura {
 
     public void setLineas(List<LineaFactura> lineas) {
         this.lineas = lineas;
+    }
+
+    public Integer getBorrado() {
+        return borrado;
+    }
+
+    public void setBorrado(Integer borrado) {
+        this.borrado = borrado;
     }
 }
