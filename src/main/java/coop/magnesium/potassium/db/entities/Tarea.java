@@ -35,6 +35,8 @@ public class Tarea {
     private PuntoControl puntoControl;
 
     private Boolean completa;
+    private Boolean necesitaVerificacion;
+    private Boolean verificada;
 
     public Tarea() {
     }
@@ -111,5 +113,21 @@ public class Tarea {
 
     public void setCompleta(Boolean completa) {
         this.completa = completa;
+    }
+
+    public Boolean getNecesitaVerificacion() {
+        return necesitaVerificacion;
+    }
+
+    public void setNecesitaVerificacion(Boolean necesitaVerificacion) {
+        this.necesitaVerificacion = necesitaVerificacion;
+    }
+
+    public Boolean getVerificada() {
+        return verificada;
+    }
+
+    public void setVerificada(Boolean verificada) {
+        this.verificada = verificada;
     }
 }
