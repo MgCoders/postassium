@@ -89,7 +89,7 @@ public class TrabajoService {
 
 
             trabajo = trabajoDao.save(trabajo);
-            PuntoControl puntoControl  = new PuntoControl("Final", trabajo, 0);
+            PuntoControl puntoControl  = new PuntoControl("Final", trabajo, 0, false);
             puntoControl = puntoControlDao.save(puntoControl);
             return Response.status(Response.Status.CREATED).entity(trabajo).build();
         } catch (MagnesiumBdAlredyExistsException exists) {
