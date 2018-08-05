@@ -77,8 +77,8 @@ public class StartupBean {
 //                Cliente cliente = clienteDao.save(new Cliente("Empresa 1","100 321 6546", "099 111 111", "C1", "1", "empre2@asd.ewe", "w"));
 //                Cliente cliente2 = clienteDao.save(new Cliente("Empresa 2","218 987 352", "097 666 666", "C2", "1", "empre1.qwe@asdas.col", "w"));
 
-                TipoEquipo camion = tipoEquipoDao.save(new TipoEquipo("Camion","Camion"));
-                TipoEquipo barco = tipoEquipoDao.save(new TipoEquipo("Tanque semirremolque","Barco"));
+                TipoEquipo camion = tipoEquipoDao.save(new TipoEquipo("Camion","Camion", true));
+                TipoEquipo barco = tipoEquipoDao.save(new TipoEquipo("Tanque semirremolque","Barco", false));
 
 //                Equipo equipo1 = equipoDao.save( new Equipo(cliente, "Scania", "48 ruedas", "sdasd", "WER2343F44", "Rojo", "descr", camion));
 //                Equipo equipo2 = equipoDao.save( new Equipo(cliente, "Volkswagen", "52 ruedas", "asdasd", "1234564AD3", "Azul", "descr", remolque));

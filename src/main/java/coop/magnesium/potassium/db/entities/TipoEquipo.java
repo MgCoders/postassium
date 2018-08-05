@@ -28,12 +28,15 @@ public class TipoEquipo {
     @Column(length=10485760)
     private String dibujo; //Array de bytes del dibujo
 
+    private Boolean requiereInfoRecibo;
+
     public TipoEquipo() {
     }
 
-    public TipoEquipo(String descripcion, String dibujo) {
+    public TipoEquipo(String descripcion, String dibujo, Boolean requiereInfoRecibo) {
         this.descripcion = descripcion;
         this.dibujo = dibujo;
+        this.requiereInfoRecibo = requiereInfoRecibo;
     }
 
     public Long getId() {
@@ -58,6 +61,14 @@ public class TipoEquipo {
 
     public void setDibujo(String dibujo) {
         this.dibujo = dibujo;
+    }
+
+    public Boolean getRequiereInfoRecibo() {
+        return requiereInfoRecibo;
+    }
+
+    public void setRequiereInfoRecibo(Boolean requiereInfoRecibo) {
+        this.requiereInfoRecibo = requiereInfoRecibo;
     }
 
     @Override
