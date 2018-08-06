@@ -49,6 +49,7 @@ import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
+import io.swagger.models.properties.IntegerProperty;
 
 /**
  * Created by msteglich on 1/23/18.
@@ -477,8 +478,6 @@ public class TrabajoService {
         return Response.ok(trabajoList).build();
     }
 
-
-
     @PUT
     @Path("{id}")
     @JWTTokenNeeded
@@ -520,5 +519,37 @@ public class TrabajoService {
             logger.severe(e.getMessage());
             return Response.serverError().entity(e.getMessage()).build();
         }
+    }
+
+    @GET
+    @Path("countEstados/{status}")
+    @JWTTokenNeeded
+    @RoleNeeded({Role.USER, Role.ADMIN})
+    @ApiOperation(value = "Get Count Trabajos", response = Integer.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 404, message = "Estado no encontrado")})
+    public Response countByMultipleStatus(@PathParam("status") String status) {
+
+        String[] estados = status.split(",");
+        Long count = 0L;
+        for (String estado : estados){
+            count += trabajoDao.countByField("estado",estado);
+        }
+
+
+        return Response.ok(count).build();
+    }
+
+    @GET
+    @Path("count")
+    @JWTTokenNeeded
+    @RoleNeeded({Role.USER, Role.ADMIN})
+    @ApiOperation(value = "Get Count Trabajos", response = Integer.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 404, message = "Estado no encontrado")})
+    public Response countAll() {
+
+        Long count = trabajoDao.countAll();
+        return Response.ok(count).build();
     }
 }
