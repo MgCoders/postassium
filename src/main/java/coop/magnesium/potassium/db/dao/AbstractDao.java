@@ -55,10 +55,20 @@ public abstract class AbstractDao<E, ID extends Serializable> {
         return query.getResultList();
     }
 
-    public int countAll() {
+    public Long countAll() {
         Query query = getEntityManager().createQuery(
                 "select count(e) from " + getEntityClass().getSimpleName() + " e");
-        return (Integer) query.getSingleResult();
+        return (Long) query.getSingleResult();
+    }
+
+    public Long countByField(final String fieldName, final String fieldValue) {
+        CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
+        CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+        Root<E> tag = cq.from(getEntityClass());
+        cq.select(cb.count(tag));
+        cq.where(cb.equal(tag.get(fieldName), fieldValue));
+        TypedQuery<Long> query = getEntityManager().createQuery(cq);
+        return query.getSingleResult();
     }
 
     public E save(E entity) {

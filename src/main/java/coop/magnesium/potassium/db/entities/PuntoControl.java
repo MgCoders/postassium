@@ -35,19 +35,23 @@ public class PuntoControl {
     private Integer orden;
 
     @JsonIgnore
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER, mappedBy = "puntoControl")
+    @OneToMany(orphanRemoval = true, fetch = FetchType.EAGER, mappedBy = "puntoControl")
     private List<Tarea> tareas = new ArrayList<>();
 
 
     private Boolean verificado;
 
+    @NotNull
+    private Boolean paraVerificar = false;
+
     public PuntoControl() {
     }
 
-    public PuntoControl(String nombre, Trabajo trabajo, Integer orden) {
+    public PuntoControl(String nombre, Trabajo trabajo, Integer orden, Boolean paraVerificar) {
         this.nombre = nombre;
         this.trabajo = trabajo;
         this.orden = orden;
+        this.paraVerificar = paraVerificar;
     }
 
     public Long getId() {
@@ -104,5 +108,13 @@ public class PuntoControl {
 
     public void setVerificado(Boolean verificado) {
         this.verificado = verificado;
+    }
+
+    public Boolean getParaVerificar() {
+        return paraVerificar;
+    }
+
+    public void setParaVerificar(Boolean paraVerificar) {
+        this.paraVerificar = paraVerificar;
     }
 }
