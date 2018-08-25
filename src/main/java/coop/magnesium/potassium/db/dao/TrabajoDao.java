@@ -62,7 +62,6 @@ public class TrabajoDao extends AbstractDao<Trabajo, Long>{
     }
 
     public List<Trabajo> findAllNearDeadline() {
-        // TODO tincho revisar esta query - los estados de trabajos en proceso ver si faltan...
         LocalDate hoy = LocalDate.now();
         LocalDate deadline = hoy.plusDays(6);
 
@@ -75,7 +74,7 @@ public class TrabajoDao extends AbstractDao<Trabajo, Long>{
         Predicate end = criteriaBuilder.lessThanOrEqualTo(entity.get("fechaProvistaEntrega"), deadline);
 
         List<String> sinTerminar = Arrays.asList(
-                new String[]{Estado.EN_PROCESO.toString(), Estado.EN_ESPERA.toString() });
+                new String[]{Estado.EN_PROCESO.toString() });
         Expression<String> estadosExp = entity.get("estadp");
         Predicate estados = estadosExp.in(sinTerminar);
         criteriaQuery.where(criteriaBuilder.and(start, end, estados));
@@ -84,5 +83,23 @@ public class TrabajoDao extends AbstractDao<Trabajo, Long>{
         return query.getResultList();
     }
 
+    public List<Trabajo> findAllDelayedWorks() {
+        LocalDate hoy = LocalDate.now();
+
+        CriteriaBuilder criteriaBuilder = this.getEntityManager().getCriteriaBuilder();
+        CriteriaQuery criteriaQuery = criteriaBuilder.createQuery();
+        Root entity = criteriaQuery.from(Trabajo.class);
+        criteriaQuery.select(entity);
+        Predicate end = criteriaBuilder.lessThan(entity.get("fechaProvistaEntrega"), hoy);
+
+        List<String> sinTerminar = Arrays.asList(
+                new String[]{Estado.EN_PROCESO.toString() });
+        Expression<String> estadosExp = entity.get("estadp");
+        Predicate estados = estadosExp.in(sinTerminar);
+        criteriaQuery.where(criteriaBuilder.and(end, estados));
+
+        Query query = this.getEntityManager().createQuery(criteriaQuery);
+        return query.getResultList();
+    }
 
 }

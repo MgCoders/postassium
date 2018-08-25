@@ -494,4 +494,11 @@ public class Trabajo {
     public void setNroRemito(Integer nroRemito) {
         this.nroRemito = nroRemito;
     }
+
+    public String toNotificacion() {
+        return "ID: " + this.getId() + "\n"
+                + "Cliente: " + this.getCliente().getNombreEmpresa() + "\n"
+                + "Mat: " + (this.getEquipo() != null ? this.getEquipo().getMatricula() : "");
+    }
+
 }
