@@ -517,4 +517,10 @@ public class Trabajo {
     public void setNumeroTrabajo(String numeroTrabajo) {
         this.numeroTrabajo = numeroTrabajo;
     }
+
+    public String toNotificacion() {
+        return "ID: " + this.getId() + "\n"
+                + "Cliente: " + this.getCliente().getNombreEmpresa() + "\n"
+                + "Mat: " + (this.getEquipo() != null ? this.getEquipo().getMatricula() : "");
+    }
 }
