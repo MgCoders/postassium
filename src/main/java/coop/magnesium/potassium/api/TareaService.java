@@ -70,6 +70,8 @@ public class TareaService {
 
             tarea = tareaDao.save(tarea);
 
+            paraVerificarPuntoControl(puntoControl);
+
             return Response.status(Response.Status.CREATED).entity(tarea).build();
         } catch (MagnesiumException | MagnesiumBdNotFoundException e) {
             logger.warning(e.getMessage());
@@ -134,6 +136,9 @@ public class TareaService {
 
             tarea.setId(id);
             tarea = tareaDao.save(tarea);
+
+            paraVerificarPuntoControl(puntoControl);
+
             return Response.ok(tarea).build();
         } catch (MagnesiumNotFoundException e) {
             logger.warning(e.getMessage());
@@ -142,6 +147,17 @@ public class TareaService {
             logger.severe(e.getMessage());
             return Response.serverError().entity(e.getMessage()).build();
         }
+    }
+
+
+    public void paraVerificarPuntoControl(PuntoControl puntoControl){
+        puntoControl.setParaVerificar(true);
+        for(Tarea t : tareaDao.findAllByPuntoControl(puntoControl.getId())){
+            if ((!t.getCompleta()) || (t.getNecesitaVerificacion() && !t.getVerificada()))
+                puntoControl.setParaVerificar(false);
+        }
+
+        puntoControlDao.save(puntoControl);
     }
 
     /****

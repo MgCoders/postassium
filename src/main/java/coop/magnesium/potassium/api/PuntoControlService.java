@@ -9,6 +9,7 @@ import coop.magnesium.potassium.db.entities.Role;
 import coop.magnesium.potassium.db.entities.Trabajo;
 import coop.magnesium.potassium.utils.Logged;
 import coop.magnesium.potassium.utils.ex.MagnesiumBdAlredyExistsException;
+import coop.magnesium.potassium.utils.ex.MagnesiumException;
 import coop.magnesium.potassium.utils.ex.MagnesiumNotFoundException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -63,6 +64,8 @@ public class PuntoControlService {
 
             puntoControl.setTrabajo(trabajo);
             puntoControl = puntoControlDao.save(puntoControl);
+
+            paraFinalizarTrabajo(trabajo);
             return Response.status(Response.Status.CREATED).entity(puntoControl).build();
         } catch (MagnesiumBdAlredyExistsException exists) {
             logger.warning(exists.getMessage());
@@ -101,9 +104,63 @@ public class PuntoControlService {
             if (puntoControlDao.findById(id) == null) throw new MagnesiumNotFoundException("Punto Control no encontrado");
             puntoControl.setId(id);
             puntoControl = puntoControlDao.save(puntoControl);
+
+            paraFinalizarTrabajo(trabajoDao.findById(puntoControl.getTrabajo().getId()));
             return Response.ok(puntoControl).build();
         } catch (Exception e) {
             return Response.notModified().entity(e.getMessage()).build();
         }
+    }
+
+
+    @PUT
+    @Path("/verificar/{id}/{pin}/{verificacion}")
+    @JWTTokenNeeded
+    @RoleNeeded({Role.USER, Role.ADMIN})
+    @ApiOperation(value = "Edit punto control", response = PuntoControl.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 304, message = "Error: objeto no modificado")})
+    public Response verificar(@PathParam("id") Long id, @PathParam("pin") String pin, @PathParam("verificacion") Integer verificacion, @Valid PuntoControl puntoControl) {
+        try {
+            logger.severe("EEEE");
+            if (puntoControlDao.findById(id) == null) throw new MagnesiumNotFoundException("Punto Control no encontrado");
+            puntoControl.setId(id);
+
+            if(verificacion == 1){
+                if (pin.equals(puntoControl.getResponsable().getPin())){
+                    puntoControl.setVerificado(true);
+                }
+                else {
+                    throw new MagnesiumException("Pin incorrecto");
+                }
+            } else if(verificacion == 2){
+                if (pin.equals(puntoControl.getResponsable2().getPin())){
+                    puntoControl.setVerificado2(true);
+                }
+                else {
+                    throw new MagnesiumException("Pin incorrecto");
+                }
+            } else {
+                throw new MagnesiumException("Parámetros incorrectos");
+            }
+            puntoControl = puntoControlDao.save(puntoControl);
+
+            paraFinalizarTrabajo(trabajoDao.findById(puntoControl.getTrabajo().getId()));
+            return Response.ok(puntoControl).build();
+        } catch (Exception e) {
+            logger.severe(e.getMessage());
+            return Response.notModified().entity(e.getMessage()).build();
+        }
+    }
+
+
+    public void paraFinalizarTrabajo(Trabajo trabajo){
+        trabajo.setParaFinalizar(true);
+        for(PuntoControl pc : puntoControlDao.findAllByTrabajo(trabajo)){
+            if (!(pc.getVerificado()) && (pc.getVerificado2()))
+            trabajo.setParaFinalizar(false);
+        }
+
+        trabajoDao.save(trabajo);
     }
 }

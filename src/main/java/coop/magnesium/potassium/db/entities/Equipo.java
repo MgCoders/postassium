@@ -22,7 +22,9 @@ public class Equipo {
     @NotNull(message = "El equipo debe tener un Cliente")
     private Cliente cliente;
 
-    private String marca;
+    @ManyToOne(cascade = {CascadeType.ALL})
+    @NotNull(message = "El equipo debe tener una marca")
+    private MarcaEquipo marca;
 
     private String modelo;
 
@@ -43,7 +45,7 @@ public class Equipo {
     public Equipo() {
     }
 
-    public Equipo(Cliente cliente, String marca, String modelo, String matricula, String color, TipoEquipo tipoEquipo) {
+    public Equipo(Cliente cliente, MarcaEquipo marca, String modelo, String matricula, String color, TipoEquipo tipoEquipo) {
         this.cliente = cliente;
         this.marca = marca;
         this.modelo = modelo;
@@ -52,7 +54,7 @@ public class Equipo {
         this.tipoEquipo = tipoEquipo;
     }
 
-    public Equipo(Cliente cliente, String marca, String modelo, String matricula, String numeroChasis, String color, TipoEquipo tipoEquipo) {
+    public Equipo(Cliente cliente, MarcaEquipo marca, String modelo, String matricula, String numeroChasis, String color, TipoEquipo tipoEquipo) {
         this.cliente = cliente;
         this.marca = marca;
         this.modelo = modelo;
@@ -62,7 +64,7 @@ public class Equipo {
         this.tipoEquipo = tipoEquipo;
     }
 
-    public Equipo(Cliente cliente, String marca, String modelo, String matricula, String numeroChasis, String color, String descripcion, TipoEquipo tipoEquipo) {
+    public Equipo(Cliente cliente, MarcaEquipo marca, String modelo, String matricula, String numeroChasis, String color, String descripcion, TipoEquipo tipoEquipo) {
         this.cliente = cliente;
         this.marca = marca;
         this.modelo = modelo;
@@ -89,11 +91,11 @@ public class Equipo {
         this.cliente = cliente;
     }
 
-    public String getMarca() {
+    public MarcaEquipo getMarca() {
         return marca;
     }
 
-    public void setMarca(String marca) {
+    public void setMarca(MarcaEquipo marca) {
         this.marca = marca;
     }
 

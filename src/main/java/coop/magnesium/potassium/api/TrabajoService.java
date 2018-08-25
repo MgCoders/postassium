@@ -77,6 +77,29 @@ public class TrabajoService {
 
 
             trabajo = trabajoDao.save(trabajo);
+
+            String numeroTrabajo = "";
+
+            if(trabajo.getEsReparacion()){
+                numeroTrabajo += "OR";
+            } else {
+                numeroTrabajo += "OP";
+            }
+
+            if (trabajo.getId() < 10){ //Entre 1 y 9
+                numeroTrabajo += "0000";
+            } else if (trabajo.getId() < 100) //Entre 10 y 99
+                numeroTrabajo += "000";
+            else if (trabajo.getId() < 1000) //Entre 100 y 999
+                numeroTrabajo += "00";
+            else if (trabajo.getId() < 10000) //Entre 1000 y 9999
+                numeroTrabajo += "0";
+
+            numeroTrabajo += Long.toString(trabajo.getId());
+
+            trabajo.setNumeroTrabajo(numeroTrabajo);
+            trabajoDao.save(trabajo);
+
             PuntoControl puntoControl  = new PuntoControl("Final", trabajo, 0, false);
             puntoControl = puntoControlDao.save(puntoControl);
             return Response.status(Response.Status.CREATED).entity(trabajo).build();
@@ -500,6 +523,8 @@ public class TrabajoService {
 
             trabajo.setId(id);
             trabajo = trabajoDao.save(trabajo);
+
+
             return Response.ok(trabajo).build();
         } catch (Exception e) {
             return Response.notModified().entity(e.getMessage()).build();
@@ -562,4 +587,7 @@ public class TrabajoService {
         Long count = trabajoDao.countAll();
         return Response.ok(count).build();
     }
+
+
+
 }

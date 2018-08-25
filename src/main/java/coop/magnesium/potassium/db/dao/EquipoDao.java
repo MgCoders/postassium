@@ -2,6 +2,7 @@ package coop.magnesium.potassium.db.dao;
 
 import coop.magnesium.potassium.db.entities.Cliente;
 import coop.magnesium.potassium.db.entities.Equipo;
+import coop.magnesium.potassium.db.entities.MarcaEquipo;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -51,4 +52,5 @@ public class EquipoDao extends AbstractDao<Equipo, Long>{
             return result.get(0);
 
         }
+
 }
