@@ -5,6 +5,7 @@ import coop.magnesium.potassium.db.entities.TipoMaterial;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import java.util.List;
 
 @Stateless
@@ -23,8 +24,14 @@ public class TipoMaterialDao extends AbstractDao<TipoMaterial, Long> {
         return em;
     }
 
-    public TipoMaterial findByCodigo(String codigo) {
-        List<TipoMaterial> tipoMaterialList = this.findByField("codigo", codigo);
+    public TipoMaterial findByCodigo(String familia, String grupo, String subgrupo) {
+        Query query = em.createQuery("SELECT ta " +
+                "FROM TipoMaterial ta " +
+                "WHERE ta.familia = :familia AND ta.grupo = :grupo AND ta.subgrupo = :subgrupo");
+        query.setParameter("familia", familia);
+        query.setParameter("grupo", grupo);
+        query.setParameter("subgrupo", subgrupo);
+        List<TipoMaterial> tipoMaterialList = query.getResultList();
         if (tipoMaterialList.isEmpty()) {
             return null;
         }

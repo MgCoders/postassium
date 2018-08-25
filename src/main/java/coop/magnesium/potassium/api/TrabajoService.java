@@ -478,24 +478,24 @@ public class TrabajoService {
             if (trabajo_old == null) throw new MagnesiumNotFoundException("Trabajo no encontrado");
 
             // Chequeo de transiciones de estado.
-            if (trabajo_old.getEstado().equals(Estado.EN_PROCESO.name()) &&
-                    trabajo.getEstado().equals(Estado.PENDIENTE_REMITO.name())) {
-
-                Notificacion notificacion = new Notificacion(TipoNotificacion.GENERAR_REMITO, trabajo.toNotificacion());
-                notificacionEvent.fire(notificacion);
-                Notificacion notificacion2 = new Notificacion(TipoNotificacion.CARGAR_VALORES, trabajo.toNotificacion());
-                notificacionEvent.fire(notificacion2);
-            } else if (trabajo_old.getEstado().equals(Estado.EN_PROCESO.name()) &&
-                    trabajo.getEstado().equals(Estado.PENDIENTE_ASIGNACION_VALORES.name())) {
-
-                Notificacion notificacion = new Notificacion(TipoNotificacion.CARGAR_VALORES, trabajo.toNotificacion());
-                notificacionEvent.fire(notificacion);
-            } else if (trabajo_old.getEstado().equals(Estado.PENDIENTE_ASIGNACION_VALORES.name()) &&
-                    trabajo.getEstado().equals(Estado.PENDIENTE_FACTURA)) {
-
-                Notificacion notificacion = new Notificacion(TipoNotificacion.FACTURA_ERP, trabajo.toNotificacion());
-                notificacionEvent.fire(notificacion);
-            }
+//            if (trabajo_old.getEstado().equals(Estado.EN_PROCESO.name()) &&
+//                    trabajo.getEstado().equals(Estado.PENDIENTE_REMITO.name())) {
+//
+//                Notificacion notificacion = new Notificacion(TipoNotificacion.GENERAR_REMITO, trabajo.toNotificacion());
+//                notificacionEvent.fire(notificacion);
+//                Notificacion notificacion2 = new Notificacion(TipoNotificacion.CARGAR_VALORES, trabajo.toNotificacion());
+//                notificacionEvent.fire(notificacion2);
+//            } else if (trabajo_old.getEstado().equals(Estado.EN_PROCESO.name()) &&
+//                    trabajo.getEstado().equals(Estado.PENDIENTE_ASIGNACION_VALORES.name())) {
+//
+//                Notificacion notificacion = new Notificacion(TipoNotificacion.CARGAR_VALORES, trabajo.toNotificacion());
+//                notificacionEvent.fire(notificacion);
+//            } else if (trabajo_old.getEstado().equals(Estado.PENDIENTE_ASIGNACION_VALORES.name()) &&
+//                    trabajo.getEstado().equals(Estado.PENDIENTE_FACTURA)) {
+//
+//                Notificacion notificacion = new Notificacion(TipoNotificacion.FACTURA_ERP, trabajo.toNotificacion());
+//                notificacionEvent.fire(notificacion);
+//            }
 
 
             trabajo.setId(id);

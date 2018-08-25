@@ -12,17 +12,23 @@ import javax.validation.constraints.NotNull;
 @Entity
 @JsonAutoDetect
 @ApiModel
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"familia", "grupo", "subgrupo"}))
 public class TipoMaterial {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotNull
-    private String nombre;
 
     @NotNull
-    @Column(unique = true)
-    private String codigo;
+    private String familia;
+
+    @NotNull
+    private String grupo;
+
+    @NotNull
+    private String subgrupo;
+
+    private String descripcion;
 
     public TipoMaterial() {
     }
@@ -35,19 +41,35 @@ public class TipoMaterial {
         this.id = id;
     }
 
-    public String getNombre() {
-        return nombre;
+    public String getFamilia() {
+        return familia;
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
+    public void setFamilia(String nombre) {
+        this.familia = nombre;
     }
 
-    public String getCodigo() {
-        return codigo;
+    public String getGrupo() {
+        return grupo;
     }
 
-    public void setCodigo(String codigo) {
-        this.codigo = codigo;
+    public void setGrupo(String codigo) {
+        this.grupo = codigo;
+    }
+
+    public String getSubgrupo() {
+        return subgrupo;
+    }
+
+    public void setSubgrupo(String subgrupo) {
+        this.subgrupo = subgrupo;
+    }
+
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
     }
 }

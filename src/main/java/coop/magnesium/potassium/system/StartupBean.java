@@ -12,6 +12,7 @@ import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.logging.Logger;
@@ -80,18 +81,16 @@ public class StartupBean {
                 TipoEquipo barco = tipoEquipoDao.save(new TipoEquipo("Tanque semirremolque","Barco", false));
 
 //                Equipo equipo1 = equipoDao.save( new Equipo(cliente, "Scania", "48 ruedas", "sdasd", "WER2343F44", "Rojo", "descr", camion));
-//                Equipo equipo2 = equipoDao.save( new Equipo(cliente, "Volkswagen", "52 ruedas", "asdasd", "1234564AD3", "Azul", "descr", remolque));
-//                Equipo equipo3 = equipoDao.save( new Equipo(cliente2, "Mercedes Benz", "67 ruedas", "asdasd","A23D43F44", "Blanco", "descr", barco));
 //
 //                Trabajo trabajo = new Trabajo();
 //                trabajo.setCliente(cliente);
 //                trabajo.setMotivoVisita("NUEVO");
 //                trabajo.setFechaRecepcion(LocalDateTime.now());
 //                trabajo.setFechaProvistaEntrega(LocalDate.now());
-//                trabajo.setEstado("FINALIZADO");
+//                trabajo.setEstado(Estado.EN_PROCESO.name());
 //                trabajo.setEquipo(equipo1);
 //                trabajo = trabajoDao.save(trabajo);
-//
+
 //                Trabajo trabajo2 = new Trabajo();
 //                trabajo2.setCliente(cliente);
 //                trabajo2.setMotivoVisita("REPARACION");
