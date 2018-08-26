@@ -39,7 +39,12 @@ public class PuntoControl {
     private List<Tarea> tareas = new ArrayList<>();
 
 
-    private Boolean verificado;
+    private Boolean verificado = false;
+
+    @ManyToOne
+    private Usuario responsable2;
+
+    private Boolean verificado2 = false;
 
     @NotNull
     private Boolean paraVerificar = false;
@@ -116,5 +121,21 @@ public class PuntoControl {
 
     public void setParaVerificar(Boolean paraVerificar) {
         this.paraVerificar = paraVerificar;
+    }
+
+    public Usuario getResponsable2() {
+        return responsable2;
+    }
+
+    public void setResponsable2(Usuario responsable2) {
+        this.responsable2 = responsable2;
+    }
+
+    public Boolean getVerificado2() {
+        return verificado2;
+    }
+
+    public void setVerificado2(Boolean verificado2) {
+        this.verificado2 = verificado2;
     }
 }

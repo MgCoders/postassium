@@ -47,8 +47,11 @@ public class TipoMaterialService {
         try {
             if (tipoMaterial.getId() != null) throw new MagnesiumException("Ya existe el tipomaterial");
 
-            if (tipoMaterialDao.findByCodigo(tipoMaterial.getCodigo()) != null) {
-                throw new MagnesiumBdAlredyExistsException("Ya existe el tipomaterial para el codigo: " + tipoMaterial.getCodigo());
+            if (tipoMaterialDao.findByCodigo(tipoMaterial.getFamilia(),
+                    tipoMaterial.getGrupo(), tipoMaterial.getSubgrupo()) != null) {
+                throw new MagnesiumBdAlredyExistsException("Ya existe el tipomaterial para el codigo: " +
+                        tipoMaterial.getFamilia() + " " + tipoMaterial.getGrupo()
+                        + " " + tipoMaterial.getSubgrupo());
             }
 
             tipoMaterial = tipoMaterialDao.save(tipoMaterial);
@@ -86,9 +89,12 @@ public class TipoMaterialService {
         try {
             if (tipoMaterialDao.findById(id) == null) throw new MagnesiumNotFoundException("No existe el tipomaterial");
 
-            TipoMaterial tipoMaterialAux = tipoMaterialDao.findByCodigo(tipoMaterial.getCodigo());
+            TipoMaterial tipoMaterialAux = tipoMaterialDao.findByCodigo(tipoMaterial.getFamilia(),
+                    tipoMaterial.getGrupo(), tipoMaterial.getSubgrupo());
             if (tipoMaterialAux != null && !tipoMaterialAux.getId().equals(id)) {
-                throw new MagnesiumBdAlredyExistsException("Ya existe el tipomaterial para el codigo: " + tipoMaterial.getCodigo());
+                throw new MagnesiumBdAlredyExistsException("Ya existe el tipomaterial para el codigo: " +
+                        tipoMaterial.getFamilia() + " " + tipoMaterial.getGrupo()
+                        + " " + tipoMaterial.getSubgrupo());
             }
 
             tipoMaterial.setId(id);

@@ -54,6 +54,8 @@ public class Trabajo {
 
     private String comentarios;
 
+
+
     @NotNull
     private String estado = Estado.CREADO.name();
 
@@ -125,14 +127,19 @@ public class Trabajo {
     @Column(length=10485760)
     private String firmaEmpleadoRecepcion;
 
+    @NotNull
+    private String nroOrdenCompra;
 
-    private Integer nroOrdenCompra;
+    @NotNull
+    private String cotizacion;
 
     private Boolean esReparacion = true;
 
     private Boolean paraFinalizar = false;
 
     private Integer nroRemito;
+
+    private String numeroTrabajo;
 
     public Trabajo() {
     }
@@ -247,11 +254,11 @@ public class Trabajo {
     }
 
 
-    public Integer getNroOrdenCompra() {
+    public String getNroOrdenCompra() {
         return nroOrdenCompra;
     }
 
-    public void setNroOrdenCompra(Integer nroOrdenCompra) {
+    public void setNroOrdenCompra(String nroOrdenCompra) {
         this.nroOrdenCompra = nroOrdenCompra;
     }
 
@@ -493,5 +500,27 @@ public class Trabajo {
 
     public void setNroRemito(Integer nroRemito) {
         this.nroRemito = nroRemito;
+    }
+
+    public String getCotizacion() {
+        return cotizacion;
+    }
+
+    public void setCotizacion(String cotizacion) {
+        this.cotizacion = cotizacion;
+    }
+
+    public String getNumeroTrabajo() {
+        return numeroTrabajo;
+    }
+
+    public void setNumeroTrabajo(String numeroTrabajo) {
+        this.numeroTrabajo = numeroTrabajo;
+    }
+
+    public String toNotificacion() {
+        return "ID: " + this.getId() + "\n"
+                + "Cliente: " + this.getCliente().getNombreEmpresa() + "\n"
+                + "Mat: " + (this.getEquipo() != null ? this.getEquipo().getMatricula() : "");
     }
 }

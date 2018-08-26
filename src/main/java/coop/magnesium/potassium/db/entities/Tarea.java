@@ -34,9 +34,9 @@ public class Tarea {
     @JoinColumn(name = "punto_control_id")
     private PuntoControl puntoControl;
 
-    private Boolean completa;
-    private Boolean necesitaVerificacion;
-    private Boolean verificada;
+    private Boolean completa = false;
+    private Boolean necesitaVerificacion = false;
+    private Boolean verificada = false;
 
     public Tarea() {
     }

@@ -1,55 +1,40 @@
 package coop.magnesium.potassium.api;
 
+import com.itextpdf.text.Chunk;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
 import coop.magnesium.potassium.api.utils.JWTTokenNeeded;
 import coop.magnesium.potassium.api.utils.RoleNeeded;
-import coop.magnesium.potassium.db.dao.ClienteDao;
-import coop.magnesium.potassium.db.dao.EquipoDao;
-import coop.magnesium.potassium.db.dao.PuntoControlDao;
-import coop.magnesium.potassium.db.dao.TrabajoDao;
-import coop.magnesium.potassium.db.dao.TrabajoFotoDao;
+import coop.magnesium.potassium.db.dao.*;
 import coop.magnesium.potassium.db.entities.*;
 import coop.magnesium.potassium.utils.Logged;
 import coop.magnesium.potassium.utils.PDFDocument;
 import coop.magnesium.potassium.utils.ex.MagnesiumBdAlredyExistsException;
 import coop.magnesium.potassium.utils.ex.MagnesiumBdNotFoundException;
 import coop.magnesium.potassium.utils.ex.MagnesiumNotFoundException;
-import edu.umd.cs.findbugs.annotations.NonNull;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
 import javax.ejb.EJB;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
-import javax.swing.GroupLayout.Alignment;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-
-import com.itextpdf.text.Chunk;
-import com.itextpdf.text.Document;
-import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.Element;
-import com.itextpdf.text.Font;
-import com.itextpdf.text.Paragraph;
-import com.itextpdf.text.Phrase;
-import com.itextpdf.text.Font.FontFamily;
-import com.itextpdf.text.pdf.BaseFont;
-import com.itextpdf.text.pdf.PdfPCell;
-import com.itextpdf.text.pdf.PdfPTable;
-import com.itextpdf.text.pdf.PdfWriter;
-import io.swagger.models.properties.IntegerProperty;
 
 /**
  * Created by msteglich on 1/23/18.
@@ -73,6 +58,8 @@ public class TrabajoService {
     private ClienteDao clienteDao;
     @EJB
     private PuntoControlDao puntoControlDao;
+    @Inject
+    Event<Notificacion> notificacionEvent;
 
     @POST
     @Logged
@@ -90,6 +77,29 @@ public class TrabajoService {
 
 
             trabajo = trabajoDao.save(trabajo);
+
+            String numeroTrabajo = "";
+
+            if(trabajo.getEsReparacion()){
+                numeroTrabajo += "OR";
+            } else {
+                numeroTrabajo += "OP";
+            }
+
+            if (trabajo.getId() < 10){ //Entre 1 y 9
+                numeroTrabajo += "0000";
+            } else if (trabajo.getId() < 100) //Entre 10 y 99
+                numeroTrabajo += "000";
+            else if (trabajo.getId() < 1000) //Entre 100 y 999
+                numeroTrabajo += "00";
+            else if (trabajo.getId() < 10000) //Entre 1000 y 9999
+                numeroTrabajo += "0";
+
+            numeroTrabajo += Long.toString(trabajo.getId());
+
+            trabajo.setNumeroTrabajo(numeroTrabajo);
+            trabajoDao.save(trabajo);
+
             PuntoControl puntoControl  = new PuntoControl("Final", trabajo, 0, false);
             puntoControl = puntoControlDao.save(puntoControl);
             return Response.status(Response.Status.CREATED).entity(trabajo).build();
@@ -487,9 +497,34 @@ public class TrabajoService {
             @ApiResponse(code = 304, message = "Error: objeto no modificado")})
     public Response edit(@PathParam("id") Long id, @Valid Trabajo trabajo) {
         try {
-            if (trabajoDao.findById(id) == null) throw new MagnesiumNotFoundException("Trabajo no encontrado");
+            Trabajo trabajo_old = trabajoDao.findById(id);
+            if (trabajo_old == null) throw new MagnesiumNotFoundException("Trabajo no encontrado");
+
+            // Chequeo de transiciones de estado.
+//            if (trabajo_old.getEstado().equals(Estado.EN_PROCESO.name()) &&
+//                    trabajo.getEstado().equals(Estado.PENDIENTE_REMITO.name())) {
+//
+//                Notificacion notificacion = new Notificacion(TipoNotificacion.GENERAR_REMITO, trabajo.toNotificacion());
+//                notificacionEvent.fire(notificacion);
+//                Notificacion notificacion2 = new Notificacion(TipoNotificacion.CARGAR_VALORES, trabajo.toNotificacion());
+//                notificacionEvent.fire(notificacion2);
+//            } else if (trabajo_old.getEstado().equals(Estado.EN_PROCESO.name()) &&
+//                    trabajo.getEstado().equals(Estado.PENDIENTE_ASIGNACION_VALORES.name())) {
+//
+//                Notificacion notificacion = new Notificacion(TipoNotificacion.CARGAR_VALORES, trabajo.toNotificacion());
+//                notificacionEvent.fire(notificacion);
+//            } else if (trabajo_old.getEstado().equals(Estado.PENDIENTE_ASIGNACION_VALORES.name()) &&
+//                    trabajo.getEstado().equals(Estado.PENDIENTE_FACTURA)) {
+//
+//                Notificacion notificacion = new Notificacion(TipoNotificacion.FACTURA_ERP, trabajo.toNotificacion());
+//                notificacionEvent.fire(notificacion);
+//            }
+
+
             trabajo.setId(id);
             trabajo = trabajoDao.save(trabajo);
+
+
             return Response.ok(trabajo).build();
         } catch (Exception e) {
             return Response.notModified().entity(e.getMessage()).build();
@@ -552,4 +587,7 @@ public class TrabajoService {
         Long count = trabajoDao.countAll();
         return Response.ok(count).build();
     }
+
+
+
 }

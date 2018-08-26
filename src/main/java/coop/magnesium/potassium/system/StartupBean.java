@@ -2,22 +2,19 @@ package coop.magnesium.potassium.system;
 
 import coop.magnesium.potassium.db.dao.*;
 import coop.magnesium.potassium.db.entities.*;
-import coop.magnesium.potassium.utils.DataRecuperacionPassword;
 import coop.magnesium.potassium.utils.PasswordUtils;
 import coop.magnesium.potassium.utils.ex.MagnesiumBdMultipleResultsException;
 
 import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
-import javax.ejb.*;
+import javax.ejb.EJB;
+import javax.ejb.Schedule;
+import javax.ejb.Singleton;
+import javax.ejb.Startup;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
-import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.util.Date;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
 /**
@@ -39,9 +36,12 @@ public class StartupBean {
     RecuperacionPasswordDao recuperacionPasswordDao;
     @Inject
     Event<Notificacion> notificacionEvent;
-
     @EJB
     NotificacionDao notificacionDao;
+    @Inject
+    Event<MailEvent> mailEvent;
+    @EJB
+    NotificacionDestinatarioDao notificacionDestinatarioDao;
 
     @EJB
     TareaDao tareaDao;
@@ -81,18 +81,16 @@ public class StartupBean {
                 TipoEquipo barco = tipoEquipoDao.save(new TipoEquipo("Tanque semirremolque","Barco", false));
 
 //                Equipo equipo1 = equipoDao.save( new Equipo(cliente, "Scania", "48 ruedas", "sdasd", "WER2343F44", "Rojo", "descr", camion));
-//                Equipo equipo2 = equipoDao.save( new Equipo(cliente, "Volkswagen", "52 ruedas", "asdasd", "1234564AD3", "Azul", "descr", remolque));
-//                Equipo equipo3 = equipoDao.save( new Equipo(cliente2, "Mercedes Benz", "67 ruedas", "asdasd","A23D43F44", "Blanco", "descr", barco));
 //
 //                Trabajo trabajo = new Trabajo();
 //                trabajo.setCliente(cliente);
 //                trabajo.setMotivoVisita("NUEVO");
 //                trabajo.setFechaRecepcion(LocalDateTime.now());
 //                trabajo.setFechaProvistaEntrega(LocalDate.now());
-//                trabajo.setEstado("FINALIZADO");
+//                trabajo.setEstado(Estado.EN_PROCESO.name());
 //                trabajo.setEquipo(equipo1);
 //                trabajo = trabajoDao.save(trabajo);
-//
+
 //                Trabajo trabajo2 = new Trabajo();
 //                trabajo2.setCliente(cliente);
 //                trabajo2.setMotivoVisita("REPARACION");
@@ -212,11 +210,20 @@ public class StartupBean {
         //Solo si soy master
         if (configuracionDao.getNodoMaster().equals(jbossNodeName)) {
             logger.info("Master generando emailTrabajosDeadline");
+            StringBuilder stringBuilder = new StringBuilder();
+            notificacionDao.findAllNoEnviadas().stream()
+                    .filter(notificacion -> notificacion.getTipo().equals(TipoNotificacion.DEADLINE))
+                    .forEach(notificacion -> {
+                        stringBuilder.append(notificacion.getTexto()).append("\n").append("\n");
+                        notificacion.setEnviado(true);
+                    });
 
-            // leer las notificaciones sin enviar y enviar los mails, usar
-            // consolidarNotificacionTrabajo para juntar todas en un mail solo
-
-
+            String projectName = configuracionDao.getProjectName();
+            List<String> emails = notificacionDestinatarioDao.findAllMailByTipo(TipoNotificacion.DEADLINE);
+            if (!stringBuilder.toString().isEmpty()) {
+                mailEvent.fire(new MailEvent(emails,
+                        stringBuilder.toString(), projectName + ": Trabajos cercanos a entregar"));
+            }
         }
     }
 
@@ -225,9 +232,8 @@ public class StartupBean {
         //Solo si soy master
         if (configuracionDao.getNodoMaster().equals(jbossNodeName)) {
             logger.info("Master generando notificacionTrabajosAtrasados");
-
-
-
+            List<Trabajo> trabajos = trabajoDao.findAllDelayedWorks();
+            fireNotificacionesTrabajo(trabajos, TipoNotificacion.TRABAJO_ATRASADO);
         }
     }
 
@@ -236,32 +242,27 @@ public class StartupBean {
         //Solo si soy master
         if (configuracionDao.getNodoMaster().equals(jbossNodeName)) {
             logger.info("Master generando emailTrabajosAtrasados");
+            StringBuilder stringBuilder = new StringBuilder();
+            notificacionDao.findAllNoEnviadas().stream()
+                    .filter(notificacion -> notificacion.getTipo().equals(TipoNotificacion.TRABAJO_ATRASADO))
+                    .forEach(notificacion -> {
+                        stringBuilder.append(notificacion.getTexto()).append("\n").append("\n");
+                        notificacion.setEnviado(true);
+                    });
 
-            // similar a notificacionTrabajosDeadline
-            // se debe hacer una consulta que retorne los trabajos sin finalizar con fecha entrega menor a hoy
+            String projectName = configuracionDao.getProjectName();
+            List<String> emails = notificacionDestinatarioDao.findAllMailByTipo(TipoNotificacion.TRABAJO_ATRASADO);
+            if (!stringBuilder.toString().isEmpty()) {
+                mailEvent.fire(new MailEvent(emails,
+                        stringBuilder.toString(), projectName + ": Trabajos atrasados"));
+            }
         }
-    }
-
-    private String consolidarNotificacionTrabajo(List<Notificacion> notificaciones) {
-        StringBuilder stringBuilder = new StringBuilder();
-        for (Notificacion notificacion : notificaciones) {
-            stringBuilder.append(notificacion.getTexto()).append("\n").append("\n");
-        }
-        return stringBuilder.toString();
     }
 
     private void fireNotificacionesTrabajo(List<Trabajo> trabajos, TipoNotificacion tipo) {
         for (Trabajo trabajo : trabajos) {
-            Notificacion notificacion = new Notificacion();
-            notificacion.setTipo(tipo);
-            notificacion.setFechaHora(LocalDateTime.now());
-            notificacion.setEnviado(false);
-            notificacion.setTexto("ID: " + trabajo.getId() + "\n"
-                    + "Cliente: " + trabajo.getCliente().getNombreEmpresa() + "\n"
-                    + "Mat: " + (trabajo.getEquipo() != null ? trabajo.getEquipo().getMatricula() : ""));
-
+            Notificacion notificacion = new Notificacion(tipo, trabajo.toNotificacion());
             notificacionEvent.fire(notificacion);
         }
     }
-
 }

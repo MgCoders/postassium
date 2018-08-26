@@ -44,6 +44,8 @@ public class Usuario {
     @OneToMany(mappedBy = "usuario", fetch = FetchType.EAGER, orphanRemoval = true, cascade = CascadeType.ALL)
     private Set<UsuarioRubro> usuarioRubros = new HashSet<>();
 
+    private String pin;
+
     public Usuario() {
     }
 
@@ -127,6 +129,14 @@ public class Usuario {
 
     public void setUsuarioRubros(Set<UsuarioRubro> usuarioRubros) {
         this.usuarioRubros = usuarioRubros;
+    }
+
+    public String getPin() {
+        return pin;
+    }
+
+    public void setPin(String pin) {
+        this.pin = pin;
     }
 
     @Override

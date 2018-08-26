@@ -49,4 +49,21 @@ public class TareaDao extends AbstractDao<Tarea, Long> {
         query.setParameter("trabajo_id", trabajoId);
         return query.getResultList();
     }
+
+    public List<Tarea> findAllByPuntoControl(Long puntoControlId) {
+        CriteriaBuilder criteriaBuilder = this.getEntityManager().getCriteriaBuilder();
+        CriteriaQuery criteriaQuery = criteriaBuilder.createQuery();
+        Root entity = criteriaQuery.from(Tarea.class);
+        criteriaQuery.select(entity);
+
+        Predicate tareaIsOk = criteriaBuilder
+                .equal(entity.get("puntoControl").get("id"),
+                        criteriaBuilder.parameter(Long.class,"punto_control_id"));
+
+        criteriaQuery.where(tareaIsOk);
+        criteriaQuery.orderBy(criteriaBuilder.asc(entity.get("puntoControl").get("id")));
+        Query query = em.createQuery(criteriaQuery);
+        query.setParameter("punto_control_id", puntoControlId);
+        return query.getResultList();
+    }
 }
