@@ -150,7 +150,7 @@ public class TrabajoService {
         List<TrabajoFoto> fotos = trabaFotojoDao.findAllByTrabajo(id);
 
         // Creamos el Documento
-        PDFDocument doc = new PDFDocument(0, "", "Ficha_" + id.toString(), true);
+        PDFDocument doc = new PDFDocument(0, "", "Ficha " + trabajo.getNumeroTrabajo(), true);
 
         // Titulo
         List<Paragraph> ph = new ArrayList<Paragraph>();
