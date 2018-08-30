@@ -557,23 +557,37 @@ public class TrabajoService {
     }
 
     @GET
-    @Path("countEstados/{status}")
+    @Path("countField/{field}/{value}")
     @JWTTokenNeeded
     @RoleNeeded({Role.USER, Role.ADMIN})
     @ApiOperation(value = "Get Count Trabajos", response = Integer.class)
     @ApiResponses(value = {
             @ApiResponse(code = 404, message = "Estado no encontrado")})
-    public Response countByMultipleStatus(@PathParam("status") String status) {
-
-        String[] estados = status.split(",");
+    public Response countByField(@PathParam("field") String field, @PathParam("value") String value) {
+        logger.severe(field);
+        logger.severe(value);
+        String[] valores = value.split(",");
         Long count = 0L;
-        for (String estado : estados){
-            count += trabajoDao.countByField("estado",estado);
+        if (field.equals("esReparacion")) {
+            if(field.equals("esReparacion")) {
+                for (String valor : valores) {
+                    if(valor.equals("true"))
+                        count += trabajoDao.countByField(field, true);
+                    else
+                        count += trabajoDao.countByField(field, false);
+                }
+            }
+            else{
+                for (String valor : valores) {
+                    count += trabajoDao.countByField(field, valor);
+                }
+            }
         }
 
 
         return Response.ok(count).build();
     }
+
 
     @GET
     @Path("count")
