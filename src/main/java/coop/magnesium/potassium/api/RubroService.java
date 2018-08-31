@@ -3,9 +3,7 @@ package coop.magnesium.potassium.api;
 import coop.magnesium.potassium.api.utils.JWTTokenNeeded;
 import coop.magnesium.potassium.api.utils.RoleNeeded;
 import coop.magnesium.potassium.db.dao.RubroDao;
-import coop.magnesium.potassium.db.entities.Registro;
-import coop.magnesium.potassium.db.entities.Role;
-import coop.magnesium.potassium.db.entities.Rubro;
+import coop.magnesium.potassium.db.entities.*;
 import coop.magnesium.potassium.utils.Logged;
 import coop.magnesium.potassium.utils.ex.MagnesiumBdAlredyExistsException;
 import coop.magnesium.potassium.utils.ex.MagnesiumBdNotFoundException;
@@ -17,6 +15,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
 import javax.ejb.EJB;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
@@ -43,6 +42,9 @@ public class RubroService {
     private Logger logger;
     @EJB
     private RubroDao rubroDao;
+    @Inject
+    Event<Notificacion> notificacionEvent;
+
 
     @POST
     @Logged
@@ -55,6 +57,9 @@ public class RubroService {
 
             Rubro rubro1 = rubroDao.findByName(rubro.getNombre());
             if (rubro1 != null) throw new MagnesiumBdAlredyExistsException("Ya existe el rubro para el nombre: " + rubro.getNombre());
+//
+//                            Notificacion notificacion = new Notificacion(TipoNotificacion.GENERAR_REMITO, "prueba" + rubro.getNombre());
+//                notificacionEvent.fire(notificacion);
 
             rubro = rubroDao.save(rubro);
             return Response.status(Response.Status.CREATED).entity(rubro).build();
