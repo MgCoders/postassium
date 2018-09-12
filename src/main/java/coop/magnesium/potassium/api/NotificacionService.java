@@ -30,7 +30,7 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 @Produces(APPLICATION_JSON)
 @Consumes(APPLICATION_JSON)
 @Transactional
-@Api(description = "Rubros service", tags = "rubros")
+@Api(description = "Notificaciones service", tags = "notificaciones")
 public class NotificacionService {
 
     @Inject

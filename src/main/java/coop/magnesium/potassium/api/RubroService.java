@@ -57,9 +57,6 @@ public class RubroService {
 
             Rubro rubro1 = rubroDao.findByName(rubro.getNombre());
             if (rubro1 != null) throw new MagnesiumBdAlredyExistsException("Ya existe el rubro para el nombre: " + rubro.getNombre());
-//
-//                            Notificacion notificacion = new Notificacion(TipoNotificacion.GENERAR_REMITO, "prueba" + rubro.getNombre());
-//                notificacionEvent.fire(notificacion);
 
             rubro = rubroDao.save(rubro);
             return Response.status(Response.Status.CREATED).entity(rubro).build();

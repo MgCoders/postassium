@@ -38,7 +38,7 @@ public class NotificacionDestinatarioDao extends AbstractDao<NotificacionDestina
         criteriaQuery.select(entity);
 
         Predicate tipoIsOk = criteriaBuilder.equal(entity.get("tipo"),
-                criteriaBuilder.parameter(NotificacionDestinatario.class, "tipo"));
+                criteriaBuilder.parameter(TipoNotificacion.class, "tipo"));
         Predicate usuarioIsOk = criteriaBuilder.equal(entity.get("usuario"),
                 criteriaBuilder.parameter(Usuario.class, "usuario"));
 
