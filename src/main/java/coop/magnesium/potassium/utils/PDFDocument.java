@@ -93,7 +93,7 @@ public class PDFDocument {
         switch (tipo) {
         case 0:
             // Se crea un nuevo documento, con con el tamaño deseado,
-            this.documento = new Document(PageSize.A4, 10, 10, 20, 20);
+            this.documento = new Document(PageSize.A4, 36, 36, 90, 36);
             break;
         case 1:
             // Se crea un nuevo documento, con con el tamaño deseado,
@@ -131,6 +131,9 @@ public class PDFDocument {
         } else {
             memory = new ByteArrayOutputStream();
             this.writer = PdfWriter.getInstance(this.documento, this.memory);
+
+            HeaderFooterPageEvent event = new HeaderFooterPageEvent();
+            writer.setPageEvent(event);
             // PdfWriter.getInstance(this.documento, this.memory);
         }
     }
