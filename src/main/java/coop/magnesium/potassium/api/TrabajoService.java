@@ -29,6 +29,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -150,14 +151,14 @@ public class TrabajoService {
         List<TrabajoFoto> fotos = trabaFotojoDao.findAllByTrabajo(id);
 
         // Creamos el Documento
-        PDFDocument doc = new PDFDocument(0, "", "Ficha_" + id.toString(), true);
+        PDFDocument doc = new PDFDocument(0, "", "Ficha " + trabajo.getNumeroTrabajo(), true);
 
         // Titulo
         List<Paragraph> ph = new ArrayList<Paragraph>();
         Paragraph p = new Paragraph();
-        Chunk ch = new Chunk("Trabajo ID: ", doc.title_bold);
+        Chunk ch = new Chunk("Trabajo ", doc.title_bold);
         p.add(ch);
-        ch = new Chunk(id.toString(), doc.title);
+        ch = new Chunk(trabajo.getNumeroTrabajo(), doc.title);
         p.add(ch);
         p.setAlignment(Paragraph.ALIGN_CENTER);
         ph.add(p);        
@@ -179,19 +180,21 @@ public class TrabajoService {
         ph.add(p);        
         doc.addTituloContenido(ph, new Float(20));
 
-        // Equipo
-        ph = new ArrayList<Paragraph>();
-        p = new Paragraph();
-        ch = new Chunk("Matrícula Equipo: ", doc.f12b);
-        p.add(ch);
-        ch = new Chunk(trabajo.getEquipo().getMatricula() + "         ", doc.f12);
-        p.add(ch);
-        ch = new Chunk("Marca/Modelo Equipo: ", doc.f12b);
-        p.add(ch);
-        ch = new Chunk(trabajo.getEquipo().getMarca() + " / " + trabajo.getEquipo().getModelo(), doc.f12);
-        p.add(ch);
-        ph.add(p);        
-        doc.addTituloContenido(ph, new Float(20));
+        if(trabajo.getEquipo() != null) {
+            // Equipo
+            ph = new ArrayList<Paragraph>();
+            p = new Paragraph();
+            ch = new Chunk("Matrícula Equipo: ", doc.f12b);
+            p.add(ch);
+            ch = new Chunk(trabajo.getEquipo().getMatricula() + "         ", doc.f12);
+            p.add(ch);
+            ch = new Chunk("Marca/Modelo Equipo: ", doc.f12b);
+            p.add(ch);
+            ch = new Chunk(trabajo.getEquipo().getMarca() + " / " + trabajo.getEquipo().getModelo(), doc.f12);
+            p.add(ch);
+            ph.add(p);
+            doc.addTituloContenido(ph, new Float(20));
+        }
 
         // Motivo de la visita.
         ph = new ArrayList<Paragraph>();
@@ -203,185 +206,222 @@ public class TrabajoService {
         ph.add(p);        
         doc.addTituloContenido(ph, new Float(20));
 
-        // Remito
+        // Fecha Recepción y fecha prevista de entrega
+        DateTimeFormatter formatterRecepcion = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+        DateTimeFormatter formatterEntrega = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+
         ph = new ArrayList<Paragraph>();
         p = new Paragraph();
-        ch = new Chunk("Remito: ", doc.f12b);
+        ch = new Chunk("Fecha de recepción: ", doc.f12b);
         p.add(ch);
-        // TODO Como obtener el remito.
-        ch = new Chunk("N/A", doc.f12);
+        ch = new Chunk(trabajo.getFechaRecepcion().format(formatterRecepcion)+ "         ", doc.f12);
         p.add(ch);
-        ph.add(p);        
+        ch = new Chunk("Fecha de prevista de entrega: ", doc.f12b);
+        p.add(ch);
+        ch = new Chunk(trabajo.getFechaProvistaEntrega().format(formatterEntrega), doc.f12);
+        p.add(ch);
+        ph.add(p);
         doc.addTituloContenido(ph, new Float(20));
 
-        // Datos Extra.
+        // Número orden de compra y cotización
         ph = new ArrayList<Paragraph>();
         p = new Paragraph();
-
-        if(trabajo.getEquipoAbollones() != null) {
-            ch = new Chunk("Abollones: ", doc.f10b);
-            p.add(ch);
-            ch = new Chunk(trabajo.getEquipoAbollones() ? "Si" : "No", doc.f10);
-            p.add(ch);
-        }
-
-        if(trabajo.getEquipoAuxiliar() != null){
-            ch = new Chunk("     Auxiliar: ", doc.f10b);
-            p.add(ch);
-            ch = new Chunk(trabajo.getEquipoAuxiliar() ? "Si" : "No", doc.f10);
-            p.add(ch);
-        }
-
-        if(trabajo.getEquipoAuxiliarArmada() != null) {
-            ch = new Chunk("     Auxiliar Armada: ", doc.f10b);
-            p.add(ch);
-            ch = new Chunk(trabajo.getEquipoAuxiliarArmada() ? "Si" : "No", doc.f10);
-            p.add(ch);
-        }
-
-        if(trabajo.getEquipoBalizas() != null) {
-            ch = new Chunk("     Balizas: ", doc.f10b);
-            p.add(ch);
-            ch = new Chunk(trabajo.getEquipoBalizas() ? "Si" : "No", doc.f10);
-            p.add(ch);
-        }
-
-        if(trabajo.getEquipoCantidadCombustible() != null) {
-            ch = new Chunk("     Cant. Combustible: ", doc.f10b);
-            p.add(ch);
-            ch = new Chunk(trabajo.getEquipoCantidadCombustible().toString(), doc.f10);
-            p.add(ch);
-        }
-
-        if(trabajo.getEquipoCenicero() != null) {
-            ch = new Chunk("     Cenicero: ", doc.f10b);
-            p.add(ch);
-            ch = new Chunk(trabajo.getEquipoCenicero() ? "Si" : "No", doc.f10);
-            p.add(ch);
-        }
-
-        if(trabajo.getEquipoDocumentos() != null) {
-            ch = new Chunk("     Documentos: ", doc.f10b);
-            p.add(ch);
-            ch = new Chunk(trabajo.getEquipoDocumentos() ? "Si" : "No", doc.f10);
-            p.add(ch);
-        }
-
-        if(trabajo.getEquipoEspejos() != null) {
-            ch = new Chunk("     Espejos: ", doc.f10b);
-            p.add(ch);
-            ch = new Chunk(trabajo.getEquipoEspejos() ? "Si" : "No", doc.f10);
-            p.add(ch);
-        }
-
-        if(trabajo.getEquipoEspejosSanos() != null) {
-            ch = new Chunk("     Espejos Sanos: ", doc.f10b);
-            p.add(ch);
-            ch = new Chunk(trabajo.getEquipoEspejosSanos() ? "Si" : "No", doc.f10);
-            p.add(ch);
-        }
-
-        if(trabajo.getEquipoExtintor() != null) {
-            ch = new Chunk("     Extintor: ", doc.f10b);
-            p.add(ch);
-            ch = new Chunk(trabajo.getEquipoExtintor() ? "Si" : "No", doc.f10);
-            p.add(ch);
-        }
-
-        if(trabajo.getEquipoFrenteRadio() != null) {
-            ch = new Chunk("     Frente de Radio: ", doc.f10b);
-            p.add(ch);
-            ch = new Chunk(     trabajo.getEquipoFrenteRadio() ? "Si" : "No", doc.f10);
-            p.add(ch);
-        }
-
-        if(trabajo.getEquipoGatoPalanca() != null) {
-            ch = new Chunk("     Palanca de Gato: ", doc.f10b);
-            p.add(ch);
-            ch = new Chunk(trabajo.getEquipoGatoPalanca() ? "Si" : "No", doc.f10);
-            p.add(ch);
-        }
-
-        if(trabajo.getEquipoHerramientas() != null) {
-            ch = new Chunk("     Herramientas: ", doc.f10b);
-            p.add(ch);
-            ch = new Chunk(trabajo.getEquipoHerramientas() ? "Si" : "No", doc.f10);
-            p.add(ch);
-        }
-
-        if(trabajo.getEquipoLlaveRuedas() != null) {
-            ch = new Chunk("     Llave de Ruedas: ", doc.f10b);
-            p.add(ch);
-            ch = new Chunk(trabajo.getEquipoLlaveRuedas() ? "Si" : "No", doc.f10);
-            p.add(ch);
-        }
-
-        if(trabajo.getEquipoLucesTraserasSanas() != null) {
-            ch = new Chunk("     Luces Traseras Sanas: ", doc.f10b);
-            p.add(ch);
-            ch = new Chunk(trabajo.getEquipoLucesTraserasSanas() ? "Si" : "No", doc.f10);
-            p.add(ch);
-        }
-
-        if(trabajo.getEquipoMangueraCabina() != null) {
-            ch = new Chunk("     Manguera Cabina: ", doc.f10b);
-            p.add(ch);
-            ch = new Chunk(trabajo.getEquipoMangueraCabina() ? "Si" : "No", doc.f10);
-            p.add(ch);
-        }
-
-        if(trabajo.getEquipoManuales() != null) {
-            ch = new Chunk("     Manuales: ", doc.f10b);
-            p.add(ch);
-            ch = new Chunk(trabajo.getEquipoManuales() ? "Si" : "No", doc.f10);
-            p.add(ch);
-        }
-
-        if(trabajo.getEquipoParabrisasSano() != null) {
-            ch = new Chunk("     Parabrisas Sano: ", doc.f10b);
-            p.add(ch);
-            ch = new Chunk(trabajo.getEquipoParabrisasSano() ? "Si" : "No", doc.f10);
-            p.add(ch);
-        }
-
-        if(trabajo.getEquipoRadio() != null) {
-            ch = new Chunk("     Radio: ", doc.f10b);
-            p.add(ch);
-            ch = new Chunk(trabajo.getEquipoRadio() ? "Si" : "No", doc.f10);
-            p.add(ch);
-        }
-
-        if(trabajo.getEquipoRayones() != null) {
-            ch = new Chunk("     Rayones: ", doc.f10b);
-            p.add(ch);
-            ch = new Chunk(trabajo.getEquipoRayones() ? "Si" : "No", doc.f10);
-            p.add(ch);
-        }
-
-        if(trabajo.getEquipoSenalerosSanos() != null) {
-            ch = new Chunk("     Señaleros Sanos: ", doc.f10b);
-            p.add(ch);
-            ch = new Chunk(trabajo.getEquipoSenalerosSanos() ? "Si" : "No", doc.f10);
-            p.add(ch);
-        }
-
-        if(trabajo.getEquipoVidriosLaterales() != null) {
-            ch = new Chunk("     Vidrios Laterales: ", doc.f10b);
-            p.add(ch);
-            ch = new Chunk(trabajo.getEquipoVidriosLaterales() ? "Si" : "No", doc.f10);
-            p.add(ch);
-        }
-
-        if(trabajo.getEquipoVidriosLateralesSanos() != null) {
-            ch = new Chunk("     Vidrios Laterales Sanos: ", doc.f10b);
-            p.add(ch);
-            ch = new Chunk(trabajo.getEquipoVidriosLateralesSanos() ? "Si" : "No", doc.f10);
-            p.add(ch);
-        }
-
-
-        ph.add(p);        
+        ch = new Chunk("Orden de compra: ", doc.f12b);
+        p.add(ch);
+        ch = new Chunk(trabajo.getNroOrdenCompra()+ "         ", doc.f12);
+        p.add(ch);
+        ch = new Chunk("Cotización: ", doc.f12b);
+        p.add(ch);
+        ch = new Chunk(trabajo.getCotizacion(), doc.f12);
+        p.add(ch);
+        ph.add(p);
         doc.addTituloContenido(ph, new Float(20));
+
+
+
+//
+//        // Remito
+//        ph = new ArrayList<Paragraph>();
+//        p = new Paragraph();
+//        ch = new Chunk("Remito: ", doc.f12b);
+//        p.add(ch);
+//        // TODO Como obtener el remito.
+//        ch = new Chunk("N/A", doc.f12);
+//        p.add(ch);
+//        ph.add(p);
+//        doc.addTituloContenido(ph, new Float(20));
+
+
+
+        if(trabajo.getEquipo() != null) {
+            // Datos Extra.
+            ph = new ArrayList<Paragraph>();
+            p = new Paragraph();
+            if (trabajo.getEquipoAbollones() != null) {
+                ch = new Chunk("Abollones: ", doc.f10b);
+                p.add(ch);
+                ch = new Chunk(trabajo.getEquipoAbollones() ? "Si" : "No", doc.f10);
+                p.add(ch);
+            }
+
+            if (trabajo.getEquipoAuxiliar() != null) {
+                ch = new Chunk("     Auxiliar: ", doc.f10b);
+                p.add(ch);
+                ch = new Chunk(trabajo.getEquipoAuxiliar() ? "Si" : "No", doc.f10);
+                p.add(ch);
+            }
+
+            if (trabajo.getEquipoAuxiliarArmada() != null) {
+                ch = new Chunk("     Auxiliar Armada: ", doc.f10b);
+                p.add(ch);
+                ch = new Chunk(trabajo.getEquipoAuxiliarArmada() ? "Si" : "No", doc.f10);
+                p.add(ch);
+            }
+
+            if (trabajo.getEquipoBalizas() != null) {
+                ch = new Chunk("     Balizas: ", doc.f10b);
+                p.add(ch);
+                ch = new Chunk(trabajo.getEquipoBalizas() ? "Si" : "No", doc.f10);
+                p.add(ch);
+            }
+
+            if (trabajo.getEquipoCantidadCombustible() != null) {
+                ch = new Chunk("     Cant. Combustible: ", doc.f10b);
+                p.add(ch);
+                ch = new Chunk(trabajo.getEquipoCantidadCombustible().toString(), doc.f10);
+                p.add(ch);
+            }
+
+            if (trabajo.getEquipoCenicero() != null) {
+                ch = new Chunk("     Cenicero: ", doc.f10b);
+                p.add(ch);
+                ch = new Chunk(trabajo.getEquipoCenicero() ? "Si" : "No", doc.f10);
+                p.add(ch);
+            }
+
+            if (trabajo.getEquipoDocumentos() != null) {
+                ch = new Chunk("     Documentos: ", doc.f10b);
+                p.add(ch);
+                ch = new Chunk(trabajo.getEquipoDocumentos() ? "Si" : "No", doc.f10);
+                p.add(ch);
+            }
+
+            if (trabajo.getEquipoEspejos() != null) {
+                ch = new Chunk("     Espejos: ", doc.f10b);
+                p.add(ch);
+                ch = new Chunk(trabajo.getEquipoEspejos() ? "Si" : "No", doc.f10);
+                p.add(ch);
+            }
+
+            if (trabajo.getEquipoEspejosSanos() != null) {
+                ch = new Chunk("     Espejos Sanos: ", doc.f10b);
+                p.add(ch);
+                ch = new Chunk(trabajo.getEquipoEspejosSanos() ? "Si" : "No", doc.f10);
+                p.add(ch);
+            }
+
+            if (trabajo.getEquipoExtintor() != null) {
+                ch = new Chunk("     Extintor: ", doc.f10b);
+                p.add(ch);
+                ch = new Chunk(trabajo.getEquipoExtintor() ? "Si" : "No", doc.f10);
+                p.add(ch);
+            }
+
+            if (trabajo.getEquipoFrenteRadio() != null) {
+                ch = new Chunk("     Frente de Radio: ", doc.f10b);
+                p.add(ch);
+                ch = new Chunk(trabajo.getEquipoFrenteRadio() ? "Si" : "No", doc.f10);
+                p.add(ch);
+            }
+
+            if (trabajo.getEquipoGatoPalanca() != null) {
+                ch = new Chunk("     Palanca de Gato: ", doc.f10b);
+                p.add(ch);
+                ch = new Chunk(trabajo.getEquipoGatoPalanca() ? "Si" : "No", doc.f10);
+                p.add(ch);
+            }
+
+            if (trabajo.getEquipoHerramientas() != null) {
+                ch = new Chunk("     Herramientas: ", doc.f10b);
+                p.add(ch);
+                ch = new Chunk(trabajo.getEquipoHerramientas() ? "Si" : "No", doc.f10);
+                p.add(ch);
+            }
+
+            if (trabajo.getEquipoLlaveRuedas() != null) {
+                ch = new Chunk("     Llave de Ruedas: ", doc.f10b);
+                p.add(ch);
+                ch = new Chunk(trabajo.getEquipoLlaveRuedas() ? "Si" : "No", doc.f10);
+                p.add(ch);
+            }
+
+            if (trabajo.getEquipoLucesTraserasSanas() != null) {
+                ch = new Chunk("     Luces Traseras Sanas: ", doc.f10b);
+                p.add(ch);
+                ch = new Chunk(trabajo.getEquipoLucesTraserasSanas() ? "Si" : "No", doc.f10);
+                p.add(ch);
+            }
+
+            if (trabajo.getEquipoMangueraCabina() != null) {
+                ch = new Chunk("     Manguera Cabina: ", doc.f10b);
+                p.add(ch);
+                ch = new Chunk(trabajo.getEquipoMangueraCabina() ? "Si" : "No", doc.f10);
+                p.add(ch);
+            }
+
+            if (trabajo.getEquipoManuales() != null) {
+                ch = new Chunk("     Manuales: ", doc.f10b);
+                p.add(ch);
+                ch = new Chunk(trabajo.getEquipoManuales() ? "Si" : "No", doc.f10);
+                p.add(ch);
+            }
+
+            if (trabajo.getEquipoParabrisasSano() != null) {
+                ch = new Chunk("     Parabrisas Sano: ", doc.f10b);
+                p.add(ch);
+                ch = new Chunk(trabajo.getEquipoParabrisasSano() ? "Si" : "No", doc.f10);
+                p.add(ch);
+            }
+
+            if (trabajo.getEquipoRadio() != null) {
+                ch = new Chunk("     Radio: ", doc.f10b);
+                p.add(ch);
+                ch = new Chunk(trabajo.getEquipoRadio() ? "Si" : "No", doc.f10);
+                p.add(ch);
+            }
+
+            if (trabajo.getEquipoRayones() != null) {
+                ch = new Chunk("     Rayones: ", doc.f10b);
+                p.add(ch);
+                ch = new Chunk(trabajo.getEquipoRayones() ? "Si" : "No", doc.f10);
+                p.add(ch);
+            }
+
+            if (trabajo.getEquipoSenalerosSanos() != null) {
+                ch = new Chunk("     Señaleros Sanos: ", doc.f10b);
+                p.add(ch);
+                ch = new Chunk(trabajo.getEquipoSenalerosSanos() ? "Si" : "No", doc.f10);
+                p.add(ch);
+            }
+
+            if (trabajo.getEquipoVidriosLaterales() != null) {
+                ch = new Chunk("     Vidrios Laterales: ", doc.f10b);
+                p.add(ch);
+                ch = new Chunk(trabajo.getEquipoVidriosLaterales() ? "Si" : "No", doc.f10);
+                p.add(ch);
+            }
+
+            if (trabajo.getEquipoVidriosLateralesSanos() != null) {
+                ch = new Chunk("     Vidrios Laterales Sanos: ", doc.f10b);
+                p.add(ch);
+                ch = new Chunk(trabajo.getEquipoVidriosLateralesSanos() ? "Si" : "No", doc.f10);
+                p.add(ch);
+            }
+            ph.add(p);
+            doc.addTituloContenido(ph, new Float(20));
+        }
+
+
 
         // Agregamos las imagenes.
         for (Iterator<TrabajoFoto> i = fotos.iterator(); i.hasNext();) {
@@ -501,24 +541,24 @@ public class TrabajoService {
             if (trabajo_old == null) throw new MagnesiumNotFoundException("Trabajo no encontrado");
 
             // Chequeo de transiciones de estado.
-//            if (trabajo_old.getEstado().equals(Estado.EN_PROCESO.name()) &&
-//                    trabajo.getEstado().equals(Estado.PENDIENTE_REMITO.name())) {
-//
-//                Notificacion notificacion = new Notificacion(TipoNotificacion.GENERAR_REMITO, trabajo.toNotificacion());
-//                notificacionEvent.fire(notificacion);
-//                Notificacion notificacion2 = new Notificacion(TipoNotificacion.CARGAR_VALORES, trabajo.toNotificacion());
-//                notificacionEvent.fire(notificacion2);
-//            } else if (trabajo_old.getEstado().equals(Estado.EN_PROCESO.name()) &&
-//                    trabajo.getEstado().equals(Estado.PENDIENTE_ASIGNACION_VALORES.name())) {
-//
-//                Notificacion notificacion = new Notificacion(TipoNotificacion.CARGAR_VALORES, trabajo.toNotificacion());
-//                notificacionEvent.fire(notificacion);
-//            } else if (trabajo_old.getEstado().equals(Estado.PENDIENTE_ASIGNACION_VALORES.name()) &&
-//                    trabajo.getEstado().equals(Estado.PENDIENTE_FACTURA)) {
-//
-//                Notificacion notificacion = new Notificacion(TipoNotificacion.FACTURA_ERP, trabajo.toNotificacion());
-//                notificacionEvent.fire(notificacion);
-//            }
+            if (trabajo_old.getEstado().equals(Estado.EN_PROCESO.name()) &&
+                    trabajo.getEstado().equals(Estado.PENDIENTE_REMITO.name())) {
+
+                Notificacion notificacion = new Notificacion(TipoNotificacion.GENERAR_REMITO, trabajo.toNotificacion());
+                notificacionEvent.fire(notificacion);
+                Notificacion notificacion2 = new Notificacion(TipoNotificacion.CARGAR_VALORES, trabajo.toNotificacion());
+                notificacionEvent.fire(notificacion2);
+            } else if (trabajo_old.getEstado().equals(Estado.EN_PROCESO.name()) &&
+                    trabajo.getEstado().equals(Estado.PENDIENTE_ASIGNACION_VALORES.name())) {
+
+                Notificacion notificacion = new Notificacion(TipoNotificacion.CARGAR_VALORES, trabajo.toNotificacion());
+                notificacionEvent.fire(notificacion);
+            } else if (trabajo_old.getEstado().equals(Estado.PENDIENTE_ASIGNACION_VALORES.name()) &&
+                    trabajo.getEstado().equals(Estado.PENDIENTE_FACTURA)) {
+
+                Notificacion notificacion = new Notificacion(TipoNotificacion.FACTURA_ERP, trabajo.toNotificacion());
+                notificacionEvent.fire(notificacion);
+            }
 
 
             trabajo.setId(id);
@@ -557,23 +597,37 @@ public class TrabajoService {
     }
 
     @GET
-    @Path("countEstados/{status}")
+    @Path("countField/{field}/{value}")
     @JWTTokenNeeded
     @RoleNeeded({Role.USER, Role.ADMIN})
     @ApiOperation(value = "Get Count Trabajos", response = Integer.class)
     @ApiResponses(value = {
             @ApiResponse(code = 404, message = "Estado no encontrado")})
-    public Response countByMultipleStatus(@PathParam("status") String status) {
-
-        String[] estados = status.split(",");
+    public Response countByField(@PathParam("field") String field, @PathParam("value") String value) {
+        logger.severe(field);
+        logger.severe(value);
+        String[] valores = value.split(",");
         Long count = 0L;
-        for (String estado : estados){
-            count += trabajoDao.countByField("estado",estado);
+        if (field.equals("esReparacion")) {
+            if(field.equals("esReparacion")) {
+                for (String valor : valores) {
+                    if(valor.equals("true"))
+                        count += trabajoDao.countByField(field, true);
+                    else
+                        count += trabajoDao.countByField(field, false);
+                }
+            }
+            else{
+                for (String valor : valores) {
+                    count += trabajoDao.countByField(field, valor);
+                }
+            }
         }
 
 
         return Response.ok(count).build();
     }
+
 
     @GET
     @Path("count")

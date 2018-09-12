@@ -71,6 +71,16 @@ public class MaterialService {
         return Response.ok(materialDao.findAll()).build();
     }
 
+    @GET
+    @Logged
+    @Path("autocomplete/{query}")
+    @JWTTokenNeeded
+    @RoleNeeded({Role.USER, Role.ADMIN})
+    @ApiOperation(value = "Get Material", response = Material.class, responseContainer = "List")
+    public Response findByPattern(@PathParam("query") String query) {
+        return Response.ok(materialDao.findByPattern(query)).build();
+    }
+
     @PUT
     @Logged
     @Path("{id}")

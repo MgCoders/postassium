@@ -519,8 +519,8 @@ public class Trabajo {
     }
 
     public String toNotificacion() {
-        return "ID: " + this.getId() + "\n"
+        return "Trabajo " + this.getNumeroTrabajo() + "\n"
                 + "Cliente: " + this.getCliente().getNombreEmpresa() + "\n"
-                + "Mat: " + (this.getEquipo() != null ? this.getEquipo().getMatricula() : "");
+                +  (this.getEquipo() != null ? "Mat: " + this.getEquipo().getMatricula() : "");
     }
 }
