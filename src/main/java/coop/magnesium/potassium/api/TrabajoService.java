@@ -608,19 +608,17 @@ public class TrabajoService {
         logger.severe(value);
         String[] valores = value.split(",");
         Long count = 0L;
-        if (field.equals("esReparacion")) {
-            if(field.equals("esReparacion")) {
-                for (String valor : valores) {
-                    if(valor.equals("true"))
-                        count += trabajoDao.countByField(field, true);
-                    else
-                        count += trabajoDao.countByField(field, false);
-                }
+        if(field.equals("esReparacion")) {
+            for (String valor : valores) {
+                if(valor.equals("true"))
+                    count += trabajoDao.countByField(field, true);
+                else
+                    count += trabajoDao.countByField(field, false);
             }
-            else{
-                for (String valor : valores) {
-                    count += trabajoDao.countByField(field, valor);
-                }
+        }
+        else{
+            for (String valor : valores) {
+                count += trabajoDao.countByField(field, valor);
             }
         }
 

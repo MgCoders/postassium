@@ -62,6 +62,7 @@ public abstract class AbstractDao<E, ID extends Serializable> {
     }
 
     public Long countByField(final String fieldName, final String fieldValue) {
+
         CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
         CriteriaQuery<Long> cq = cb.createQuery(Long.class);
         Root<E> tag = cq.from(getEntityClass());
