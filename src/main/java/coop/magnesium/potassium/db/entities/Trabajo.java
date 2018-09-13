@@ -135,6 +135,8 @@ public class Trabajo {
 
     private Boolean esReparacion = true;
 
+
+    @NotNull
     private Boolean paraFinalizar = false;
 
     private Integer nroRemito;

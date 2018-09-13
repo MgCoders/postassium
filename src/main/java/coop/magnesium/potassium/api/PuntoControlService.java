@@ -157,8 +157,8 @@ public class PuntoControlService {
     public void paraFinalizarTrabajo(Trabajo trabajo){
         trabajo.setParaFinalizar(true);
         for(PuntoControl pc : puntoControlDao.findAllByTrabajo(trabajo)){
-            if (!(pc.getVerificado()) && (pc.getVerificado2()))
-            trabajo.setParaFinalizar(false);
+            if (!(pc.getVerificado() && pc.getVerificado2()))
+                trabajo.setParaFinalizar(false);
         }
 
         trabajoDao.save(trabajo);
