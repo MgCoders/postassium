@@ -122,7 +122,6 @@ public class PuntoControlService {
             @ApiResponse(code = 304, message = "Error: objeto no modificado")})
     public Response verificar(@PathParam("id") Long id, @PathParam("pin") String pin, @PathParam("verificacion") Integer verificacion, @Valid PuntoControl puntoControl) {
         try {
-            logger.severe("EEEE");
             if (puntoControlDao.findById(id) == null) throw new MagnesiumNotFoundException("Punto Control no encontrado");
             puntoControl.setId(id);
 
@@ -157,8 +156,8 @@ public class PuntoControlService {
     public void paraFinalizarTrabajo(Trabajo trabajo){
         trabajo.setParaFinalizar(true);
         for(PuntoControl pc : puntoControlDao.findAllByTrabajo(trabajo)){
-            if (!(pc.getVerificado()) && (pc.getVerificado2()))
-            trabajo.setParaFinalizar(false);
+            if (!(pc.getVerificado() && pc.getVerificado2()))
+                trabajo.setParaFinalizar(false);
         }
 
         trabajoDao.save(trabajo);
