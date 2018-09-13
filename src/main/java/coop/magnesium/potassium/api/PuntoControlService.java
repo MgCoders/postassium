@@ -122,7 +122,6 @@ public class PuntoControlService {
             @ApiResponse(code = 304, message = "Error: objeto no modificado")})
     public Response verificar(@PathParam("id") Long id, @PathParam("pin") String pin, @PathParam("verificacion") Integer verificacion, @Valid PuntoControl puntoControl) {
         try {
-            logger.severe("EEEE");
             if (puntoControlDao.findById(id) == null) throw new MagnesiumNotFoundException("Punto Control no encontrado");
             puntoControl.setId(id);
 
