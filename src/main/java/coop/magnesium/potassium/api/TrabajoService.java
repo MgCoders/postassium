@@ -97,7 +97,7 @@ public class TrabajoService {
                 numeroTrabajo += "0";
 
             numeroTrabajo += Long.toString(trabajo.getId());
-
+            trabajo.setPorcentajeCompleto(0);
             trabajo.setNumeroTrabajo(numeroTrabajo);
             trabajoDao.save(trabajo);
 
