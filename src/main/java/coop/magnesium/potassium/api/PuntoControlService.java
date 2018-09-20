@@ -147,7 +147,7 @@ public class PuntoControlService {
             paraFinalizarTrabajo(trabajoDao.findById(puntoControl.getTrabajo().getId()));
             return Response.ok(puntoControl).build();
         } catch (Exception e) {
-            logger.severe(e.getMessage());
+            logger.severe(e.getStackTrace().toString());
             return Response.notModified().entity(e.getMessage()).build();
         }
     }
