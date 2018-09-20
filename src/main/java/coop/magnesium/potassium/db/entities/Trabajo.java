@@ -143,6 +143,8 @@ public class Trabajo {
 
     private String numeroTrabajo;
 
+    private Integer porcentajeCompleto;
+
     public Trabajo() {
     }
 
@@ -518,6 +520,14 @@ public class Trabajo {
 
     public void setNumeroTrabajo(String numeroTrabajo) {
         this.numeroTrabajo = numeroTrabajo;
+    }
+
+    public Integer getPorcentajeCompleto() {
+        return porcentajeCompleto;
+    }
+
+    public void setPorcentajeCompleto(Integer porcentajeCompleto) {
+        this.porcentajeCompleto = porcentajeCompleto;
     }
 
     public String toNotificacion() {

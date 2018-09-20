@@ -147,7 +147,7 @@ public class PuntoControlService {
             paraFinalizarTrabajo(trabajoDao.findById(puntoControl.getTrabajo().getId()));
             return Response.ok(puntoControl).build();
         } catch (Exception e) {
-            logger.severe(e.getMessage());
+            logger.severe(e.getStackTrace().toString());
             return Response.notModified().entity(e.getMessage()).build();
         }
     }
@@ -155,10 +155,17 @@ public class PuntoControlService {
 
     public void paraFinalizarTrabajo(Trabajo trabajo){
         trabajo.setParaFinalizar(true);
+        int completos = 0;
+        int total = 0;
         for(PuntoControl pc : puntoControlDao.findAllByTrabajo(trabajo)){
+            total++;
             if (!(pc.getVerificado() && pc.getVerificado2()))
                 trabajo.setParaFinalizar(false);
+            else
+                completos++;
         }
+
+        trabajo.setPorcentajeCompleto(completos*100/total);
 
         trabajoDao.save(trabajo);
     }
