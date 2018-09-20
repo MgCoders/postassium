@@ -69,6 +69,7 @@ public class StartupBean {
         System.setProperty("user.timezone", "America/Montevideo");
         logger.warning("FECHA HORA DE JVM: " + LocalDateTime.now());
 
+        setMyselfAsNodoMaster();
 
         // TODO borrar todo esto para subir al server...
         try {
@@ -129,6 +130,10 @@ public class StartupBean {
         }
     }
 
+    public void setMyselfAsNodoMaster() {
+        configuracionDao.setNodoMaster(jbossNodeName);
+    }
+
     public void configuraciones() {
         if (!configuracionDao.isEmailOn()) {
             configuracionDao.setMailOn(false);
@@ -145,11 +150,11 @@ public class StartupBean {
         if (configuracionDao.getMailHost() == null) {
             configuracionDao.setMailPort("1025");
         }
-        if (configuracionDao.getMailPort() == null) {
+        if (configuracionDao.getMailHost() == null) {
             configuracionDao.setMailHost("ip-172-31-6-242");
         }
         if (configuracionDao.getProjectName() == null) {
-            configuracionDao.setProjectName("MMMM");
+            configuracionDao.setProjectName("SIGPO");
         }
         if (configuracionDao.getProjectLogo() == null) {
             configuracionDao.setProjectLogo("https://fffff.com");

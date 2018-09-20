@@ -146,7 +146,16 @@ public class PuntoControlService {
 
             paraFinalizarTrabajo(trabajoDao.findById(puntoControl.getTrabajo().getId()));
             return Response.ok(puntoControl).build();
+        } catch (MagnesiumNotFoundException e) {
+            logger.severe(e.getMessage());
+            e.printStackTrace();
+            return Response.notModified().entity(e.getMessage()).build();
+        } catch (MagnesiumException e) {
+            logger.severe(e.getMessage());
+            e.printStackTrace();
+            return Response.notModified().entity(e.getMessage()).build();
         } catch (Exception e) {
+            e.printStackTrace();
             logger.severe(e.getStackTrace().toString());
             return Response.notModified().entity(e.getMessage()).build();
         }
