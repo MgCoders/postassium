@@ -122,19 +122,26 @@ public class PuntoControlService {
             @ApiResponse(code = 304, message = "Error: objeto no modificado")})
     public Response verificar(@PathParam("id") Long id, @PathParam("pin") String pin, @PathParam("verificacion") Integer verificacion, @Valid PuntoControl puntoControl) {
         try {
-            if (puntoControlDao.findById(id) == null) throw new MagnesiumNotFoundException("Punto Control no encontrado");
-            puntoControl.setId(id);
+            PuntoControl puntoControlDb = puntoControlDao.findById(id);
+            if (puntoControlDb == null) throw new MagnesiumNotFoundException("Punto Control no encontrado");
 
-            if(verificacion == 1){
-                if (pin.equals(puntoControl.getResponsable().getPin())){
-                    puntoControl.setVerificado(true);
+
+            if (verificacion == 1) {
+                if (puntoControlDb.getResponsable() == null) {
+                    throw new MagnesiumNotFoundException("No tiene primer responsable asignado");
+                }
+                if (pin.equals(puntoControlDb.getResponsable().getPin())){
+                    puntoControlDb.setVerificado(true);
                 }
                 else {
                     throw new MagnesiumException("Pin incorrecto");
                 }
             } else if(verificacion == 2){
-                if (pin.equals(puntoControl.getResponsable2().getPin())){
-                    puntoControl.setVerificado2(true);
+                if (puntoControlDb.getResponsable2() == null) {
+                    throw new MagnesiumNotFoundException("No tiene segundo responsable asignado");
+                }
+                if (pin.equals(puntoControlDb.getResponsable2().getPin())){
+                    puntoControlDb.setVerificado2(true);
                 }
                 else {
                     throw new MagnesiumException("Pin incorrecto");
@@ -142,10 +149,10 @@ public class PuntoControlService {
             } else {
                 throw new MagnesiumException("Parámetros incorrectos");
             }
-            puntoControl = puntoControlDao.save(puntoControl);
+            puntoControlDb = puntoControlDao.save(puntoControlDb);
 
-            paraFinalizarTrabajo(trabajoDao.findById(puntoControl.getTrabajo().getId()));
-            return Response.ok(puntoControl).build();
+            paraFinalizarTrabajo(trabajoDao.findById(puntoControlDb.getTrabajo().getId()));
+            return Response.ok(puntoControlDb).build();
         } catch (MagnesiumNotFoundException e) {
             logger.severe(e.getMessage());
             e.printStackTrace();
