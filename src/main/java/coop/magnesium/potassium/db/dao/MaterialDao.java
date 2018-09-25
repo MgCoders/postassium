@@ -6,6 +6,7 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.ws.rs.QueryParam;
 import java.util.List;
 
 /**
@@ -33,4 +34,10 @@ public class MaterialDao extends AbstractDao<Material, Long> {
         return query.getResultList();
     }
 
+    public List<Material> findPage(int limit, int offset) {
+        Query query = em.createQuery("SELECT m FROM Material m");
+        query.setFirstResult(offset);
+        query.setMaxResults(limit);
+        return query.getResultList();
+    }
 }
