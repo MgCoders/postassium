@@ -67,8 +67,22 @@ public class MaterialService {
     @JWTTokenNeeded
     @RoleNeeded({Role.USER, Role.ADMIN})
     @ApiOperation(value = "Get Material", response = Material.class, responseContainer = "List")
-    public Response findAll() {
-        return Response.ok(materialDao.findAll()).build();
+    public Response findAll(@QueryParam("limit") Integer limit, @QueryParam("offset") Integer offset) {
+        if (limit == null || offset == null) {
+            return Response.ok(materialDao.findPage(10, 0)).build();
+        } else {
+            return Response.ok(materialDao.findPage(limit, offset)).build();
+        }
+    }
+
+    @GET
+    @Logged
+    @Path("count")
+    @JWTTokenNeeded
+    @RoleNeeded({Role.USER, Role.ADMIN})
+    @ApiOperation(value = "Get Cantidad Material", response = Long.class)
+    public Response count() {
+        return Response.ok(materialDao.countAll()).build();
     }
 
     @GET
