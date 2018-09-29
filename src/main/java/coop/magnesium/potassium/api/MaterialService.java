@@ -67,11 +67,15 @@ public class MaterialService {
     @JWTTokenNeeded
     @RoleNeeded({Role.USER, Role.ADMIN})
     @ApiOperation(value = "Get Material", response = Material.class, responseContainer = "List")
-    public Response findAll(@QueryParam("limit") Integer limit, @QueryParam("offset") Integer offset) {
+    public Response findAll(@QueryParam("limit") Integer limit,
+                            @QueryParam("offset") Integer offset,
+                            @QueryParam("filter") String filter) {
         if (limit == null || offset == null) {
             return Response.ok(materialDao.findPage(10, 0)).build();
-        } else {
+        } else if (filter == null || filter.isEmpty()) {
             return Response.ok(materialDao.findPage(limit, offset)).build();
+        } else {
+            return Response.ok(materialDao.findPageFilter(limit, offset, filter)).build();
         }
     }
 
