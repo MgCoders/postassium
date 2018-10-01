@@ -6,6 +6,7 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.ws.rs.QueryParam;
 import java.util.List;
 
 /**
@@ -28,9 +29,27 @@ public class MaterialDao extends AbstractDao<Material, Long> {
     }
 
     public List<Material> findByPattern(String pattern) {
-        Query query = em.createQuery("SELECT m FROM Material m WHERE UPPER(m.nombre) LIKE UPPER(:nombre)");
+        Query query = em.createQuery("SELECT m FROM Material m " +
+                "WHERE UPPER(m.nombre) LIKE UPPER(:nombre) " +
+                "ORDER BY m.codigo ASC");
         query.setParameter("nombre", "%" + pattern + "%");
         return query.getResultList();
     }
 
+    public List<Material> findPage(int limit, int offset) {
+        Query query = em.createQuery("SELECT m FROM Material m ORDER BY m.codigo ASC");
+        query.setFirstResult(offset);
+        query.setMaxResults(limit);
+        return query.getResultList();
+    }
+
+    public List<Material> findPageFilter(int limit, int offset, String filter) {
+        Query query = em.createQuery("SELECT m FROM Material m " +
+                "WHERE UPPER(m.nombre) LIKE UPPER(:nombre) " +
+                "ORDER BY m.codigo ASC");
+        query.setParameter("nombre", "%" + filter + "%");
+        query.setFirstResult(offset);
+        query.setMaxResults(limit);
+        return query.getResultList();
+    }
 }
