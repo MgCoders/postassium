@@ -34,7 +34,7 @@ public class Equipo {
 
     private String color;
 
-    @NotNull(message = "El equipo debe tener una descripcion")
+    //@NotNull(message = "El equipo debe tener una descripcion")
     private String descripcion;
 
     @NotNull(message = "El equipo debe tener un tipo de equipo")

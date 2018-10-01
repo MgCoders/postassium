@@ -5,6 +5,7 @@ import coop.magnesium.potassium.db.entities.Cliente;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import java.util.List;
 
 /**
@@ -32,6 +33,12 @@ public class ClienteDao extends AbstractDao<Cliente, Long>{
 
             return result.get(0);
 
+    }
+
+    public List<Cliente> findByPattern(String pattern) {
+        Query query = em.createQuery("SELECT c FROM Cliente c WHERE UPPER(c.rut) LIKE UPPER(:pat) OR UPPER(c.nombreEmpresa) LIKE UPPER(:pat)");
+        query.setParameter("pat", "%" + pattern + "%");
+        return query.getResultList();
     }
 
     public Cliente findByRUT(String rut){

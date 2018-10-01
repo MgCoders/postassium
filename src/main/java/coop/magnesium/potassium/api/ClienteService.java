@@ -131,4 +131,14 @@ public class ClienteService {
             return Response.notModified().entity(e.getMessage()).build();
         }
     }
+
+    @GET
+    @Logged
+    @Path("autocomplete/{query}")
+    @JWTTokenNeeded
+    @RoleNeeded({Role.USER, Role.ADMIN})
+    @ApiOperation(value = "Get Material", response = Cliente.class, responseContainer = "List")
+    public Response findByPattern(@PathParam("query") String query) {
+        return Response.ok(clienteDao.findByPattern(query)).build();
+    }
 }
