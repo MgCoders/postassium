@@ -37,4 +37,14 @@ public class TipoMaterialDao extends AbstractDao<TipoMaterial, Long> {
         }
         return tipoMaterialList.get(0); // constraint unique por codigo. Es cero o uno la lista.
     }
+
+    public List<TipoMaterial> findByPattern(String pattern) {
+        Query query = em.createQuery("SELECT tm FROM TipoMaterial tm " +
+                "WHERE UPPER(tm.familia) LIKE UPPER(:pattern) OR " +
+                "UPPER(tm.grupo) LIKE UPPER(:pattern) OR " +
+                "UPPER(tm.subgrupo) LIKE UPPER(:pattern)");
+        query.setParameter("pattern", "%" + pattern + "%");
+        return query.getResultList();
+    }
+
 }
