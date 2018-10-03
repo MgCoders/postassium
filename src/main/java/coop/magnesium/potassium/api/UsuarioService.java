@@ -85,7 +85,7 @@ public class UsuarioService {
 
     @GET
     @JWTTokenNeeded
-    @RoleNeeded({Role.USER, Role.ADMIN, Role.SUPER_ADMIN})
+    @RoleNeeded({ Role.SUPER_ADMIN})
     @ApiOperation(value = "Get usuarios", response = Usuario.class, responseContainer = "List")
     public Response findAll() {
         List<Usuario> allSulfurUsers = usuarioDao.findAll();
@@ -95,7 +95,7 @@ public class UsuarioService {
     @GET
     @Path("{id}")
     @JWTTokenNeeded
-    @RoleNeeded({Role.USER, Role.ADMIN, Role.SUPER_ADMIN})
+    @RoleNeeded({ Role.SUPER_ADMIN})
     @ApiOperation(value = "Get usuario", response = Usuario.class)
     public Response find(@PathParam("id") Long id) {
         Usuario usuario = usuarioDao.findById(id);
@@ -106,7 +106,7 @@ public class UsuarioService {
     @PUT
     @Path("{id}")
     @JWTTokenNeeded
-    @RoleNeeded({Role.USER, Role.ADMIN, Role.SUPER_ADMIN})
+    @RoleNeeded({ Role.SUPER_ADMIN})
     @ApiOperation(value = "Edit usuario", response = Usuario.class)
     public Response edit(@PathParam("id") Long id, @Valid Usuario usuario) {
         try {
