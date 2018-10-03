@@ -65,7 +65,7 @@ public class TrabajoService {
     @POST
     @Logged
     @JWTTokenNeeded
-    @RoleNeeded({Role.USER, Role.ADMIN})
+    @RoleNeeded({Role.USER, Role.ADMIN, Role.SUPER_ADMIN})
     @ApiOperation(value = "Create Trabajo", response = Trabajo.class)
     @ApiResponses(value = {
             @ApiResponse(code = 409, message = "Código o Id ya existe"),
@@ -115,7 +115,7 @@ public class TrabajoService {
 
     @GET
     @JWTTokenNeeded
-    @RoleNeeded({Role.USER, Role.ADMIN})
+    @RoleNeeded({Role.USER, Role.ADMIN, Role.SUPER_ADMIN})
     @ApiOperation(value = "Get trabajos", response = Trabajo.class, responseContainer = "List")
     public Response findAll() {
         List<Trabajo> trabajoList = trabajoDao.findAll();
@@ -125,7 +125,7 @@ public class TrabajoService {
     @GET
     @Path("{id}")
     @JWTTokenNeeded
-    @RoleNeeded({Role.USER, Role.ADMIN})
+    @RoleNeeded({Role.USER, Role.ADMIN, Role.SUPER_ADMIN})
     @ApiOperation(value = "Get Trabajo", response = Trabajo.class)
     @ApiResponses(value = {
             @ApiResponse(code = 404, message = "Id no encontrado")})
@@ -138,7 +138,7 @@ public class TrabajoService {
     @GET
     @Path("PDF/{id}")
     @JWTTokenNeeded
-    @RoleNeeded({Role.USER, Role.ADMIN})
+    @RoleNeeded({Role.USER, Role.ADMIN, Role.SUPER_ADMIN})
     @ApiOperation(value = "Get PDF del trabajo.")
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     @ApiResponses(value = {
@@ -469,7 +469,7 @@ public class TrabajoService {
     @GET
     @Path("estado/{status}")
     @JWTTokenNeeded
-    @RoleNeeded({Role.USER, Role.ADMIN})
+    @RoleNeeded({Role.USER, Role.ADMIN, Role.SUPER_ADMIN})
     @ApiOperation(value = "Get Trabajos", response = Trabajo.class, responseContainer = "List")
     @ApiResponses(value = {
             @ApiResponse(code = 404, message = "Estado no encontrado")})
@@ -482,7 +482,7 @@ public class TrabajoService {
     @GET
     @Path("estados/{status}")
     @JWTTokenNeeded
-    @RoleNeeded({Role.USER, Role.ADMIN})
+    @RoleNeeded({Role.USER, Role.ADMIN, Role.SUPER_ADMIN})
     @ApiOperation(value = "Get Trabajos", response = Trabajo.class, responseContainer = "List")
     @ApiResponses(value = {
             @ApiResponse(code = 404, message = "Estado no encontrado")})
@@ -501,7 +501,7 @@ public class TrabajoService {
     @GET
     @Path("cliente/{id}")
     @JWTTokenNeeded
-    @RoleNeeded({Role.USER, Role.ADMIN})
+    @RoleNeeded({Role.USER, Role.ADMIN, Role.SUPER_ADMIN})
     @ApiOperation(value = "Get Trabajos", response = Trabajo.class, responseContainer = "List")
     @ApiResponses(value = {
             @ApiResponse(code = 404, message = "Cliente no encontrado")})
@@ -516,7 +516,7 @@ public class TrabajoService {
     @GET
     @Path("equipo/{id}")
     @JWTTokenNeeded
-    @RoleNeeded({Role.USER, Role.ADMIN})
+    @RoleNeeded({Role.USER, Role.ADMIN, Role.SUPER_ADMIN})
     @ApiOperation(value = "Get Trabajos", response = Trabajo.class, responseContainer = "List")
     @ApiResponses(value = {
             @ApiResponse(code = 404, message = "Equipo no encontrado")})
@@ -531,7 +531,7 @@ public class TrabajoService {
     @PUT
     @Path("{id}")
     @JWTTokenNeeded
-    @RoleNeeded({Role.USER, Role.ADMIN})
+    @RoleNeeded({Role.USER, Role.ADMIN, Role.SUPER_ADMIN})
     @ApiOperation(value = "Edit trabajo", response = Trabajo.class)
     @ApiResponses(value = {
             @ApiResponse(code = 304, message = "Error: objeto no modificado")})
@@ -576,7 +576,7 @@ public class TrabajoService {
     @Logged
     @Path("{id}")
     @JWTTokenNeeded
-    @RoleNeeded({Role.USER, Role.ADMIN})
+    @RoleNeeded({Role.USER, Role.ADMIN, Role.SUPER_ADMIN})
     @ApiOperation(value = "Delete Trabajo", response = Trabajo.class)
     public Response delete(@PathParam("id") Long id) {
         try {
@@ -599,7 +599,7 @@ public class TrabajoService {
     @GET
     @Path("countField/{field}/{value}")
     @JWTTokenNeeded
-    @RoleNeeded({Role.USER, Role.ADMIN})
+    @RoleNeeded({Role.USER, Role.ADMIN, Role.SUPER_ADMIN})
     @ApiOperation(value = "Get Count Trabajos", response = Integer.class)
     @ApiResponses(value = {
             @ApiResponse(code = 404, message = "Estado no encontrado")})
@@ -630,7 +630,7 @@ public class TrabajoService {
     @GET
     @Path("count")
     @JWTTokenNeeded
-    @RoleNeeded({Role.USER, Role.ADMIN})
+    @RoleNeeded({Role.USER, Role.ADMIN, Role.SUPER_ADMIN})
     @ApiOperation(value = "Get Count Trabajos", response = Integer.class)
     @ApiResponses(value = {
             @ApiResponse(code = 404, message = "Estado no encontrado")})

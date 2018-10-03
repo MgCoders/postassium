@@ -39,7 +39,7 @@ public class UnidadMedidaService {
     @GET
     @Logged
     @JWTTokenNeeded
-    @RoleNeeded({Role.USER, Role.ADMIN})
+    @RoleNeeded({Role.USER, Role.ADMIN, Role.SUPER_ADMIN})
     @ApiOperation(value = "Get unidadmedida", response = UnidadMedida.class, responseContainer = "List")
     public Response findAll() {
         return Response.ok(unidadMedidaDao.findAll()).build();

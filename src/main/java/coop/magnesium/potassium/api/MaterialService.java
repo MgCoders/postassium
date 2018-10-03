@@ -44,7 +44,7 @@ public class MaterialService {
     @POST
     @Logged
     @JWTTokenNeeded
-    @RoleNeeded({Role.USER, Role.ADMIN})
+    @RoleNeeded({Role.USER, Role.ADMIN, Role.SUPER_ADMIN})
     @ApiOperation(value = "Create Material", response = Material.class)
     public Response create(@Valid Material material) {
         try {
@@ -65,7 +65,7 @@ public class MaterialService {
     @GET
     @Logged
     @JWTTokenNeeded
-    @RoleNeeded({Role.USER, Role.ADMIN})
+    @RoleNeeded({Role.USER, Role.ADMIN, Role.SUPER_ADMIN})
     @ApiOperation(value = "Get Material", response = Material.class, responseContainer = "List")
     public Response findAll(@QueryParam("limit") Integer limit,
                             @QueryParam("offset") Integer offset,
@@ -83,7 +83,7 @@ public class MaterialService {
     @Logged
     @Path("count")
     @JWTTokenNeeded
-    @RoleNeeded({Role.USER, Role.ADMIN})
+    @RoleNeeded({Role.USER, Role.ADMIN, Role.SUPER_ADMIN})
     @ApiOperation(value = "Get Cantidad Material", response = Long.class)
     public Response count() {
         return Response.ok(materialDao.countAll()).build();
@@ -93,7 +93,7 @@ public class MaterialService {
     @Logged
     @Path("autocomplete/{query}")
     @JWTTokenNeeded
-    @RoleNeeded({Role.USER, Role.ADMIN})
+    @RoleNeeded({Role.USER, Role.ADMIN, Role.SUPER_ADMIN})
     @ApiOperation(value = "Get Material", response = Material.class, responseContainer = "List")
     public Response findByPattern(@PathParam("query") String query) {
         return Response.ok(materialDao.findByPattern(query)).build();
@@ -103,7 +103,7 @@ public class MaterialService {
     @Logged
     @Path("{id}")
     @JWTTokenNeeded
-    @RoleNeeded({Role.USER, Role.ADMIN})
+    @RoleNeeded({Role.USER, Role.ADMIN, Role.SUPER_ADMIN})
     @ApiOperation(value = "Edit Material", response = Material.class)
     @ApiResponses(value = {
             @ApiResponse(code = 304, message = "Error: objeto no modificado")})

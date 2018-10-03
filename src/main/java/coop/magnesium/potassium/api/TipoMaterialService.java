@@ -40,7 +40,7 @@ public class TipoMaterialService {
     @POST
     @Logged
     @JWTTokenNeeded
-    @RoleNeeded({Role.USER, Role.ADMIN})
+    @RoleNeeded({Role.USER, Role.ADMIN, Role.SUPER_ADMIN})
     @ApiOperation(value = "Create TipoMaterial", response = TipoMaterial.class)
     public Response create(@Valid TipoMaterial tipoMaterial) {
         try {
@@ -69,7 +69,7 @@ public class TipoMaterialService {
     @GET
     @Logged
     @JWTTokenNeeded
-    @RoleNeeded({Role.USER, Role.ADMIN})
+    @RoleNeeded({Role.USER, Role.ADMIN, Role.SUPER_ADMIN})
     @ApiOperation(value = "Get tipomaterial", response = TipoMaterial.class, responseContainer = "List")
     public Response findAll() {
         return Response.ok(tipoMaterialDao.findAll()).build();
@@ -79,7 +79,7 @@ public class TipoMaterialService {
     @Logged
     @Path("autocomplete/{query}")
     @JWTTokenNeeded
-    @RoleNeeded({Role.USER, Role.ADMIN})
+    @RoleNeeded({Role.USER, Role.ADMIN, Role.SUPER_ADMIN})
     @ApiOperation(value = "Get TipoMaterial", response = TipoMaterial.class, responseContainer = "List")
     public Response findByPattern(@PathParam("query") String query) {
         return Response.ok(tipoMaterialDao.findByPattern(query)).build();
@@ -89,7 +89,7 @@ public class TipoMaterialService {
     @Logged
     @Path("{id}")
     @JWTTokenNeeded
-    @RoleNeeded({Role.USER, Role.ADMIN})
+    @RoleNeeded({Role.USER, Role.ADMIN, Role.SUPER_ADMIN})
     @ApiOperation(value = "Edit TipoMaterial", response = TipoMaterial.class)
     @ApiResponses(value = {
             @ApiResponse(code = 304, message = "Error: objeto no modificado")})

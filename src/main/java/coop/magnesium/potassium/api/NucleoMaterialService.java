@@ -35,7 +35,7 @@ public class NucleoMaterialService {
     @GET
     @Logged
     @JWTTokenNeeded
-    @RoleNeeded({Role.USER, Role.ADMIN})
+    @RoleNeeded({Role.USER, Role.ADMIN, Role.SUPER_ADMIN})
     @ApiOperation(value = "Get nucleomaterial", response = NucleoMaterial.class, responseContainer = "List")
     public Response findAll() {
         return Response.ok(nucleoMaterialDao.findAll()).build();
@@ -46,7 +46,7 @@ public class NucleoMaterialService {
     @Logged
     @Path("tipomaterial/{id}")
     @JWTTokenNeeded
-    @RoleNeeded({Role.USER, Role.ADMIN})
+    @RoleNeeded({Role.USER, Role.ADMIN, Role.SUPER_ADMIN})
     @ApiOperation(value = "Get nucleomaterial", response = NucleoMaterial.class, responseContainer = "List")
     public Response findByTipoMaterial(@PathParam("id") Long id) {
         return Response.ok(nucleoMaterialDao.findAllByTipoMaterial(id)).build();

@@ -43,7 +43,7 @@ public class TipoEquipoService {
     @POST
     @Logged
     @JWTTokenNeeded
-    @RoleNeeded({Role.USER, Role.ADMIN})
+    @RoleNeeded({Role.USER, Role.ADMIN, Role.SUPER_ADMIN})
     @ApiOperation(value = "Create Tipo Equipo", response = TipoEquipo.class)
     public Response create(@Valid TipoEquipo tipoEquipo) {
         try {
@@ -65,7 +65,7 @@ public class TipoEquipoService {
     @Logged
     @Path("{id}")
     @JWTTokenNeeded
-    @RoleNeeded({Role.USER, Role.ADMIN})
+    @RoleNeeded({Role.USER, Role.ADMIN, Role.SUPER_ADMIN})
     @ApiOperation(value = "Edit Tipo Equipo", response = TipoEquipo.class)
     @ApiResponses(value = {
             @ApiResponse(code = 304, message = "Error: objeto no modificado")})
@@ -92,7 +92,7 @@ public class TipoEquipoService {
     @Logged
     @Path("{id}")
     @JWTTokenNeeded
-    @RoleNeeded({Role.USER, Role.ADMIN})
+    @RoleNeeded({Role.USER, Role.ADMIN, Role.SUPER_ADMIN})
     @ApiOperation(value = "Get Tipo Equipo", response = TipoEquipo.class)
     @ApiResponses(value = {
             @ApiResponse(code = 404, message = "Id no encontrado")})
@@ -105,7 +105,7 @@ public class TipoEquipoService {
     @GET
     @Logged
     @JWTTokenNeeded
-    @RoleNeeded({Role.USER, Role.ADMIN})
+    @RoleNeeded({Role.USER, Role.ADMIN, Role.SUPER_ADMIN})
     @ApiOperation(value = "Get tipoequipo", response = TipoEquipo.class, responseContainer = "List")
     public Response findAll() {
         return Response.ok(tipoEquipoDao.findAll()).build();

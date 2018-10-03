@@ -45,7 +45,7 @@ public class TrabajoFotoService {
     @POST
     @Logged
     @JWTTokenNeeded
-    @RoleNeeded({Role.USER, Role.ADMIN})
+    @RoleNeeded({Role.USER, Role.ADMIN, Role.SUPER_ADMIN})
     @ApiOperation(value = "Create TrabajoFoto", response = Tarea.class)
     public Response create(@Valid TrabajoFoto trabajoFoto) {
         try {
@@ -72,7 +72,7 @@ public class TrabajoFotoService {
     @Logged
     @Path("trabajo/{id}")
     @JWTTokenNeeded
-    @RoleNeeded({Role.USER, Role.ADMIN})
+    @RoleNeeded({Role.USER, Role.ADMIN, Role.SUPER_ADMIN})
     @ApiOperation(value = "Get tareas", response = TrabajoFoto.class, responseContainer = "List")
     public Response findAllByTrabajo(@PathParam("id") Long id) {
         List<TrabajoFoto> fotos = trabajoFotoDao.findAllByTrabajo(id);

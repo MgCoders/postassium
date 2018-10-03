@@ -58,7 +58,7 @@ public class TareaService {
     @POST
     @Logged
     @JWTTokenNeeded
-    @RoleNeeded({Role.USER, Role.ADMIN})
+    @RoleNeeded({Role.USER, Role.ADMIN, Role.SUPER_ADMIN})
     @ApiOperation(value = "Create Tarea", response = Tarea.class)
     public Response create(@Valid Tarea tarea) {
         try {
@@ -85,7 +85,7 @@ public class TareaService {
     @GET
     @Logged
     @JWTTokenNeeded
-    @RoleNeeded({Role.USER, Role.ADMIN})
+    @RoleNeeded({Role.USER, Role.ADMIN, Role.SUPER_ADMIN})
     @ApiOperation(value = "Get tareas", response = Tarea.class, responseContainer = "List")
     public Response findAll() {
         List<Tarea> tareas = tareaDao.findAll();
@@ -96,7 +96,7 @@ public class TareaService {
     @Logged
     @Path("trabajo/{id}")
     @JWTTokenNeeded
-    @RoleNeeded({Role.USER, Role.ADMIN})
+    @RoleNeeded({Role.USER, Role.ADMIN, Role.SUPER_ADMIN})
     @ApiOperation(value = "Get tareas", response = Tarea.class, responseContainer = "List")
     public Response findAllByTrabajo(@PathParam("id") Long id) {
         List<Tarea> tareas = tareaDao.findAllByTrabajo(id);
@@ -107,7 +107,7 @@ public class TareaService {
     @Logged
     @Path("{id}")
     @JWTTokenNeeded
-    @RoleNeeded({Role.USER, Role.ADMIN})
+    @RoleNeeded({Role.USER, Role.ADMIN, Role.SUPER_ADMIN})
     @ApiOperation(value = "Get Tarea", response = Tarea.class)
     @ApiResponses(value = {
             @ApiResponse(code = 404, message = "Id no encontrado")})
@@ -121,7 +121,7 @@ public class TareaService {
     @Logged
     @Path("{id}")
     @JWTTokenNeeded
-    @RoleNeeded({Role.USER, Role.ADMIN})
+    @RoleNeeded({Role.USER, Role.ADMIN, Role.SUPER_ADMIN})
     @ApiOperation(value = "Edit Tarea", response = Tarea.class)
     @ApiResponses(value = {
             @ApiResponse(code = 304, message = "Error: objeto no modificado")})
@@ -170,7 +170,7 @@ public class TareaService {
     @Path("{id}/materiales")
     @Logged
     @JWTTokenNeeded
-    @RoleNeeded({Role.USER, Role.ADMIN})
+    @RoleNeeded({Role.USER, Role.ADMIN, Role.SUPER_ADMIN})
     @ApiOperation(value = "Get TareaMaterial", response = TareaMaterial.class, responseContainer = "List")
     public Response findAllByTarea(@PathParam("id") Long id) {
         try {
@@ -193,7 +193,7 @@ public class TareaService {
     @Path("materiales")
     @Logged
     @JWTTokenNeeded
-    @RoleNeeded({Role.USER, Role.ADMIN})
+    @RoleNeeded({Role.USER, Role.ADMIN, Role.SUPER_ADMIN})
     @ApiOperation(value = "Create TareaMaterial", response = TareaMaterial.class)
     public Response addTareaMaterial(@Valid TareaMaterial tareaMaterial) {
         try {
@@ -230,7 +230,7 @@ public class TareaService {
     @Path("materiales/{id}")
     @Logged
     @JWTTokenNeeded
-    @RoleNeeded({Role.USER, Role.ADMIN})
+    @RoleNeeded({Role.USER, Role.ADMIN, Role.SUPER_ADMIN})
     @ApiOperation(value = "Update TareaMaterial", response = TareaMaterial.class)
     @ApiResponses(value = {
             @ApiResponse(code = 304, message = "Error: objeto no modificado")})
@@ -268,7 +268,7 @@ public class TareaService {
     @Path("/materiales/{id}")
     @Logged
     @JWTTokenNeeded
-    @RoleNeeded({Role.USER, Role.ADMIN})
+    @RoleNeeded({Role.USER, Role.ADMIN, Role.SUPER_ADMIN})
     @ApiOperation(value = "Delete TareaMaterial", response = TareaMaterial.class)
     public Response delete(@PathParam("id") Long id) {
         try {
