@@ -106,4 +106,14 @@ public class MarcaEquipoService {
             return Response.notModified().entity(e.getMessage()).build();
         }
     }
+
+    @GET
+    @Logged
+    @Path("autocomplete/{query}")
+    @JWTTokenNeeded
+    @RoleNeeded({Role.USER, Role.ADMIN, Role.SUPER_ADMIN})
+    @ApiOperation(value = "Get Marca", response = MarcaEquipo.class, responseContainer = "List")
+    public Response findByPattern(@PathParam("query") String query) {
+        return Response.ok(marcaEquipoDao.findByPattern(query)).build();
+    }
 }

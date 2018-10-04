@@ -62,6 +62,9 @@ public class StartupBean {
     EquipoDao equipoDao;
 
     @EJB
+    MarcaEquipoDao marcaEquipoDao;
+
+    @EJB
     RubroDao rubroDao;
 
     @PostConstruct
@@ -75,52 +78,7 @@ public class StartupBean {
         try {
             if (usuarioDao.findByEmail("root@magnesium.coop") == null) {
                 usuarioDao.save(new Usuario("root@magnesium.coop", "root", PasswordUtils.digestPassword(System.getenv("ROOT_PASSWORD") != null ? System.getenv("ROOT_PASSWORD") : "bu"), "ADMIN", true));
-//                Cliente cliente = clienteDao.save(new Cliente("Empresa 1","100 321 6546", "099 111 111", "C1", "1", "empre2@asd.ewe", "w"));
-//                Cliente cliente2 = clienteDao.save(new Cliente("Empresa 2","218 987 352", "097 666 666", "C2", "1", "empre1.qwe@asdas.col", "w"));
-
-                TipoEquipo camion = tipoEquipoDao.save(new TipoEquipo("Camion","Camion", true));
-                TipoEquipo barco = tipoEquipoDao.save(new TipoEquipo("Tanque semirremolque","Barco", false));
-
-//                Equipo equipo1 = equipoDao.save( new Equipo(cliente, "Scania", "48 ruedas", "sdasd", "WER2343F44", "Rojo", "descr", camion));
-//
-//                Trabajo trabajo = new Trabajo();
-//                trabajo.setCliente(cliente);
-//                trabajo.setMotivoVisita("NUEVO");
-//                trabajo.setFechaRecepcion(LocalDateTime.now());
-//                trabajo.setFechaProvistaEntrega(LocalDate.now());
-//                trabajo.setEstado(Estado.EN_PROCESO.name());
-//                trabajo.setEquipo(equipo1);
-//                trabajo = trabajoDao.save(trabajo);
-
-//                Trabajo trabajo2 = new Trabajo();
-//                trabajo2.setCliente(cliente);
-//                trabajo2.setMotivoVisita("REPARACION");
-//                trabajo2.setFechaRecepcion(LocalDateTime.now());
-//                trabajo2.setFechaProvistaEntrega(LocalDate.now());
-//                trabajo2.setEstado("EN_PROCESO");
-//                trabajo2.setEquipo(equipo2);
-//                trabajo2 = trabajoDao.save(trabajo2);
-//
-//
-//                Trabajo trabajo3 = new Trabajo();
-//                trabajo3.setCliente(cliente2);
-//                trabajo3.setMotivoVisita("NUEVO");
-//                trabajo3.setFechaRecepcion(LocalDateTime.now());
-//                trabajo3.setFechaProvistaEntrega(LocalDate.now());
-//                trabajo3.setEstado("EN_PROCESO");
-//                trabajo3.setEquipo(equipo3);
-//                trabajo3 = trabajoDao.save(trabajo3);
-//
-//
-//
-//                PuntoControl puntoControl = puntoControlDao.save(new PuntoControl("n1", trabajo, 1));
-//                PuntoControl puntoControl2 = puntoControlDao.save(new PuntoControl("n2", trabajo, 1));
-//                tareaDao.save(new Tarea("T1","D1", 120, 0, puntoControl));
-//                tareaDao.save(new Tarea("T2","D2", 120, 0, puntoControl));
-//                tareaDao.save(new Tarea("T2","D2", 120, 0, puntoControl2));
-
-                rubroDao.save(new Rubro("Soldador","El que suelda"));
-                rubroDao.save(new Rubro("Pintor","El que pinta"));
+                marcaEquipoDao.save(new MarcaEquipo("Otros"));
             }
 
 
