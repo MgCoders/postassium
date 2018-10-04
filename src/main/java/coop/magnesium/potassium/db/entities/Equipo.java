@@ -26,6 +26,8 @@ public class Equipo {
     @NotNull(message = "El equipo debe tener una marca")
     private MarcaEquipo marca;
 
+    private String marcaOtros;
+
     private String modelo;
 
     private String matricula;
@@ -34,7 +36,7 @@ public class Equipo {
 
     private String color;
 
-    @NotNull(message = "El equipo debe tener una descripcion")
+    //@NotNull(message = "El equipo debe tener una descripcion")
     private String descripcion;
 
     @NotNull(message = "El equipo debe tener un tipo de equipo")
@@ -145,5 +147,13 @@ public class Equipo {
 
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
+    }
+
+    public String getMarcaOtros() {
+        return marcaOtros;
+    }
+
+    public void setMarcaOtros(String marcaOtros) {
+        this.marcaOtros = marcaOtros;
     }
 }

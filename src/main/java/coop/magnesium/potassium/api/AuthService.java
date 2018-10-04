@@ -207,6 +207,7 @@ public class AuthService {
         return usuario;
     }
 
+    //TODO ver lo del expiration time
     private String issueToken(String login, Map<String, Object> claims) {
         Key key = keyGenerator.generateKey();
         String jwtToken = Jwts.builder()
@@ -214,7 +215,7 @@ public class AuthService {
                 .setClaims(claims)
                 .setIssuer(uriInfo.getAbsolutePath().toString())
                 .setIssuedAt(new Date())
-                .setExpiration(toDate(LocalDateTime.now().plusMinutes(15L)))
+                .setExpiration(toDate(LocalDateTime.now().plusMinutes(90L)))
                 .signWith(SignatureAlgorithm.HS512, key)
                 .compact();
         return jwtToken;

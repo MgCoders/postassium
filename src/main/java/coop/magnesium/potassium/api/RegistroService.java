@@ -55,7 +55,7 @@ public class RegistroService {
     @POST
     @Logged
     @JWTTokenNeeded
-    @RoleNeeded({Role.USER, Role.ADMIN})
+    @RoleNeeded({Role.USER, Role.ADMIN, Role.SUPER_ADMIN})
     @ApiOperation(value = "Create Registro", response = Registro.class)
     public Response create(@Valid Registro registro) {
         try {
@@ -81,7 +81,7 @@ public class RegistroService {
     @GET
     @Logged
     @JWTTokenNeeded
-    @RoleNeeded({Role.USER, Role.ADMIN})
+    @RoleNeeded({Role.USER, Role.ADMIN, Role.SUPER_ADMIN})
     @ApiOperation(value = "Get registros", response = Registro.class, responseContainer = "List")
     public Response findAll() {
         List<Registro> registros = registroDao.findAll();
@@ -92,7 +92,7 @@ public class RegistroService {
     @Logged
     @Path("tarea/{id}")
     @JWTTokenNeeded
-    @RoleNeeded({Role.USER, Role.ADMIN})
+    @RoleNeeded({Role.USER, Role.ADMIN, Role.SUPER_ADMIN})
     @ApiOperation(value = "Get registros", response = Registro.class, responseContainer = "List")
     public Response findAllByTarea(@PathParam("id") Long id) {
         try {
@@ -114,7 +114,7 @@ public class RegistroService {
     @Logged
     @Path("{id}")
     @JWTTokenNeeded
-    @RoleNeeded({Role.USER, Role.ADMIN})
+    @RoleNeeded({Role.USER, Role.ADMIN, Role.SUPER_ADMIN})
     @ApiOperation(value = "Get Registro", response = Registro.class)
     @ApiResponses(value = {
             @ApiResponse(code = 404, message = "Id no encontrado")})
@@ -129,7 +129,7 @@ public class RegistroService {
     @Logged
     @Path("{id}")
     @JWTTokenNeeded
-    @RoleNeeded({Role.USER, Role.ADMIN})
+    @RoleNeeded({Role.USER, Role.ADMIN, Role.SUPER_ADMIN})
     @ApiOperation(value = "Edit Registro", response = Registro.class)
     @ApiResponses(value = {
             @ApiResponse(code = 304, message = "Error: objeto no modificado")})

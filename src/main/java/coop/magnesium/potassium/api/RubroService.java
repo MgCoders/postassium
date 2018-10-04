@@ -49,7 +49,7 @@ public class RubroService {
     @POST
     @Logged
     @JWTTokenNeeded
-    @RoleNeeded({Role.USER, Role.ADMIN})
+    @RoleNeeded({Role.USER, Role.ADMIN, Role.SUPER_ADMIN})
     @ApiOperation(value = "Create Rubro", response = Rubro.class)
     public Response create(@Valid Rubro rubro) {
         try {
@@ -73,7 +73,7 @@ public class RubroService {
     @GET
     @Logged
     @JWTTokenNeeded
-    @RoleNeeded({Role.USER, Role.ADMIN})
+    @RoleNeeded({Role.USER, Role.ADMIN, Role.SUPER_ADMIN})
     @ApiOperation(value = "Get rubros", response = Rubro.class, responseContainer = "List")
     public Response findAll() {
         return Response.ok(rubroDao.findAll()).build();
@@ -83,7 +83,7 @@ public class RubroService {
     @Logged
     @Path("{id}")
     @JWTTokenNeeded
-    @RoleNeeded({Role.USER, Role.ADMIN})
+    @RoleNeeded({Role.USER, Role.ADMIN, Role.SUPER_ADMIN})
     @ApiOperation(value = "Get Rubro", response = Rubro.class)
     public Response find(@PathParam("id") Long id) {
         try {
@@ -104,7 +104,7 @@ public class RubroService {
     @Logged
     @Path("{id}")
     @JWTTokenNeeded
-    @RoleNeeded({Role.USER, Role.ADMIN})
+    @RoleNeeded({Role.USER, Role.ADMIN, Role.SUPER_ADMIN})
     @ApiOperation(value = "Edit Rubro", response = Rubro.class)
     @ApiResponses(value = {
             @ApiResponse(code = 304, message = "Error: objeto no modificado")})
@@ -134,7 +134,7 @@ public class RubroService {
     @Logged
     @Path("{id}")
     @JWTTokenNeeded
-    @RoleNeeded({Role.USER, Role.ADMIN})
+    @RoleNeeded({Role.USER, Role.ADMIN, Role.SUPER_ADMIN})
     @ApiOperation(value = "Delete Rubro", response = Rubro.class)
     public Response delete(@PathParam("id") Long id) {
         try {

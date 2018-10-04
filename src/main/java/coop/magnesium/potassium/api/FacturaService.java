@@ -49,7 +49,7 @@ public class FacturaService {
     @POST
     @Logged
     @JWTTokenNeeded
-    @RoleNeeded({Role.USER, Role.ADMIN})
+    @RoleNeeded({Role.USER, Role.ADMIN, Role.SUPER_ADMIN})
     @ApiOperation(value = "Create Factura", response = Factura.class)
     public Response create(@Valid Factura factura) {
         try {
@@ -77,7 +77,7 @@ public class FacturaService {
     @GET
     @Path("{id}")
     @JWTTokenNeeded
-    @RoleNeeded({Role.USER, Role.ADMIN})
+    @RoleNeeded({Role.USER, Role.ADMIN, Role.SUPER_ADMIN})
     @ApiOperation(value = "Get Factura", response = Factura.class)
     @ApiResponses(value = {
             @ApiResponse(code = 404, message = "Id no encontrado")})
@@ -91,7 +91,7 @@ public class FacturaService {
     @GET
     @Path("trabajo/{id}")
     @JWTTokenNeeded
-    @RoleNeeded({Role.USER, Role.ADMIN})
+    @RoleNeeded({Role.USER, Role.ADMIN, Role.SUPER_ADMIN})
     @ApiOperation(value = "Get Factura", response = Factura.class)
     @ApiResponses(value = {
             @ApiResponse(code = 404, message = "Id no encontrado")})
@@ -104,7 +104,7 @@ public class FacturaService {
     @PUT
     @Path("{id}")
     @JWTTokenNeeded
-    @RoleNeeded({Role.USER, Role.ADMIN})
+    @RoleNeeded({Role.USER, Role.ADMIN, Role.SUPER_ADMIN})
     @ApiOperation(value = "Edit factura", response = Factura.class)
     @ApiResponses(value = {
             @ApiResponse(code = 304, message = "Error: objeto no modificado")})

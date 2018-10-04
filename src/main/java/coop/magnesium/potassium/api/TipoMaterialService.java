@@ -3,7 +3,6 @@ package coop.magnesium.potassium.api;
 import coop.magnesium.potassium.api.utils.JWTTokenNeeded;
 import coop.magnesium.potassium.api.utils.RoleNeeded;
 import coop.magnesium.potassium.db.dao.TipoMaterialDao;
-import coop.magnesium.potassium.db.entities.Material;
 import coop.magnesium.potassium.db.entities.Role;
 import coop.magnesium.potassium.db.entities.TipoMaterial;
 import coop.magnesium.potassium.utils.Logged;
@@ -41,8 +40,8 @@ public class TipoMaterialService {
     @POST
     @Logged
     @JWTTokenNeeded
-    @RoleNeeded({Role.USER, Role.ADMIN})
-    @ApiOperation(value = "Create Material", response = Material.class)
+    @RoleNeeded({Role.USER, Role.ADMIN, Role.SUPER_ADMIN})
+    @ApiOperation(value = "Create TipoMaterial", response = TipoMaterial.class)
     public Response create(@Valid TipoMaterial tipoMaterial) {
         try {
             if (tipoMaterial.getId() != null) throw new MagnesiumException("Ya existe el tipomaterial");
@@ -70,18 +69,27 @@ public class TipoMaterialService {
     @GET
     @Logged
     @JWTTokenNeeded
-    @RoleNeeded({Role.USER, Role.ADMIN})
+    @RoleNeeded({Role.USER, Role.ADMIN, Role.SUPER_ADMIN})
     @ApiOperation(value = "Get tipomaterial", response = TipoMaterial.class, responseContainer = "List")
     public Response findAll() {
         return Response.ok(tipoMaterialDao.findAll()).build();
     }
 
+    @GET
+    @Logged
+    @Path("autocomplete/{query}")
+    @JWTTokenNeeded
+    @RoleNeeded({Role.USER, Role.ADMIN, Role.SUPER_ADMIN})
+    @ApiOperation(value = "Get TipoMaterial", response = TipoMaterial.class, responseContainer = "List")
+    public Response findByPattern(@PathParam("query") String query) {
+        return Response.ok(tipoMaterialDao.findByPattern(query)).build();
+    }
 
     @PUT
     @Logged
     @Path("{id}")
     @JWTTokenNeeded
-    @RoleNeeded({Role.USER, Role.ADMIN})
+    @RoleNeeded({Role.USER, Role.ADMIN, Role.SUPER_ADMIN})
     @ApiOperation(value = "Edit TipoMaterial", response = TipoMaterial.class)
     @ApiResponses(value = {
             @ApiResponse(code = 304, message = "Error: objeto no modificado")})
