@@ -27,6 +27,8 @@ potassium backend
     
 ## Production
 
+8080
+8081
 
 * **
 
