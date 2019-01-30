@@ -190,7 +190,7 @@ public class TrabajoService {
             p.add(ch);
             ch = new Chunk("Marca/Modelo Equipo: ", doc.f12b);
             p.add(ch);
-            ch = new Chunk(trabajo.getEquipo().getMarca() + " / " + trabajo.getEquipo().getModelo(), doc.f12);
+            ch = new Chunk(trabajo.getEquipo().getMarca().getNombre() + " / " + trabajo.getEquipo().getModelo(), doc.f12);
             p.add(ch);
             ph.add(p);
             doc.addTituloContenido(ph, new Float(20));
