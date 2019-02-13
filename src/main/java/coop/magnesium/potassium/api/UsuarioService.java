@@ -85,7 +85,7 @@ public class UsuarioService {
 
     @GET
     @JWTTokenNeeded
-    @RoleNeeded({ Role.SUPER_ADMIN})
+    @RoleNeeded({ Role.SUPER_ADMIN, Role.ADMIN})
     @ApiOperation(value = "Get usuarios", response = Usuario.class, responseContainer = "List")
     public Response findAll() {
         List<Usuario> allSulfurUsers = usuarioDao.findAll();
