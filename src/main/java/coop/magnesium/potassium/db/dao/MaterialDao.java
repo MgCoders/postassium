@@ -52,4 +52,12 @@ public class MaterialDao extends AbstractDao<Material, Long> {
         query.setMaxResults(limit);
         return query.getResultList();
     }
+
+    public List<Material> findByTipoMaterial(Long idTipoMaterial) {
+        return em.createQuery("SELECT m FROM Material m " +
+                "WHERE m.tipoMaterial.id = :idtm " +
+                "ORDER BY m.codigo")
+                .setParameter("idtm", idTipoMaterial)
+                .getResultList();
+    }
 }

@@ -39,12 +39,17 @@ public class TipoMaterialDao extends AbstractDao<TipoMaterial, Long> {
     }
 
     public List<TipoMaterial> findByPattern(String pattern) {
-        Query query = em.createQuery("SELECT tm FROM TipoMaterial tm " +
+        return em.createQuery("SELECT tm FROM TipoMaterial tm " +
                 "WHERE UPPER(tm.familia) LIKE UPPER(:pattern) OR " +
                 "UPPER(tm.grupo) LIKE UPPER(:pattern) OR " +
-                "UPPER(tm.subgrupo) LIKE UPPER(:pattern)");
-        query.setParameter("pattern", "%" + pattern + "%");
-        return query.getResultList();
+                "UPPER(tm.subgrupo) LIKE UPPER(:pattern)")
+                .setParameter("pattern", "%" + pattern + "%")
+                .getResultList();
     }
 
+    public List<TipoMaterial> findAllSorted() {
+        return em.createQuery("SELECT tm FROM TipoMaterial tm " +
+                "ORDER BY tm.familia ASC, tm.grupo ASC , tm.subgrupo ASC ")
+                .getResultList();
+    }
 }

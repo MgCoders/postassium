@@ -99,6 +99,16 @@ public class MaterialService {
         return Response.ok(materialDao.findByPattern(query)).build();
     }
 
+    @GET
+    @Logged
+    @Path("tipomaterial/{id}")
+    @JWTTokenNeeded
+    @RoleNeeded({Role.USER, Role.ADMIN, Role.SUPER_ADMIN})
+    @ApiOperation(value = "Get Material", response = Material.class, responseContainer = "List")
+    public Response findByTipoMaterial(@PathParam("id") Long idTipoMaterial) {
+        return Response.ok(materialDao.findByTipoMaterial(idTipoMaterial)).build();
+    }
+
     @PUT
     @Logged
     @Path("{id}")

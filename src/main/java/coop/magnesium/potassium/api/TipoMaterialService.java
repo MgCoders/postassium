@@ -72,7 +72,7 @@ public class TipoMaterialService {
     @RoleNeeded({Role.USER, Role.ADMIN, Role.SUPER_ADMIN})
     @ApiOperation(value = "Get tipomaterial", response = TipoMaterial.class, responseContainer = "List")
     public Response findAll() {
-        return Response.ok(tipoMaterialDao.findAll()).build();
+        return Response.ok(tipoMaterialDao.findAllSorted()).build();
     }
 
     @GET

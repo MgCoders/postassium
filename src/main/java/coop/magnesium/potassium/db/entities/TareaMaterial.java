@@ -32,6 +32,10 @@ public class TareaMaterial {
     @JoinColumn(name = "material_id", referencedColumnName = "id", nullable = false)
     private Material material;
 
+    @ManyToOne
+    @JoinColumn(name = "unidadmedida_id", referencedColumnName = "id", nullable = true)
+    private UnidadMedida unidadMedida;
+
     public TareaMaterial() {
     }
 
@@ -65,5 +69,13 @@ public class TareaMaterial {
 
     public void setMaterial(Material material) {
         this.material = material;
+    }
+
+    public UnidadMedida getUnidadMedida() {
+        return unidadMedida;
+    }
+
+    public void setUnidadMedida(UnidadMedida unidadMedida) {
+        this.unidadMedida = unidadMedida;
     }
 }
