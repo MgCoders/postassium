@@ -56,7 +56,7 @@ public class MaterialDao extends AbstractDao<Material, Long> {
     public List<Material> findByTipoMaterial(Long idTipoMaterial) {
         return em.createQuery("SELECT m FROM Material m " +
                 "WHERE m.tipoMaterial.id = :idtm " +
-                "ORDER BY m.codigo")
+                "ORDER BY m.codigo ASC, m.nombre ASC ")
                 .setParameter("idtm", idTipoMaterial)
                 .getResultList();
     }
